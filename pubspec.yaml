@@ -26,6 +26,9 @@ dependencies:
   # Animations
   flutter_animate: ^4.3.0
 
+  # Biometric Authentication
+  local_auth: ^2.1.6
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
