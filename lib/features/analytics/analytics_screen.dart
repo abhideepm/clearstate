@@ -4,12 +4,9 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../../shared/widgets/noise_background.dart';
 import '../timer/timer_provider.dart';
+import '../timer/roi_provider.dart';
 import 'widgets/stat_card.dart';
 import 'widgets/heatmap_calendar.dart';
-
-// Provider for user profile data (simplified for now)
-final avgDailySpendProvider = Provider<double>((ref) => 11.43); // $80/week / 7
-final avgDailyCaloriesProvider = Provider<double>((ref) => 214.0); // 1500/week / 7
 
 class AnalyticsScreen extends ConsumerWidget {
   const AnalyticsScreen({super.key});
@@ -19,7 +16,8 @@ class AnalyticsScreen extends ConsumerWidget {
     final durationAsync = ref.watch(elapsedDurationProvider);
     final avgDailySpend = ref.watch(avgDailySpendProvider);
     final avgDailyCalories = ref.watch(avgDailyCaloriesProvider);
-    
+    final avgDrinksPerWeek = ref.watch(avgDrinksPerWeekProvider);
+
     return Scaffold(
       backgroundColor: ClearStateColors.void_,
       body: NoiseBackground(
@@ -30,7 +28,7 @@ class AnalyticsScreen extends ConsumerWidget {
               final days = duration.inDays;
               final moneySaved = days * avgDailySpend;
               final caloriesAvoided = (days * avgDailyCalories).round();
-              
+
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -83,7 +81,7 @@ class AnalyticsScreen extends ConsumerWidget {
                         Expanded(
                           child: StatCard(
                             label: 'DRINKS SKIPPED',
-                            value: '${(days * 1.43).round()}', // avg 10/week
+                            value: '${(days * avgDrinksPerWeek / 7).round()}',
                             icon: Icons.no_drinks_outlined,
                           ),
                         ),
@@ -104,11 +102,20 @@ class AnalyticsScreen extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _LegendItem(color: ClearStateColors.ash, label: 'No data'),
+                        _LegendItem(
+                          color: ClearStateColors.ash,
+                          label: 'No data',
+                        ),
                         const SizedBox(width: 24),
-                        _LegendItem(color: ClearStateColors.sober, label: 'Sober'),
+                        _LegendItem(
+                          color: ClearStateColors.sober,
+                          label: 'Sober',
+                        ),
                         const SizedBox(width: 24),
-                        _LegendItem(color: ClearStateColors.relapse, label: 'Relapse'),
+                        _LegendItem(
+                          color: ClearStateColors.relapse,
+                          label: 'Relapse',
+                        ),
                       ],
                     ),
                     const SizedBox(height: 100),
@@ -119,9 +126,8 @@ class AnalyticsScreen extends ConsumerWidget {
             loading: () => const Center(
               child: CircularProgressIndicator(color: ClearStateColors.signal),
             ),
-            error: (_, __) => const Center(
-              child: Text('Error loading analytics'),
-            ),
+            error: (e, s) =>
+                const Center(child: Text('Error loading analytics')),
           ),
         ),
       ),
@@ -132,24 +138,17 @@ class AnalyticsScreen extends ConsumerWidget {
 class _LegendItem extends StatelessWidget {
   final Color color;
   final String label;
-  
+
   const _LegendItem({required this.color, required this.label});
-  
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 12,
-          height: 12,
-          color: color,
-        ),
+        Container(width: 12, height: 12, color: color),
         const SizedBox(width: 6),
-        Text(
-          label,
-          style: ClearStateTypography.caption.copyWith(fontSize: 11),
-        ),
+        Text(label, style: ClearStateTypography.caption.copyWith(fontSize: 11)),
       ],
     );
   }
