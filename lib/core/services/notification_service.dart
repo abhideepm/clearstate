@@ -3,11 +3,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'notification_constants.dart';
+import 'notification_service_interface.dart';
 
 /// Handles scheduling and cancellation of milestone notifications.
 /// Notifications fire exactly when users hit sobriety milestones,
 /// creating engagement even when the app is closed.
-class NotificationService {
+class NotificationService implements INotificationService {
   static final NotificationService _instance = NotificationService._internal();
   static NotificationService get instance => _instance;
 
@@ -20,6 +21,7 @@ class NotificationService {
 
   /// Initialize the notification plugin and timezone data.
   /// Call this once in main.dart before using any other methods.
+  @override
   Future<void> init() async {
     if (_isInitialized) return;
 
@@ -59,84 +61,103 @@ class NotificationService {
 
   /// Request notification permissions from the user.
   /// Returns true if permissions granted.
+  @override
   Future<bool> requestPermissions() async {
-    // Android 13+ requires explicit permission request
-    final androidPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    if (androidPlugin != null) {
-      final granted = await androidPlugin.requestNotificationsPermission();
-      if (granted != true) return false;
+    try {
+      // Android 13+ requires explicit permission request
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      if (androidPlugin != null) {
+        final granted = await androidPlugin.requestNotificationsPermission();
+        if (granted != true) return false;
 
-      // Also request exact alarm permission for precise scheduling
-      await androidPlugin.requestExactAlarmsPermission();
+        // Also request exact alarm permission for precise scheduling
+        await androidPlugin.requestExactAlarmsPermission();
+      }
+
+      // iOS permission request
+      final iosPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
+      if (iosPlugin != null) {
+        final granted = await iosPlugin.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: false, // Silent with vibration
+        );
+        return granted ?? false;
+      }
+
+      return true;
+    } catch (e) {
+      debugPrint('NotificationService: Error requesting permissions: $e');
+      return false;
     }
-
-    // iOS permission request
-    final iosPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin
-        >();
-    if (iosPlugin != null) {
-      final granted = await iosPlugin.requestPermissions(
-        alert: true,
-        badge: true,
-        sound: false, // Silent with vibration
-      );
-      return granted ?? false;
-    }
-
-    return true;
   }
 
   /// Check if notification permissions are granted.
+  /// Note: iOS permission state can become stale if changed in Settings.
+  @override
   Future<bool> hasPermissions() async {
-    final androidPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >();
-    if (androidPlugin != null) {
-      return await androidPlugin.areNotificationsEnabled() ?? false;
-    }
+    try {
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      if (androidPlugin != null) {
+        return await androidPlugin.areNotificationsEnabled() ?? false;
+      }
 
-    // iOS: assume granted if we got this far (checked during request)
-    return true;
+      // iOS: assume granted if we got this far (checked during request)
+      // Note: User can revoke in Settings; this may be stale.
+      return true;
+    } catch (e) {
+      debugPrint('NotificationService: Error checking permissions: $e');
+      return false;
+    }
   }
 
   /// Schedule notifications for all future milestones based on session start.
   /// Only schedules milestones that haven't been reached yet.
+  @override
   Future<void> scheduleMilestoneNotifications(DateTime sessionStartDate) async {
     if (!_isInitialized) {
       debugPrint('NotificationService: Not initialized, skipping schedule');
       return;
     }
 
-    final now = DateTime.now();
-    final daysSober = now.difference(sessionStartDate).inDays;
+    try {
+      final now = DateTime.now();
+      final daysSober = now.difference(sessionStartDate).inDays;
 
-    for (final milestone in NotificationConstants.milestoneNotifications) {
-      // Skip milestones already achieved
-      if (daysSober >= milestone.dayThreshold) continue;
+      for (final milestone in NotificationConstants.milestoneNotifications) {
+        // Skip milestones already achieved
+        if (daysSober >= milestone.dayThreshold) continue;
 
-      final scheduledTime = _calculateMilestoneDateTime(
-        sessionStartDate,
-        milestone.dayThreshold,
-      );
+        final scheduledTime = _calculateMilestoneDateTime(
+          sessionStartDate,
+          milestone.dayThreshold,
+        );
 
-      // Don't schedule if somehow in the past
-      if (scheduledTime.isBefore(now)) continue;
+        // Don't schedule if somehow in the past
+        if (scheduledTime.isBefore(now)) continue;
 
-      await _scheduleNotification(
-        id: milestone.notificationId,
-        title: milestone.title,
-        body: milestone.body,
-        scheduledTime: scheduledTime,
-      );
+        await _scheduleNotification(
+          id: milestone.notificationId,
+          title: milestone.title,
+          body: milestone.body,
+          scheduledTime: scheduledTime,
+        );
 
-      debugPrint(
-        'Scheduled: ${milestone.title} for $scheduledTime (ID: ${milestone.notificationId})',
-      );
+        debugPrint(
+          'Scheduled: ${milestone.title} for $scheduledTime (ID: ${milestone.notificationId})',
+        );
+      }
+    } catch (e) {
+      debugPrint('NotificationService: Error scheduling notifications: $e');
     }
   }
 
@@ -194,20 +215,38 @@ class NotificationService {
 
   /// Cancel all pending milestone notifications.
   /// Call this on relapse, data wipe, or when user disables notifications.
+  @override
   Future<void> cancelAllMilestoneNotifications() async {
-    for (final id in NotificationConstants.allNotificationIds) {
-      await _plugin.cancel(id);
+    try {
+      for (final id in NotificationConstants.allNotificationIds) {
+        await _plugin.cancel(id);
+      }
+      debugPrint('Cancelled all milestone notifications');
+    } catch (e) {
+      debugPrint('NotificationService: Error cancelling notifications: $e');
     }
-    debugPrint('Cancelled all milestone notifications');
   }
 
   /// Cancel a specific milestone notification by ID.
+  @override
   Future<void> cancelNotificationById(int id) async {
-    await _plugin.cancel(id);
+    try {
+      await _plugin.cancel(id);
+    } catch (e) {
+      debugPrint('NotificationService: Error cancelling notification $id: $e');
+    }
   }
 
   /// Get list of pending notifications (for debugging).
+  @override
   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
-    return await _plugin.pendingNotificationRequests();
+    try {
+      return await _plugin.pendingNotificationRequests();
+    } catch (e) {
+      debugPrint(
+        'NotificationService: Error getting pending notifications: $e',
+      );
+      return [];
+    }
   }
 }

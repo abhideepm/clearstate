@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/user_profile.dart';
@@ -5,15 +6,11 @@ import '../models/sobriety_session.dart';
 import '../models/relapse_event.dart';
 import '../models/daily_log.dart';
 import '../../core/constants/drink_presets.dart';
+import '../../core/constants/hive_boxes.dart';
+import '../../core/services/encryption_service.dart';
 import '../../core/services/notification_service.dart';
 
 class SobrietyRepository {
-  static const String userProfileBoxName = 'user_profile';
-  static const String sessionsBoxName = 'sessions';
-  static const String relapseBoxName = 'relapses';
-  static const String dailyLogBoxName = 'daily_logs';
-  static const String settingsBoxName = 'settings';
-
   static const int currentSchemaVersion = 1;
 
   late Box<UserProfile> _userProfileBox;
@@ -21,13 +18,25 @@ class SobrietyRepository {
   late Box<RelapseEvent> _relapseBox;
   late Box<DailyLog> _dailyLogBox;
   late Box _settingsBox;
+  HiveAesCipher? _cipher;
 
   bool _isInitialized = false;
+
+  /// Throws if the repository has not been initialized.
+  /// Call init() before using any other methods.
+  void _assertInitialized() {
+    if (!_isInitialized) {
+      throw StateError(
+        'SobrietyRepository not initialized. Call init() before use.',
+      );
+    }
+  }
 
   Future<void> init() async {
     if (_isInitialized) return;
 
-    // Note: Hive.initFlutter() should be called in main.dart before this
+    // Get encryption cipher for sensitive data boxes
+    _cipher = await EncryptionService.getEncryptionCipher();
 
     // Register adapters
     if (!Hive.isAdapterRegistered(0)) {
@@ -43,12 +52,26 @@ class SobrietyRepository {
       Hive.registerAdapter(DailyLogAdapter());
     }
 
-    // Open boxes
-    _userProfileBox = await Hive.openBox<UserProfile>(userProfileBoxName);
-    _sessionsBox = await Hive.openBox<SobrietySession>(sessionsBoxName);
-    _relapseBox = await Hive.openBox<RelapseEvent>(relapseBoxName);
-    _dailyLogBox = await Hive.openBox<DailyLog>(dailyLogBoxName);
-    _settingsBox = await Hive.openBox(settingsBoxName);
+    // Open encrypted boxes for sensitive data
+    _userProfileBox = await Hive.openBox<UserProfile>(
+      HiveBoxes.userProfile,
+      encryptionCipher: _cipher,
+    );
+    _sessionsBox = await Hive.openBox<SobrietySession>(
+      HiveBoxes.sessions,
+      encryptionCipher: _cipher,
+    );
+    _relapseBox = await Hive.openBox<RelapseEvent>(
+      HiveBoxes.relapses,
+      encryptionCipher: _cipher,
+    );
+    _dailyLogBox = await Hive.openBox<DailyLog>(
+      HiveBoxes.dailyLogs,
+      encryptionCipher: _cipher,
+    );
+
+    // Settings box is not encrypted (contains only schema version, etc.)
+    _settingsBox = await Hive.openBox(HiveBoxes.settings);
 
     await _checkAndPerformMigration();
 
@@ -57,11 +80,11 @@ class SobrietyRepository {
 
   Future<void> _checkAndPerformMigration() async {
     final int storedVersion =
-        _settingsBox.get('schema_version', defaultValue: 0) as int;
+        _settingsBox.get(SettingsKeys.schemaVersion, defaultValue: 0) as int;
 
     if (storedVersion < currentSchemaVersion) {
       await _performMigration(storedVersion, currentSchemaVersion);
-      await _settingsBox.put('schema_version', currentSchemaVersion);
+      await _settingsBox.put(SettingsKeys.schemaVersion, currentSchemaVersion);
     }
   }
 
@@ -72,7 +95,8 @@ class SobrietyRepository {
 
   // User Profile
   UserProfile? getUserProfile() {
-    return _userProfileBox.get('profile');
+    _assertInitialized();
+    return _userProfileBox.get(UserProfileKeys.profile);
   }
 
   Future<void> saveUserProfile({
@@ -81,6 +105,7 @@ class SobrietyRepository {
     required double avgCostPerDrink,
     required String defaultDrinkType,
   }) async {
+    _assertInitialized();
     final preset = DrinkPresets.getByName(defaultDrinkType);
     final profile = UserProfile(
       lastDrinkDate: lastDrinkDate,
@@ -90,7 +115,7 @@ class SobrietyRepository {
       defaultDrinkType: defaultDrinkType,
       onboardingComplete: true,
     );
-    await _userProfileBox.put('profile', profile);
+    await _userProfileBox.put(UserProfileKeys.profile, profile);
 
     // Also create initial sobriety session
     await startNewSession(lastDrinkDate);
@@ -98,8 +123,19 @@ class SobrietyRepository {
 
   // Sessions
   SobrietySession? getActiveSession() {
+    _assertInitialized();
     final sessions = _sessionsBox.values.where((s) => s.isActive).toList();
     if (sessions.isEmpty) return null;
+
+    // Enforce invariant: should only have one active session
+    if (sessions.length > 1) {
+      debugPrint(
+        'Warning: Found ${sessions.length} active sessions, using most recent',
+      );
+      // Sort by start date descending and use the most recent
+      sessions.sort((a, b) => b.startDate.compareTo(a.startDate));
+    }
+
     return sessions.first;
   }
 
@@ -107,6 +143,14 @@ class SobrietyRepository {
     DateTime startDate, {
     bool scheduleNotifications = true,
   }) async {
+    _assertInitialized();
+
+    // End any existing active sessions first to enforce single-active invariant
+    final existingActive = getActiveSession();
+    if (existingActive != null) {
+      await endCurrentSession();
+    }
+
     final session = SobrietySession(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       startDate: startDate,
@@ -122,6 +166,7 @@ class SobrietyRepository {
   }
 
   Future<void> endCurrentSession() async {
+    _assertInitialized();
     final session = getActiveSession();
     if (session != null) {
       session.endDate = DateTime.now();
@@ -136,6 +181,7 @@ class SobrietyRepository {
     required int caloriesConsumed,
     required String drinkType,
   }) async {
+    _assertInitialized();
     final currentSession = getActiveSession();
     final streakDays = currentSession?.totalDays ?? 0;
 
@@ -173,6 +219,7 @@ class SobrietyRepository {
     required int caloriesConsumed,
     required String drinkType,
   }) async {
+    _assertInitialized();
     final currentSession = getActiveSession();
     final streakDays = currentSession?.totalDays ?? 0;
 
@@ -195,6 +242,7 @@ class SobrietyRepository {
 
   /// Get slips (not full relapses) from the past 7 days for gentle prompt logic.
   int getSlipsThisWeek() {
+    _assertInitialized();
     final weekAgo = DateTime.now().subtract(const Duration(days: 7));
     return _relapseBox.values
         .where((event) => event.isSlip && event.timestamp.isAfter(weekAgo))
@@ -204,6 +252,7 @@ class SobrietyRepository {
   /// Convert recent slips to a relapse (user acknowledges pattern).
   /// This ends the current session and starts fresh.
   Future<void> convertSlipsToRelapse() async {
+    _assertInitialized();
     final weekAgo = DateTime.now().subtract(const Duration(days: 7));
     final recentSlips = _relapseBox.values
         .where((event) => event.isSlip && event.timestamp.isAfter(weekAgo))
@@ -236,6 +285,7 @@ class SobrietyRepository {
 
   // Daily logs for heatmap
   Future<void> logDay(DateTime date, bool isSober, [int? drinks]) async {
+    _assertInitialized();
     final log = DailyLog(
       date: DateTime(date.year, date.month, date.day),
       isSober: isSober,
@@ -245,12 +295,16 @@ class SobrietyRepository {
   }
 
   DailyLog? getDayLog(DateTime date) {
-    final key =
-        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    _assertInitialized();
+    final key = DailyLog(
+      date: DateTime(date.year, date.month, date.day),
+      isSober: true,
+    ).dateKey;
     return _dailyLogBox.get(key);
   }
 
   List<DailyLog> getLogsForRange(DateTime start, DateTime end) {
+    _assertInitialized();
     return _dailyLogBox.values
         .where(
           (log) =>
@@ -262,20 +316,24 @@ class SobrietyRepository {
 
   // Stats
   int getTotalSoberDays() {
+    _assertInitialized();
     return _dailyLogBox.values.where((log) => log.isSober).length;
   }
 
   int getTotalRelapses() {
+    _assertInitialized();
     return _relapseBox.length;
   }
 
   double getTotalMoneySaved() {
+    _assertInitialized();
     final profile = getUserProfile();
     if (profile == null) return 0;
     return getTotalSoberDays() * profile.avgDailySpend;
   }
 
   int getTotalCaloriesAvoided() {
+    _assertInitialized();
     final profile = getUserProfile();
     if (profile == null) return 0;
     return (getTotalSoberDays() * profile.avgDailyCalories).round();
@@ -283,7 +341,10 @@ class SobrietyRepository {
 
   /// Nuclear wipe - deletes ALL user data from all boxes.
   /// This is irreversible and should only be called after user confirmation.
+  /// Note: Security settings (biometric) persist across wipes by design.
   Future<void> nukeAllData() async {
+    _assertInitialized();
+
     // Cancel all pending notifications
     await NotificationService.instance.cancelAllMilestoneNotifications();
 
@@ -291,14 +352,27 @@ class SobrietyRepository {
     await _sessionsBox.clear();
     await _relapseBox.clear();
     await _dailyLogBox.clear();
+
+    // Reset schema version so migrations run again if needed
+    await _settingsBox.put(SettingsKeys.schemaVersion, currentSchemaVersion);
+  }
+
+  /// Full factory reset - deletes ALL data including security settings.
+  Future<void> factoryReset() async {
+    _assertInitialized();
+
+    await nukeAllData();
+    await _settingsBox.clear();
+    await _settingsBox.put(SettingsKeys.schemaVersion, currentSchemaVersion);
   }
 
   // Backup & Restore
   Map<String, dynamic> exportData() {
+    _assertInitialized();
     return {
       'version': currentSchemaVersion,
       'timestamp': DateTime.now().toIso8601String(),
-      'profile': _userProfileBox.get('profile')?.toJson(),
+      'profile': _userProfileBox.get(UserProfileKeys.profile)?.toJson(),
       'sessions': _sessionsBox.values.map((s) => s.toJson()).toList(),
       'relapses': _relapseBox.values.map((r) => r.toJson()).toList(),
       'daily_logs': _dailyLogBox.values.map((l) => l.toJson()).toList(),
@@ -306,6 +380,22 @@ class SobrietyRepository {
   }
 
   Future<void> importData(Map<String, dynamic> data) async {
+    _assertInitialized();
+
+    // Validate backup version
+    final version = data['version'] as int? ?? 0;
+    if (version > currentSchemaVersion) {
+      throw Exception(
+        'Backup from newer app version (v$version). '
+        'Please update ClearState to restore this backup.',
+      );
+    }
+
+    // Validate required data
+    if (!data.containsKey('profile') && !data.containsKey('sessions')) {
+      throw Exception('Invalid backup file: missing required data');
+    }
+
     // 1. Wipe current data
     await nukeAllData();
 
@@ -314,7 +404,7 @@ class SobrietyRepository {
       final profile = UserProfile.fromJson(
         data['profile'] as Map<String, dynamic>,
       );
-      await _userProfileBox.put('profile', profile);
+      await _userProfileBox.put(UserProfileKeys.profile, profile);
     }
 
     // 3. Import Sessions
@@ -345,7 +435,7 @@ class SobrietyRepository {
     }
 
     // 6. Ensure schema version is updated if importing from older/newer
-    await _settingsBox.put('schema_version', currentSchemaVersion);
+    await _settingsBox.put(SettingsKeys.schemaVersion, currentSchemaVersion);
 
     // 7. Reschedule notifications if there's an active session
     final activeSession = getActiveSession();
@@ -357,7 +447,9 @@ class SobrietyRepository {
   }
 }
 
-// Provider
+/// Provider for SobrietyRepository.
+/// In production, use via main's override with initialized instance.
+/// Tests must call init() before use.
 final sobrietyRepositoryProvider = Provider<SobrietyRepository>((ref) {
   return SobrietyRepository();
 });

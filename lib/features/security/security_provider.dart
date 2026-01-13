@@ -1,22 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:local_auth/local_auth.dart';
-
-/// Settings box name for storing security preferences.
-const String _settingsBoxName = 'settings';
-const String _biometricEnabledKey = 'biometric_enabled';
+import '../../core/constants/hive_boxes.dart';
 
 /// State for security settings.
 class SecurityState {
   final bool biometricEnabled;
   final bool isUnlocked;
+  final bool initialized;
 
-  const SecurityState({this.biometricEnabled = false, this.isUnlocked = false});
+  const SecurityState({
+    this.biometricEnabled = false,
+    this.isUnlocked = false,
+    this.initialized = false,
+  });
 
-  SecurityState copyWith({bool? biometricEnabled, bool? isUnlocked}) {
+  SecurityState copyWith({
+    bool? biometricEnabled,
+    bool? isUnlocked,
+    bool? initialized,
+  }) {
     return SecurityState(
       biometricEnabled: biometricEnabled ?? this.biometricEnabled,
       isUnlocked: isUnlocked ?? this.isUnlocked,
+      initialized: initialized ?? this.initialized,
     );
   }
 }
@@ -34,20 +41,22 @@ class SecurityNotifier extends StateNotifier<SecurityState> {
 
   Future<void> _init() async {
     // Open settings box if not already open
-    if (Hive.isBoxOpen(_settingsBoxName)) {
-      _settingsBox = Hive.box(_settingsBoxName);
+    if (Hive.isBoxOpen(HiveBoxes.settings)) {
+      _settingsBox = Hive.box(HiveBoxes.settings);
     } else {
-      _settingsBox = await Hive.openBox(_settingsBoxName);
+      _settingsBox = await Hive.openBox(HiveBoxes.settings);
     }
 
     // Load saved biometric preference
     final biometricEnabled =
-        _settingsBox?.get(_biometricEnabledKey, defaultValue: false) ?? false;
+        _settingsBox?.get(SettingsKeys.biometricEnabled, defaultValue: false) ??
+        false;
 
     state = state.copyWith(
       biometricEnabled: biometricEnabled,
       // If biometric is not enabled, consider app as unlocked
       isUnlocked: !biometricEnabled,
+      initialized: true,
     );
   }
 
@@ -73,6 +82,8 @@ class SecurityNotifier extends StateNotifier<SecurityState> {
 
   /// Enable biometric lock. Verifies biometric first.
   Future<bool> enableBiometric() async {
+    if (!state.initialized) return false;
+
     final canCheck = await canCheckBiometrics();
     if (!canCheck) return false;
 
@@ -81,19 +92,21 @@ class SecurityNotifier extends StateNotifier<SecurityState> {
     if (!authenticated) return false;
 
     // Save preference
-    await _settingsBox?.put(_biometricEnabledKey, true);
+    await _settingsBox?.put(SettingsKeys.biometricEnabled, true);
     state = state.copyWith(biometricEnabled: true);
     return true;
   }
 
   /// Disable biometric lock. Verifies biometric first.
   Future<bool> disableBiometric() async {
+    if (!state.initialized) return false;
+
     // Authenticate to confirm user wants to disable
     final authenticated = await checkBiometric();
     if (!authenticated) return false;
 
     // Save preference
-    await _settingsBox?.put(_biometricEnabledKey, false);
+    await _settingsBox?.put(SettingsKeys.biometricEnabled, false);
     state = state.copyWith(biometricEnabled: false, isUnlocked: true);
     return true;
   }
@@ -128,6 +141,8 @@ class SecurityNotifier extends StateNotifier<SecurityState> {
 
   /// Toggle biometric setting.
   Future<bool> toggleBiometric() async {
+    if (!state.initialized) return false;
+
     if (state.biometricEnabled) {
       return await disableBiometric();
     } else {
@@ -144,15 +159,14 @@ final securityProvider = StateNotifierProvider<SecurityNotifier, SecurityState>(
 );
 
 /// Provider to check if biometrics are available on the device.
-final canUseBiometricsProvider = FutureProvider<bool>((ref) async {
+final canUseBiometricsProvider = FutureProvider.autoDispose<bool>((ref) async {
   final notifier = ref.read(securityProvider.notifier);
   return await notifier.canCheckBiometrics();
 });
 
 /// Provider for available biometric types.
-final availableBiometricsProvider = FutureProvider<List<BiometricType>>((
-  ref,
-) async {
-  final notifier = ref.read(securityProvider.notifier);
-  return await notifier.getAvailableBiometrics();
-});
+final availableBiometricsProvider =
+    FutureProvider.autoDispose<List<BiometricType>>((ref) async {
+      final notifier = ref.read(securityProvider.notifier);
+      return await notifier.getAvailableBiometrics();
+    });

@@ -22,9 +22,12 @@ class BackupService {
 
       await file.writeAsString(jsonString);
 
-      await Share.shareXFiles([
-        XFile(file.path),
-      ], subject: 'ClearState Backup - $dateStr');
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(file.path)],
+          subject: 'ClearState Backup - $dateStr',
+        ),
+      );
     } catch (e) {
       rethrow;
     }
