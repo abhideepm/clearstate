@@ -6,7 +6,7 @@ class OnboardingState {
   final String drinkType;
   final double costPerDrink;
   final int currentStep;
-  
+
   const OnboardingState({
     this.lastDrinkDate,
     this.drinksPerWeek = 10,
@@ -14,7 +14,7 @@ class OnboardingState {
     this.costPerDrink = 8.0,
     this.currentStep = 0,
   });
-  
+
   OnboardingState copyWith({
     DateTime? lastDrinkDate,
     int? drinksPerWeek,
@@ -34,34 +34,40 @@ class OnboardingState {
 
 class OnboardingNotifier extends StateNotifier<OnboardingState> {
   OnboardingNotifier() : super(const OnboardingState());
-  
+
   void setLastDrinkDate(DateTime date) {
     state = state.copyWith(lastDrinkDate: date);
   }
-  
+
   void setDrinksPerWeek(int count) {
     state = state.copyWith(drinksPerWeek: count);
   }
-  
+
   void setDrinkType(String type) {
     state = state.copyWith(drinkType: type);
   }
-  
+
   void setCostPerDrink(double cost) {
     state = state.copyWith(costPerDrink: cost);
   }
-  
+
   void nextStep() {
     state = state.copyWith(currentStep: state.currentStep + 1);
   }
-  
+
   void previousStep() {
     if (state.currentStep > 0) {
       state = state.copyWith(currentStep: state.currentStep - 1);
     }
   }
+
+  /// Reset all onboarding state (used after data wipe)
+  void reset() {
+    state = const OnboardingState();
+  }
 }
 
-final onboardingProvider = StateNotifierProvider<OnboardingNotifier, OnboardingState>(
-  (ref) => OnboardingNotifier(),
-);
+final onboardingProvider =
+    StateNotifierProvider<OnboardingNotifier, OnboardingState>(
+      (ref) => OnboardingNotifier(),
+    );

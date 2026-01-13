@@ -29,7 +29,8 @@ clearstate_app/
 │   │   ├── timeline/     # Recovery milestones
 │   │   ├── analytics/    # Stats & heatmap
 │   │   ├── onboarding/   # Initial setup flow
-│   │   └── relapse/      # Relapse tracking
+│   │   ├── relapse/      # Relapse tracking
+│   │   └── settings/     # Settings & data management
 │   └── shared/widgets/   # Shared UI components
 └── test/                 # Test files
 ```
@@ -144,8 +145,11 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 ## Key Files
 
 - `lib/main.dart` - App initialization, Hive setup
-- `lib/data/repositories/sobriety_repository.dart` - Main data layer
+- `lib/app.dart` - Root widget, navigation with 4-tab bottom nav
+- `lib/data/repositories/sobriety_repository.dart` - Main data layer (includes `nukeAllData()`)
 - `lib/core/theme/colors.dart` - Color constants
 - `lib/core/constants/milestones.dart` - Recovery milestones
+- `lib/features/settings/settings_screen.dart` - Settings with privacy & data management
+- `lib/features/settings/widgets/wipe_confirmation_dialog.dart` - Nuclear wipe confirmation
 - `pubspec.yaml` - Dependencies
 - `analysis_options.yaml` - Lint config
