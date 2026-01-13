@@ -7,28 +7,19 @@ import '../../timer/timer_provider.dart';
 class HeatmapCalendar extends ConsumerWidget {
   const HeatmapCalendar({super.key});
 
+  // Fixed cell dimensions for compact view
+  static const double _cellSize = 14.0;
+  static const double _cellSpacing = 3.0;
+  static const int _weeksToShow = 26; // 6 months of history
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final startDate = ref.watch(sobrietyStartDateProvider);
     final now = DateTime.now();
-    
-    // Generate last 12 weeks of data
-    final weeks = <List<DateTime?>>[];
-    var currentDate = now.subtract(Duration(days: now.weekday % 7)); // Start of current week
-    
-    for (int w = 0; w < 12; w++) {
-      final week = <DateTime?>[];
-      for (int d = 0; d < 7; d++) {
-        final date = currentDate.subtract(Duration(days: (11 - w) * 7 - d));
-        if (date.isAfter(now)) {
-          week.add(null); // Future date
-        } else {
-          week.add(date);
-        }
-      }
-      weeks.add(week);
-    }
-    
+
+    // Generate weeks data (most recent on the right)
+    final weeks = _generateWeeksData(now, _weeksToShow);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -37,96 +28,196 @@ class HeatmapCalendar extends ConsumerWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Day labels
-          Row(
-            children: [
-              const SizedBox(width: 28),
-              ...['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day) => 
-                Expanded(
-                  child: Text(
-                    day,
-                    style: ClearStateTypography.caption.copyWith(
-                      fontSize: 10,
-                      color: ClearStateColors.smoke,
+          // Scrollable calendar grid
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            reverse: true, // Start scrolled to the right (most recent)
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Day labels column (fixed on left conceptually, but scrolls with content)
+                _buildDayLabels(),
+                const SizedBox(width: 8),
+                // Weeks grid
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Month labels row
+                    _buildMonthLabels(weeks),
+                    const SizedBox(height: 4),
+                    // Calendar grid
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: weeks.asMap().entries.map((entry) {
+                        final week = entry.value;
+                        return _buildWeekColumn(week, startDate, now);
+                      }).toList(),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
-          // Weeks
-          ...weeks.asMap().entries.map((entry) {
-            final weekIndex = entry.key;
-            final week = entry.value;
-            final showMonth = weekIndex == 0 || 
-                (week.firstWhere((d) => d != null, orElse: () => now)?.day ?? 0) <= 7;
-            
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 28,
-                    child: showMonth ? Text(
-                      _getMonthLabel(week),
-                      style: ClearStateTypography.caption.copyWith(
-                        fontSize: 10,
-                        color: ClearStateColors.smoke,
-                      ),
-                    ) : null,
-                  ),
-                  ...week.map((date) {
-                    if (date == null) {
-                      return Expanded(
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Container(
-                            margin: const EdgeInsets.all(1),
-                            color: Colors.transparent,
-                          ),
-                        ),
-                      );
-                    }
-                    
-                    final isSober = startDate != null && 
-                        (date.isAfter(startDate) || date.isAtSameMomentAs(startDate));
-                    final isToday = date.year == now.year && 
-                        date.month == now.month && 
-                        date.day == now.day;
-                    
-                    return Expanded(
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          margin: const EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                            color: isSober 
-                                ? ClearStateColors.sober.withValues(alpha: 0.8)
-                                : ClearStateColors.ash.withValues(alpha: 0.3),
-                            border: isToday 
-                                ? Border.all(color: ClearStateColors.signal, width: 2)
-                                : null,
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-                ],
-              ),
-            );
-          }),
         ],
       ),
     );
   }
-  
-  String _getMonthLabel(List<DateTime?> week) {
-    final date = week.firstWhere((d) => d != null, orElse: () => DateTime.now());
-    if (date == null) return '';
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return months[date.month - 1];
+
+  List<List<DateTime?>> _generateWeeksData(DateTime now, int weeksCount) {
+    final weeks = <List<DateTime?>>[];
+
+    // Find the start of the current week (Sunday)
+    final currentWeekStart = now.subtract(Duration(days: now.weekday % 7));
+
+    for (int w = weeksCount - 1; w >= 0; w--) {
+      final week = <DateTime?>[];
+      for (int d = 0; d < 7; d++) {
+        final date = currentWeekStart.subtract(Duration(days: w * 7 - d));
+        if (date.isAfter(now)) {
+          week.add(null); // Future date
+        } else {
+          week.add(date);
+        }
+      }
+      weeks.add(week);
+    }
+
+    return weeks;
+  }
+
+  Widget _buildDayLabels() {
+    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    return Column(
+      children: [
+        // Empty space for month label row
+        SizedBox(height: _cellSize + 4),
+        // Day labels
+        ...days.map(
+          (day) => SizedBox(
+            width: 16,
+            height: _cellSize + _cellSpacing,
+            child: Center(
+              child: Text(
+                day,
+                style: ClearStateTypography.caption.copyWith(
+                  fontSize: 9,
+                  color: ClearStateColors.smoke,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMonthLabels(List<List<DateTime?>> weeks) {
+    final labels = <Widget>[];
+    String? lastMonth;
+
+    for (int i = 0; i < weeks.length; i++) {
+      final week = weeks[i];
+      final firstValidDate = week.firstWhere(
+        (d) => d != null,
+        orElse: () => null,
+      );
+
+      String? monthLabel;
+      if (firstValidDate != null) {
+        final monthStr = _getMonthAbbr(firstValidDate.month);
+        // Show label at the start of each month
+        if (lastMonth != monthStr && firstValidDate.day <= 7) {
+          monthLabel = monthStr;
+          lastMonth = monthStr;
+        }
+      }
+
+      labels.add(
+        SizedBox(
+          width: _cellSize + _cellSpacing,
+          height: _cellSize,
+          child: monthLabel != null
+              ? Text(
+                  monthLabel,
+                  style: ClearStateTypography.caption.copyWith(
+                    fontSize: 9,
+                    color: ClearStateColors.smoke,
+                  ),
+                )
+              : null,
+        ),
+      );
+    }
+
+    return Row(children: labels);
+  }
+
+  Widget _buildWeekColumn(
+    List<DateTime?> week,
+    DateTime? startDate,
+    DateTime now,
+  ) {
+    return Column(
+      children: week.map((date) {
+        return Container(
+          width: _cellSize,
+          height: _cellSize,
+          margin: EdgeInsets.all(_cellSpacing / 2),
+          decoration: BoxDecoration(
+            color: _getCellColor(date, startDate, now),
+            borderRadius: BorderRadius.circular(2),
+            border: _isToday(date, now)
+                ? Border.all(color: ClearStateColors.signal, width: 1.5)
+                : null,
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Color _getCellColor(DateTime? date, DateTime? startDate, DateTime now) {
+    if (date == null) {
+      return Colors.transparent;
+    }
+
+    final isSober =
+        startDate != null &&
+        (date.isAfter(startDate) ||
+            (date.year == startDate.year &&
+                date.month == startDate.month &&
+                date.day == startDate.day));
+
+    if (isSober) {
+      return ClearStateColors.sober.withValues(alpha: 0.8);
+    }
+
+    return ClearStateColors.ash.withValues(alpha: 0.3);
+  }
+
+  bool _isToday(DateTime? date, DateTime now) {
+    if (date == null) return false;
+    return date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
+  }
+
+  String _getMonthAbbr(int month) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return months[month - 1];
   }
 }
