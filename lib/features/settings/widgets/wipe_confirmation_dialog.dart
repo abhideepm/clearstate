@@ -5,6 +5,7 @@ import '../../../core/theme/typography.dart';
 import '../../../core/services/haptic_service.dart';
 import '../../../data/repositories/sobriety_repository.dart';
 import '../../timer/timer_provider.dart';
+import '../notification_provider.dart';
 
 /// Confirmation dialog for nuclear data wipe.
 /// Requires user to type "DELETE" to confirm.
@@ -39,13 +40,16 @@ class _WipeConfirmationDialogState
     HapticService.heavy();
 
     try {
-      // Wipe all data
+      // Wipe all data (this also cancels pending notifications)
       final repository = ref.read(sobrietyRepositoryProvider);
       await repository.nukeAllData();
 
       // Reset app state providers
       ref.read(sobrietyStartDateProvider.notifier).state = null;
       ref.read(onboardingProvider.notifier).reset();
+
+      // Reset notification settings to default (enabled)
+      await ref.read(notificationSettingsProvider.notifier).setEnabled(true);
 
       HapticService.success();
 

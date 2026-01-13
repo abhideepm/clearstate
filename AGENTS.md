@@ -8,6 +8,7 @@ This document provides context for AI coding agents working in this codebase.
 - Framework: Flutter (Dart SDK ^3.10.7)
 - State Management: flutter_riverpod (^2.4.0)
 - Local Storage: Hive (^2.2.3) + hive_flutter
+- Local Notifications: flutter_local_notifications (^17.2.0)
 - UI: Material 3 with custom dark theme
 
 ## Project Structure
@@ -19,7 +20,7 @@ clearstate_app/
 │   ├── app.dart          # Root widget, navigation
 │   ├── core/
 │   │   ├── constants/    # Milestones, drink presets
-│   │   ├── services/     # Haptic feedback service
+│   │   ├── services/     # Haptic feedback, notifications
 │   │   └── theme/        # Colors, typography, app theme
 │   ├── data/
 │   │   ├── models/       # Hive models (*.dart + *.g.dart)
@@ -151,5 +152,7 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 - `lib/core/constants/milestones.dart` - Recovery milestones
 - `lib/features/settings/settings_screen.dart` - Settings with privacy & data management
 - `lib/features/settings/widgets/wipe_confirmation_dialog.dart` - Nuclear wipe confirmation
+- `lib/core/services/notification_service.dart` - Milestone notification scheduling
+- `lib/features/settings/notification_provider.dart` - Notification settings state
 - `pubspec.yaml` - Dependencies
 - `analysis_options.yaml` - Lint config

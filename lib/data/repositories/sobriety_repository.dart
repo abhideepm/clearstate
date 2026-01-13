@@ -5,6 +5,7 @@ import '../models/sobriety_session.dart';
 import '../models/relapse_event.dart';
 import '../models/daily_log.dart';
 import '../../core/constants/drink_presets.dart';
+import '../../core/services/notification_service.dart';
 
 // Re-export onboarding provider for app.dart
 export '../../features/onboarding/onboarding_provider.dart';
@@ -83,12 +84,22 @@ class SobrietyRepository {
     return sessions.first;
   }
 
-  Future<void> startNewSession(DateTime startDate) async {
+  Future<void> startNewSession(
+    DateTime startDate, {
+    bool scheduleNotifications = true,
+  }) async {
     final session = SobrietySession(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       startDate: startDate,
     );
     await _sessionsBox.put(session.id, session);
+
+    // Schedule milestone notifications for this session
+    if (scheduleNotifications) {
+      await NotificationService.instance.scheduleMilestoneNotifications(
+        startDate,
+      );
+    }
   }
 
   Future<void> endCurrentSession() async {
@@ -109,6 +120,9 @@ class SobrietyRepository {
     final currentSession = getActiveSession();
     final streakDays = currentSession?.totalDays ?? 0;
 
+    // Cancel pending milestone notifications before ending session
+    await NotificationService.instance.cancelAllMilestoneNotifications();
+
     // End current session
     await endCurrentSession();
 
@@ -128,7 +142,7 @@ class SobrietyRepository {
     // Log daily as not sober
     await logDay(DateTime.now(), false, drinksConsumed);
 
-    // Start new session
+    // Start new session (this will schedule new notifications)
     await startNewSession(DateTime.now());
   }
 
@@ -251,6 +265,9 @@ class SobrietyRepository {
   /// Nuclear wipe - deletes ALL user data from all boxes.
   /// This is irreversible and should only be called after user confirmation.
   Future<void> nukeAllData() async {
+    // Cancel all pending notifications
+    await NotificationService.instance.cancelAllMilestoneNotifications();
+
     await _userProfileBox.clear();
     await _sessionsBox.clear();
     await _relapseBox.clear();

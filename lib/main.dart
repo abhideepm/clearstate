@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'app.dart';
 import 'data/repositories/sobriety_repository.dart';
+import 'core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,15 +28,16 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
 
+  // Initialize notification service
+  await NotificationService.instance.init();
+
   // Create and initialize repository
   final repository = SobrietyRepository();
   await repository.init();
 
   runApp(
     ProviderScope(
-      overrides: [
-        sobrietyRepositoryProvider.overrideWithValue(repository),
-      ],
+      overrides: [sobrietyRepositoryProvider.overrideWithValue(repository)],
       child: const ClearStateApp(),
     ),
   );

@@ -7,6 +7,7 @@ import '../../shared/widgets/noise_background.dart';
 import '../security/security_provider.dart';
 import 'widgets/settings_toggle.dart';
 import 'widgets/wipe_confirmation_dialog.dart';
+import 'notification_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   final VoidCallback? onDataWiped;
@@ -17,6 +18,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final securityState = ref.watch(securityProvider);
     final canUseBiometrics = ref.watch(canUseBiometricsProvider);
+    final notificationSettings = ref.watch(notificationSettingsProvider);
 
     return Scaffold(
       backgroundColor: ClearStateColors.void_,
@@ -71,6 +73,23 @@ class SettingsScreen extends ConsumerWidget {
                         await ref
                             .read(securityProvider.notifier)
                             .toggleBiometric();
+                      },
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Notifications Section
+                    _SectionHeader(title: 'NOTIFICATIONS'),
+                    const SizedBox(height: 12),
+                    SettingsToggle(
+                      label: 'Milestone Alerts',
+                      subtitle: 'Get notified when you reach milestones',
+                      value: notificationSettings.enabled,
+                      onChanged: (value) async {
+                        HapticService.light();
+                        await ref
+                            .read(notificationSettingsProvider.notifier)
+                            .toggle();
                       },
                     ),
 

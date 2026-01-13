@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/colors.dart';
+import 'core/services/notification_service.dart';
 import 'features/timer/timer_screen.dart';
 import 'features/timeline/timeline_screen.dart';
 import 'features/analytics/analytics_screen.dart';
@@ -74,7 +75,10 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     final repository = ref.read(sobrietyRepositoryProvider);
     final onboardingState = ref.read(onboardingProvider);
 
-    // Save user profile
+    // Request notification permissions during onboarding completion
+    await NotificationService.instance.requestPermissions();
+
+    // Save user profile (this also starts the session and schedules notifications)
     await repository.saveUserProfile(
       lastDrinkDate: onboardingState.lastDrinkDate ?? DateTime.now(),
       avgDrinksPerWeek: onboardingState.drinksPerWeek,
