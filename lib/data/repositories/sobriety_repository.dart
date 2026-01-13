@@ -121,6 +121,7 @@ class SobrietyRepository {
       caloriesConsumed: caloriesConsumed,
       streakDaysLost: streakDays,
       drinkType: drinkType,
+      isSlip: false,
     );
     await _relapseBox.put(relapse.id, relapse);
 
@@ -129,6 +130,75 @@ class SobrietyRepository {
 
     // Start new session
     await startNewSession(DateTime.now());
+  }
+
+  /// Log a slip (momentary incident) WITHOUT resetting the sobriety timer.
+  /// Only marks the day on heatmap and records the event for analytics.
+  Future<void> logSlip({
+    required int drinksConsumed,
+    required double costIncurred,
+    required int caloriesConsumed,
+    required String drinkType,
+  }) async {
+    final currentSession = getActiveSession();
+    final streakDays = currentSession?.totalDays ?? 0;
+
+    // Log slip event (does NOT end session or reset timer)
+    final slip = RelapseEvent(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      timestamp: DateTime.now(),
+      drinksConsumed: drinksConsumed,
+      costIncurred: costIncurred,
+      caloriesConsumed: caloriesConsumed,
+      streakDaysLost: streakDays,
+      drinkType: drinkType,
+      isSlip: true,
+    );
+    await _relapseBox.put(slip.id, slip);
+
+    // Log daily as not sober (marks day red on heatmap)
+    await logDay(DateTime.now(), false, drinksConsumed);
+  }
+
+  /// Get slips (not full relapses) from the past 7 days for gentle prompt logic.
+  int getSlipsThisWeek() {
+    final weekAgo = DateTime.now().subtract(const Duration(days: 7));
+    return _relapseBox.values
+        .where((event) => event.isSlip && event.timestamp.isAfter(weekAgo))
+        .length;
+  }
+
+  /// Convert recent slips to a relapse (user acknowledges pattern).
+  /// This ends the current session and starts fresh.
+  Future<void> convertSlipsToRelapse() async {
+    final weekAgo = DateTime.now().subtract(const Duration(days: 7));
+    final recentSlips = _relapseBox.values
+        .where((event) => event.isSlip && event.timestamp.isAfter(weekAgo))
+        .toList();
+
+    // Calculate totals from slips
+    int totalDrinks = 0;
+    double totalCost = 0;
+    int totalCalories = 0;
+    for (final slip in recentSlips) {
+      totalDrinks += slip.drinksConsumed;
+      totalCost += slip.costIncurred;
+      totalCalories += slip.caloriesConsumed;
+    }
+
+    // Delete the slip records (they're being merged into relapse)
+    for (final slip in recentSlips) {
+      await _relapseBox.delete(slip.id);
+    }
+
+    // Log as a full relapse
+    final profile = getUserProfile();
+    await logRelapse(
+      drinksConsumed: totalDrinks,
+      costIncurred: totalCost,
+      caloriesConsumed: totalCalories,
+      drinkType: profile?.defaultDrinkType ?? 'Other',
+    );
   }
 
   // Daily logs for heatmap
@@ -149,9 +219,11 @@ class SobrietyRepository {
 
   List<DailyLog> getLogsForRange(DateTime start, DateTime end) {
     return _dailyLogBox.values
-        .where((log) =>
-            log.date.isAfter(start.subtract(const Duration(days: 1))) &&
-            log.date.isBefore(end.add(const Duration(days: 1))))
+        .where(
+          (log) =>
+              log.date.isAfter(start.subtract(const Duration(days: 1))) &&
+              log.date.isBefore(end.add(const Duration(days: 1))),
+        )
         .toList();
   }
 
@@ -174,6 +246,15 @@ class SobrietyRepository {
     final profile = getUserProfile();
     if (profile == null) return 0;
     return (getTotalSoberDays() * profile.avgDailyCalories).round();
+  }
+
+  /// Nuclear wipe - deletes ALL user data from all boxes.
+  /// This is irreversible and should only be called after user confirmation.
+  Future<void> nukeAllData() async {
+    await _userProfileBox.clear();
+    await _sessionsBox.clear();
+    await _relapseBox.clear();
+    await _dailyLogBox.clear();
   }
 }
 

@@ -25,6 +25,11 @@ class RelapseEvent extends HiveObject {
   @HiveField(6)
   String drinkType;
 
+  /// Whether this was a momentary slip (true) or a full relapse (false).
+  /// Slips do NOT reset the sobriety timer - they only mark the day on heatmap.
+  @HiveField(7)
+  bool isSlip;
+
   RelapseEvent({
     required this.id,
     required this.timestamp,
@@ -33,5 +38,6 @@ class RelapseEvent extends HiveObject {
     required this.caloriesConsumed,
     required this.streakDaysLost,
     required this.drinkType,
+    this.isSlip = false,
   });
 }

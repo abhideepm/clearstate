@@ -4,8 +4,11 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../../core/services/haptic_service.dart';
 import '../../shared/widgets/noise_background.dart';
+import '../relapse/slip_vs_relapse_sheet.dart';
+import '../urge_surfing/urge_surfing_screen.dart';
 import 'widgets/timer_display.dart';
 import 'widgets/status_indicator.dart';
+import 'widgets/roi_cards.dart';
 import 'widgets/reset_button.dart';
 
 class TimerScreen extends ConsumerWidget {
@@ -37,15 +40,36 @@ class TimerScreen extends ConsumerWidget {
                 const SizedBox(height: 32),
                 // Status
                 const StatusIndicator(),
+                const SizedBox(height: 24),
+                // ROI Metrics
+                const RoiCards(),
                 const Spacer(flex: 3),
                 // Reset button
                 ResetButton(
                   onReset: () {
-                    // Show relapse flow
-                    _showRelapseSheet(context);
+                    _showSlipVsRelapseSheet(context);
                   },
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 24),
+                // Urge surfing button
+                TextButton(
+                  onPressed: () {
+                    HapticService.medium();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const UrgeSurfingScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "I'M STRUGGLING",
+                    style: ClearStateTypography.caption.copyWith(
+                      color: ClearStateColors.smoke,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -53,80 +77,18 @@ class TimerScreen extends ConsumerWidget {
       ),
     );
   }
-  
-  void _showRelapseSheet(BuildContext context) {
+
+  /// Shows the new Slip vs. Relapse sheet (anti-shame logic).
+  void _showSlipVsRelapseSheet(BuildContext context) {
     HapticService.heavy();
     showModalBottomSheet(
       context: context,
       backgroundColor: ClearStateColors.charcoal,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
       ),
-      builder: (context) => const _RelapseSheet(),
-    );
-  }
-}
-
-class _RelapseSheet extends StatelessWidget {
-  const _RelapseSheet();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Drag handle
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: ClearStateColors.ash,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'STANDARD SLIP-UP?',
-            style: ClearStateTypography.h2,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'We\'ll log your default drink profile',
-            style: ClearStateTypography.bodySecondary,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: () {
-              HapticService.relapseConfirm();
-              Navigator.pop(context);
-              // TODO: Log standard relapse
-            },
-            child: const Text('YES, LOG IT'),
-          ),
-          const SizedBox(height: 12),
-          TextButton(
-            onPressed: () {
-              HapticService.light();
-              Navigator.pop(context);
-              // TODO: Show custom drink input
-            },
-            child: Text(
-              'NO, LET ME SPECIFY',
-              style: ClearStateTypography.button.copyWith(
-                color: ClearStateColors.smoke,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-        ],
-      ),
+      builder: (context) => const SlipVsRelapseSheet(),
     );
   }
 }
