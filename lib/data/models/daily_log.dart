@@ -19,4 +19,21 @@ class DailyLog extends HiveObject {
   String get dateKey {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
+
+  // JSON Serialization
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date.toIso8601String(),
+      'isSober': isSober,
+      'drinksConsumed': drinksConsumed,
+    };
+  }
+
+  factory DailyLog.fromJson(Map<String, dynamic> json) {
+    return DailyLog(
+      date: DateTime.parse(json['date'] as String),
+      isSober: json['isSober'] as bool,
+      drinksConsumed: json['drinksConsumed'] as int?,
+    );
+  }
 }

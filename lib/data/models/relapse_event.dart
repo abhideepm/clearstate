@@ -40,4 +40,31 @@ class RelapseEvent extends HiveObject {
     required this.drinkType,
     this.isSlip = false,
   });
+
+  // JSON Serialization
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'timestamp': timestamp.toIso8601String(),
+      'drinksConsumed': drinksConsumed,
+      'costIncurred': costIncurred,
+      'caloriesConsumed': caloriesConsumed,
+      'streakDaysLost': streakDaysLost,
+      'drinkType': drinkType,
+      'isSlip': isSlip,
+    };
+  }
+
+  factory RelapseEvent.fromJson(Map<String, dynamic> json) {
+    return RelapseEvent(
+      id: json['id'] as String,
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      drinksConsumed: json['drinksConsumed'] as int,
+      costIncurred: (json['costIncurred'] as num).toDouble(),
+      caloriesConsumed: json['caloriesConsumed'] as int,
+      streakDaysLost: json['streakDaysLost'] as int,
+      drinkType: json['drinkType'] as String,
+      isSlip: json['isSlip'] as bool? ?? false,
+    );
+  }
 }

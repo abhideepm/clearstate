@@ -23,4 +23,23 @@ class SobrietySession extends HiveObject {
   }
 
   int get totalDays => elapsed.inDays;
+
+  // JSON Serialization
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate?.toIso8601String(),
+    };
+  }
+
+  factory SobrietySession.fromJson(Map<String, dynamic> json) {
+    return SobrietySession(
+      id: json['id'] as String,
+      startDate: DateTime.parse(json['startDate'] as String),
+      endDate: json['endDate'] != null
+          ? DateTime.parse(json['endDate'] as String)
+          : null,
+    );
+  }
 }

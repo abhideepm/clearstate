@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../../core/services/haptic_service.dart';
+import '../../core/services/backup_service.dart';
 import '../../shared/widgets/noise_background.dart';
 import '../security/security_provider.dart';
 import 'widgets/settings_toggle.dart';
 import 'widgets/wipe_confirmation_dialog.dart';
+import 'widgets/restore_confirmation_dialog.dart';
 import 'notification_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -19,6 +21,7 @@ class SettingsScreen extends ConsumerWidget {
     final securityState = ref.watch(securityProvider);
     final canUseBiometrics = ref.watch(canUseBiometricsProvider);
     final notificationSettings = ref.watch(notificationSettingsProvider);
+    final backupService = ref.watch(backupServiceProvider);
 
     return Scaffold(
       backgroundColor: ClearStateColors.void_,
@@ -98,6 +101,31 @@ class SettingsScreen extends ConsumerWidget {
                     // Data Section
                     _SectionHeader(title: 'DATA'),
                     const SizedBox(height: 12),
+                    _SettingsItem(
+                      label: 'Export Backup',
+                      subtitle: 'Save your data to a JSON file',
+                      icon: Icons.unarchive_outlined,
+                      onTap: () async {
+                        HapticService.light();
+                        try {
+                          await backupService.createBackup();
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Export failed: $e')),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    _SettingsItem(
+                      label: 'Restore Backup',
+                      subtitle: 'Import data from a backup file',
+                      icon: Icons.archive_outlined,
+                      onTap: () => _showRestoreDialog(context, ref),
+                    ),
+                    const SizedBox(height: 12),
                     _DestructiveSettingsItem(
                       label: 'Delete All Data',
                       subtitle: 'Permanently erase everything',
@@ -132,6 +160,35 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
+
+  void _showRestoreDialog(BuildContext context, WidgetRef ref) {
+    HapticService.medium();
+    showDialog(
+      context: context,
+      builder: (context) => RestoreConfirmationDialog(
+        onConfirm: () async {
+          try {
+            final success = await ref
+                .read(backupServiceProvider)
+                .restoreBackup();
+            if (success && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Data restored successfully')),
+              );
+              // Trigger a UI refresh if needed, or navigate to home
+              if (onDataWiped != null) onDataWiped!();
+            }
+          } catch (e) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Restore failed: $e')));
+            }
+          }
+        },
+      ),
+    );
+  }
 }
 
 class _SectionHeader extends StatelessWidget {
@@ -146,6 +203,85 @@ class _SectionHeader extends StatelessWidget {
       style: ClearStateTypography.timerLabel.copyWith(
         color: ClearStateColors.smoke,
         letterSpacing: 3,
+      ),
+    );
+  }
+}
+
+class _SettingsItem extends StatelessWidget {
+  final String label;
+  final String? subtitle;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _SettingsItem({
+    required this.label,
+    this.subtitle,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: ClearStateColors.ash.withAlpha((0.05 * 255).round()),
+        border: Border.all(
+          color: ClearStateColors.ash.withAlpha((0.2 * 255).round()),
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(2),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(2),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: ClearStateColors.ash.withAlpha((0.1 * 255).round()),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  child: Icon(icon, color: ClearStateColors.bone, size: 22),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        style: ClearStateTypography.body.copyWith(
+                          color: ClearStateColors.bone,
+                        ),
+                      ),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle!,
+                          style: ClearStateTypography.caption.copyWith(
+                            color: ClearStateColors.smoke,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.chevron_right,
+                  color: ClearStateColors.ash,
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

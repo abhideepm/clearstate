@@ -32,13 +32,18 @@ void main() {
     Hive.init(tempDir.path);
 
     // Register adapters if not already registered
-    if (!Hive.isAdapterRegistered(0))
+    if (!Hive.isAdapterRegistered(0)) {
       Hive.registerAdapter(UserProfileAdapter());
-    if (!Hive.isAdapterRegistered(1))
+    }
+    if (!Hive.isAdapterRegistered(1)) {
       Hive.registerAdapter(SobrietySessionAdapter());
-    if (!Hive.isAdapterRegistered(2))
+    }
+    if (!Hive.isAdapterRegistered(2)) {
       Hive.registerAdapter(RelapseEventAdapter());
-    if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(DailyLogAdapter());
+    }
+    if (!Hive.isAdapterRegistered(3)) {
+      Hive.registerAdapter(DailyLogAdapter());
+    }
 
     repository = SobrietyRepository();
     await repository.init();

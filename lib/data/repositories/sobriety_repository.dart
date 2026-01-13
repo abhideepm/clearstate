@@ -12,11 +12,15 @@ class SobrietyRepository {
   static const String sessionsBoxName = 'sessions';
   static const String relapseBoxName = 'relapses';
   static const String dailyLogBoxName = 'daily_logs';
+  static const String settingsBoxName = 'settings';
+
+  static const int currentSchemaVersion = 1;
 
   late Box<UserProfile> _userProfileBox;
   late Box<SobrietySession> _sessionsBox;
   late Box<RelapseEvent> _relapseBox;
   late Box<DailyLog> _dailyLogBox;
+  late Box _settingsBox;
 
   bool _isInitialized = false;
 
@@ -44,8 +48,26 @@ class SobrietyRepository {
     _sessionsBox = await Hive.openBox<SobrietySession>(sessionsBoxName);
     _relapseBox = await Hive.openBox<RelapseEvent>(relapseBoxName);
     _dailyLogBox = await Hive.openBox<DailyLog>(dailyLogBoxName);
+    _settingsBox = await Hive.openBox(settingsBoxName);
+
+    await _checkAndPerformMigration();
 
     _isInitialized = true;
+  }
+
+  Future<void> _checkAndPerformMigration() async {
+    final int storedVersion =
+        _settingsBox.get('schema_version', defaultValue: 0) as int;
+
+    if (storedVersion < currentSchemaVersion) {
+      await _performMigration(storedVersion, currentSchemaVersion);
+      await _settingsBox.put('schema_version', currentSchemaVersion);
+    }
+  }
+
+  Future<void> _performMigration(int from, int to) async {
+    // Currently at version 1, no migrations yet.
+    // Future migrations will be handled here.
   }
 
   // User Profile
@@ -269,6 +291,69 @@ class SobrietyRepository {
     await _sessionsBox.clear();
     await _relapseBox.clear();
     await _dailyLogBox.clear();
+  }
+
+  // Backup & Restore
+  Map<String, dynamic> exportData() {
+    return {
+      'version': currentSchemaVersion,
+      'timestamp': DateTime.now().toIso8601String(),
+      'profile': _userProfileBox.get('profile')?.toJson(),
+      'sessions': _sessionsBox.values.map((s) => s.toJson()).toList(),
+      'relapses': _relapseBox.values.map((r) => r.toJson()).toList(),
+      'daily_logs': _dailyLogBox.values.map((l) => l.toJson()).toList(),
+    };
+  }
+
+  Future<void> importData(Map<String, dynamic> data) async {
+    // 1. Wipe current data
+    await nukeAllData();
+
+    // 2. Import Profile
+    if (data['profile'] != null) {
+      final profile = UserProfile.fromJson(
+        data['profile'] as Map<String, dynamic>,
+      );
+      await _userProfileBox.put('profile', profile);
+    }
+
+    // 3. Import Sessions
+    if (data['sessions'] != null) {
+      final List sessions = data['sessions'] as List;
+      for (final s in sessions) {
+        final session = SobrietySession.fromJson(s as Map<String, dynamic>);
+        await _sessionsBox.put(session.id, session);
+      }
+    }
+
+    // 4. Import Relapses
+    if (data['relapses'] != null) {
+      final List relapses = data['relapses'] as List;
+      for (final r in relapses) {
+        final relapse = RelapseEvent.fromJson(r as Map<String, dynamic>);
+        await _relapseBox.put(relapse.id, relapse);
+      }
+    }
+
+    // 5. Import Daily Logs
+    if (data['daily_logs'] != null) {
+      final List logs = data['daily_logs'] as List;
+      for (final l in logs) {
+        final log = DailyLog.fromJson(l as Map<String, dynamic>);
+        await _dailyLogBox.put(log.dateKey, log);
+      }
+    }
+
+    // 6. Ensure schema version is updated if importing from older/newer
+    await _settingsBox.put('schema_version', currentSchemaVersion);
+
+    // 7. Reschedule notifications if there's an active session
+    final activeSession = getActiveSession();
+    if (activeSession != null) {
+      await NotificationService.instance.scheduleMilestoneNotifications(
+        activeSession.startDate,
+      );
+    }
   }
 }
 

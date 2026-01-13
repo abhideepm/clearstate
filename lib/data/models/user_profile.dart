@@ -36,4 +36,27 @@ class UserProfile extends HiveObject {
 
   // Calculate average daily calories
   double get avgDailyCalories => (avgDrinksPerWeek * avgCaloriesPerDrink) / 7;
+
+  // JSON Serialization
+  Map<String, dynamic> toJson() {
+    return {
+      'lastDrinkDate': lastDrinkDate.toIso8601String(),
+      'avgDrinksPerWeek': avgDrinksPerWeek,
+      'avgCostPerDrink': avgCostPerDrink,
+      'avgCaloriesPerDrink': avgCaloriesPerDrink,
+      'defaultDrinkType': defaultDrinkType,
+      'onboardingComplete': onboardingComplete,
+    };
+  }
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      lastDrinkDate: DateTime.parse(json['lastDrinkDate'] as String),
+      avgDrinksPerWeek: json['avgDrinksPerWeek'] as int,
+      avgCostPerDrink: (json['avgCostPerDrink'] as num).toDouble(),
+      avgCaloriesPerDrink: json['avgCaloriesPerDrink'] as int,
+      defaultDrinkType: json['defaultDrinkType'] as String,
+      onboardingComplete: json['onboardingComplete'] as bool,
+    );
+  }
 }
