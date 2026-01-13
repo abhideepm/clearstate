@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/theme/colors.dart';
+import '../../core/theme/typography.dart';
+import '../../core/services/haptic_service.dart';
+import '../../shared/widgets/noise_background.dart';
+import 'urge_surfing_provider.dart';
+import 'widgets/breathing_circle.dart';
+
+/// Full-screen immersive breathing exercise for urge surfing.
+/// Uses the 4-7-8 breathing pattern to help users ride out cravings.
+class UrgeSurfingScreen extends ConsumerStatefulWidget {
+  const UrgeSurfingScreen({super.key});
+
+  @override
+  ConsumerState<UrgeSurfingScreen> createState() => _UrgeSurfingScreenState();
+}
+
+class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
+  BreathingPhase? _lastPhase;
+
+  @override
+  void initState() {
+    super.initState();
+    // Start the exercise when screen opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(urgeSurfingProvider.notifier).start();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(urgeSurfingProvider);
+
+    // Trigger haptic on phase change
+    if (_lastPhase != null && _lastPhase != state.phase && state.isActive) {
+      HapticService.light();
+    }
+    _lastPhase = state.phase;
+
+    // Auto-exit when timer completes
+    if (!state.isActive && state.remainingSeconds == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          HapticService.success();
+          Navigator.of(context).pop();
+        }
+      });
+    }
+
+    return Scaffold(
+      backgroundColor: ClearStateColors.void_,
+      body: NoiseBackground(
+        opacity: 0.02,
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 60),
+              // Header
+              Text(
+                'BREATHE',
+                style: ClearStateTypography.timerDisplay.copyWith(
+                  fontSize: 48,
+                  letterSpacing: 8,
+                  color: ClearStateColors.bone,
+                ),
+              ),
+              const Spacer(flex: 2),
+              // Breathing circle
+              BreathingCircle(phase: state.phase, isActive: state.isActive),
+              const SizedBox(height: 48),
+              // Phase text
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  state.phaseText,
+                  key: ValueKey(state.phase),
+                  style: ClearStateTypography.h1.copyWith(
+                    fontSize: 24,
+                    letterSpacing: 6,
+                    color: ClearStateColors.smoke,
+                  ),
+                ),
+              ),
+              const Spacer(flex: 3),
+              // Countdown timer
+              Text(
+                state.formattedTime,
+                style: ClearStateTypography.statNumber.copyWith(
+                  fontSize: 20,
+                  color: ClearStateColors.smoke,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'REMAINING',
+                style: ClearStateTypography.timerLabel.copyWith(
+                  fontSize: 10,
+                  color: ClearStateColors.ash,
+                ),
+              ),
+              const SizedBox(height: 40),
+              // Exit button
+              TextButton(
+                onPressed: () {
+                  HapticService.medium();
+                  ref.read(urgeSurfingProvider.notifier).stop();
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                ),
+                child: Text(
+                  "I'M OKAY NOW",
+                  style: ClearStateTypography.button.copyWith(
+                    color: ClearStateColors.bone,
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 48),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
