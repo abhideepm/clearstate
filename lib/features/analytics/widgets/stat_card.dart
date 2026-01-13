@@ -6,14 +6,14 @@ class StatCard extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
-  
+
   const StatCard({
     super.key,
     required this.label,
     required this.value,
     required this.icon,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,11 +27,7 @@ class StatCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                size: 16,
-                color: ClearStateColors.smoke,
-              ),
+              Icon(icon, size: 16, color: ClearStateColors.smoke),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -47,9 +43,7 @@ class StatCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: ClearStateTypography.statNumber.copyWith(
-              fontSize: 24,
-            ),
+            style: ClearStateTypography.statNumber.copyWith(fontSize: 24),
           ),
         ],
       ),

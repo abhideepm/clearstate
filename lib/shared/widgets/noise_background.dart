@@ -22,15 +22,11 @@ class NoiseBackground extends StatelessWidget {
       children: [
         // Base background
         Positioned.fill(
-          child: Container(
-            color: backgroundColor ?? ClearStateColors.void_,
-          ),
+          child: Container(color: backgroundColor ?? ClearStateColors.void_),
         ),
         // Noise texture overlay
         Positioned.fill(
-          child: CustomPaint(
-            painter: NoisePainter(opacity: opacity),
-          ),
+          child: CustomPaint(painter: NoisePainter(opacity: opacity)),
         ),
         // Content
         child,
@@ -45,35 +41,29 @@ class NoisePainter extends CustomPainter {
   final double opacity;
   final int seed;
 
-  NoisePainter({
-    this.opacity = 0.03,
-    this.seed = 42,
-  });
+  NoisePainter({this.opacity = 0.03, this.seed = 42});
 
   @override
   void paint(Canvas canvas, Size size) {
     final random = Random(seed);
     final paint = Paint();
-    
+
     // Density of noise points (lower = more sparse, higher = denser)
     const density = 0.15;
     final totalPoints = (size.width * size.height * density).toInt();
-    
+
     for (int i = 0; i < totalPoints; i++) {
       final x = random.nextDouble() * size.width;
       final y = random.nextDouble() * size.height;
-      
+
       // Vary the brightness of each noise point
       final brightness = random.nextDouble();
       final alpha = (opacity * brightness * 255).toInt();
-      
+
       paint.color = Color.fromARGB(alpha, 255, 255, 255);
-      
+
       // Draw tiny rectangles for a more pixelated look
-      canvas.drawRect(
-        Rect.fromLTWH(x, y, 1, 1),
-        paint,
-      );
+      canvas.drawRect(Rect.fromLTWH(x, y, 1, 1), paint);
     }
   }
 

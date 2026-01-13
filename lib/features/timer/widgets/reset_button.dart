@@ -5,17 +5,18 @@ import '../../../core/services/haptic_service.dart';
 
 class ResetButton extends StatefulWidget {
   final VoidCallback onReset;
-  
+
   const ResetButton({super.key, required this.onReset});
-  
+
   @override
   State<ResetButton> createState() => _ResetButtonState();
 }
 
-class _ResetButtonState extends State<ResetButton> with SingleTickerProviderStateMixin {
+class _ResetButtonState extends State<ResetButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool _isPressed = false;
-  
+
   @override
   void initState() {
     super.initState();
@@ -23,7 +24,7 @@ class _ResetButtonState extends State<ResetButton> with SingleTickerProviderStat
       vsync: this,
       duration: const Duration(seconds: 3),
     );
-    
+
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         // Heavy haptic feedback pattern for reset
@@ -33,11 +34,11 @@ class _ResetButtonState extends State<ResetButton> with SingleTickerProviderStat
         setState(() => _isPressed = false);
       }
     });
-    
+
     // Add listener for progress-based haptics
     _controller.addListener(_onProgressUpdate);
   }
-  
+
   // Provide subtle haptic feedback at progress milestones
   double _lastHapticProgress = 0;
   void _onProgressUpdate() {
@@ -52,14 +53,14 @@ class _ResetButtonState extends State<ResetButton> with SingleTickerProviderStat
     }
     _lastHapticProgress = progress;
   }
-  
+
   @override
   void dispose() {
     _controller.removeListener(_onProgressUpdate);
     _controller.dispose();
     super.dispose();
   }
-  
+
   void _onPressStart() {
     if (_isPressed) return; // Already pressed
     setState(() => _isPressed = true);
@@ -67,7 +68,7 @@ class _ResetButtonState extends State<ResetButton> with SingleTickerProviderStat
     HapticService.buttonDown();
     _controller.forward();
   }
-  
+
   void _onPressEnd() {
     if (!_isPressed) return; // Not pressed
     if (_controller.status != AnimationStatus.completed) {
@@ -76,7 +77,7 @@ class _ResetButtonState extends State<ResetButton> with SingleTickerProviderStat
     }
     setState(() => _isPressed = false);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -95,11 +96,13 @@ class _ResetButtonState extends State<ResetButton> with SingleTickerProviderStat
             width: 200,
             height: 56,
             decoration: BoxDecoration(
-              color: _isPressed 
+              color: _isPressed
                   ? ClearStateColors.relapse.withValues(alpha: 0.2)
                   : ClearStateColors.charcoal,
               border: Border.all(
-                color: _isPressed ? ClearStateColors.relapse : ClearStateColors.ash,
+                color: _isPressed
+                    ? ClearStateColors.relapse
+                    : ClearStateColors.ash,
                 width: 1,
               ),
             ),
@@ -121,7 +124,9 @@ class _ResetButtonState extends State<ResetButton> with SingleTickerProviderStat
                   child: Text(
                     _isPressed ? 'HOLD 3 SEC...' : 'I SLIPPED UP',
                     style: ClearStateTypography.button.copyWith(
-                      color: _isPressed ? ClearStateColors.relapse : ClearStateColors.smoke,
+                      color: _isPressed
+                          ? ClearStateColors.relapse
+                          : ClearStateColors.smoke,
                       letterSpacing: 2,
                     ),
                   ),

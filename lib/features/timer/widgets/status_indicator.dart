@@ -11,11 +11,13 @@ class StatusIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final durationAsync = ref.watch(elapsedDurationProvider);
-    
+
     return durationAsync.when(
       data: (duration) {
-        final currentMilestone = RecoveryMilestones.getCurrentMilestone(duration.inDays);
-        
+        final currentMilestone = RecoveryMilestones.getCurrentMilestone(
+          duration.inDays,
+        );
+
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
@@ -48,7 +50,7 @@ class StatusIndicator extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
     );
   }
 }

@@ -65,15 +65,15 @@ class _BreathingCircleState extends State<BreathingCircle>
         curve = Curves.easeInOut;
         break;
       case BreathingPhase.hold:
-        // Stay at max for 7 seconds
+        // Stay at max for 1 second
         targetSize = _maxSize;
-        duration = const Duration(seconds: 7);
+        duration = const Duration(seconds: 1);
         curve = Curves.linear;
         break;
       case BreathingPhase.exhale:
-        // Contract from max to min over 8 seconds
+        // Contract from max to min over 5 seconds
         targetSize = _minSize;
-        duration = const Duration(seconds: 8);
+        duration = const Duration(seconds: 5);
         curve = Curves.easeInOut;
         break;
     }

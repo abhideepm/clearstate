@@ -9,7 +9,7 @@ import '../onboarding_provider.dart';
 class DrinkTypeStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
-  
+
   const DrinkTypeStep({super.key, required this.onNext, required this.onBack});
 
   @override
@@ -18,7 +18,7 @@ class DrinkTypeStep extends ConsumerStatefulWidget {
 
 class _DrinkTypeStepState extends ConsumerState<DrinkTypeStep> {
   String _selected = 'Beer';
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,10 +29,7 @@ class _DrinkTypeStepState extends ConsumerState<DrinkTypeStep> {
           const Spacer(),
           Text(
             'YOUR DRINK\nOF CHOICE?',
-            style: ClearStateTypography.h1.copyWith(
-              fontSize: 32,
-              height: 1.2,
-            ),
+            style: ClearStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -54,17 +51,26 @@ class _DrinkTypeStepState extends ConsumerState<DrinkTypeStep> {
                   setState(() => _selected = preset.name);
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
                   decoration: BoxDecoration(
-                    color: isSelected ? ClearStateColors.signal : ClearStateColors.charcoal,
+                    color: isSelected
+                        ? ClearStateColors.signal
+                        : ClearStateColors.charcoal,
                     border: Border.all(
-                      color: isSelected ? ClearStateColors.signal : ClearStateColors.ash,
+                      color: isSelected
+                          ? ClearStateColors.signal
+                          : ClearStateColors.ash,
                     ),
                   ),
                   child: Text(
                     preset.name.toUpperCase(),
                     style: ClearStateTypography.button.copyWith(
-                      color: isSelected ? ClearStateColors.void_ : ClearStateColors.bone,
+                      color: isSelected
+                          ? ClearStateColors.void_
+                          : ClearStateColors.bone,
                     ),
                   ),
                 ),
@@ -82,7 +88,12 @@ class _DrinkTypeStepState extends ConsumerState<DrinkTypeStep> {
           const SizedBox(height: 12),
           TextButton(
             onPressed: widget.onBack,
-            child: Text('BACK', style: ClearStateTypography.button.copyWith(color: ClearStateColors.smoke)),
+            child: Text(
+              'BACK',
+              style: ClearStateTypography.button.copyWith(
+                color: ClearStateColors.smoke,
+              ),
+            ),
           ),
           const SizedBox(height: 24),
         ],

@@ -60,13 +60,13 @@ class SettingsScreen extends ConsumerWidget {
                             ? 'Require biometric to open app'
                             : 'Biometrics not available on this device',
                         loading: () => 'Checking biometric availability...',
-                        error: (_, __) => 'Biometrics not available',
+                        error: (_, _) => 'Biometrics not available',
                       ),
                       value: securityState.biometricEnabled,
                       enabled: canUseBiometrics.when(
                         data: (available) => available,
                         loading: () => false,
-                        error: (_, __) => false,
+                        error: (_, _) => false,
                       ),
                       onChanged: (value) async {
                         HapticService.light();
@@ -166,9 +166,9 @@ class _DestructiveSettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.relapse.withOpacity(0.08),
+        color: ClearStateColors.relapse.withAlpha((0.08 * 255).round()),
         border: Border.all(
-          color: ClearStateColors.relapse.withOpacity(0.3),
+          color: ClearStateColors.relapse.withAlpha((0.3 * 255).round()),
           width: 1,
         ),
         borderRadius: BorderRadius.circular(2),
@@ -186,7 +186,9 @@ class _DestructiveSettingsItem extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: ClearStateColors.relapse.withOpacity(0.15),
+                    color: ClearStateColors.relapse.withAlpha(
+                      (0.15 * 255).round(),
+                    ),
                     borderRadius: BorderRadius.circular(2),
                   ),
                   child: const Icon(

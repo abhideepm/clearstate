@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Breathing phases for the 4-7-8 pattern
+/// Breathing phases for the exercise
 enum BreathingPhase {
   inhale, // 4 seconds
-  hold, // 7 seconds
-  exhale, // 8 seconds
+  hold, // 1 second
+  exhale, // 5 seconds
 }
 
 /// State for the urge surfing exercise
@@ -47,9 +47,9 @@ class UrgeSurfingState {
       case BreathingPhase.inhale:
         return 4;
       case BreathingPhase.hold:
-        return 7;
+        return 1;
       case BreathingPhase.exhale:
-        return 8;
+        return 5;
     }
   }
 

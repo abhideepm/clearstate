@@ -13,11 +13,7 @@ class SobrietySession extends HiveObject {
   @HiveField(2)
   DateTime? endDate; // null = currently active
 
-  SobrietySession({
-    required this.id,
-    required this.startDate,
-    this.endDate,
-  });
+  SobrietySession({required this.id, required this.startDate, this.endDate});
 
   bool get isActive => endDate == null;
 

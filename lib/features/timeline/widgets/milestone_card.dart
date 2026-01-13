@@ -36,8 +36,8 @@ class MilestoneCard extends StatelessWidget {
                     color: isCurrent
                         ? ClearStateColors.signal
                         : isUnlocked
-                            ? ClearStateColors.sober
-                            : ClearStateColors.ash,
+                        ? ClearStateColors.sober
+                        : ClearStateColors.ash,
                     shape: BoxShape.circle,
                     border: isCurrent
                         ? Border.all(color: ClearStateColors.signal, width: 3)
@@ -49,7 +49,9 @@ class MilestoneCard extends StatelessWidget {
                   Expanded(
                     child: Container(
                       width: 2,
-                      color: isUnlocked ? ClearStateColors.sober.withValues(alpha: 0.3) : ClearStateColors.ash,
+                      color: isUnlocked
+                          ? ClearStateColors.sober.withValues(alpha: 0.3)
+                          : ClearStateColors.ash,
                     ),
                   ),
               ],
@@ -63,13 +65,15 @@ class MilestoneCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isCurrent ? ClearStateColors.charcoal : Colors.transparent,
+                  color: isCurrent
+                      ? ClearStateColors.charcoal
+                      : Colors.transparent,
                   border: Border.all(
                     color: isCurrent
                         ? ClearStateColors.signal
                         : isUnlocked
-                            ? ClearStateColors.ash
-                            : ClearStateColors.ash.withValues(alpha: 0.5),
+                        ? ClearStateColors.ash
+                        : ClearStateColors.ash.withValues(alpha: 0.5),
                   ),
                 ),
                 child: Column(
@@ -83,8 +87,8 @@ class MilestoneCard extends StatelessWidget {
                             color: isCurrent
                                 ? ClearStateColors.signal
                                 : isUnlocked
-                                    ? ClearStateColors.bone
-                                    : ClearStateColors.smoke,
+                                ? ClearStateColors.bone
+                                : ClearStateColors.smoke,
                             letterSpacing: 2,
                           ),
                         ),
@@ -97,7 +101,10 @@ class MilestoneCard extends StatelessWidget {
                           ),
                         if (isCurrent)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
                             color: ClearStateColors.signal,
                             child: Text(
                               'NOW',
@@ -113,14 +120,18 @@ class MilestoneCard extends StatelessWidget {
                     Text(
                       milestone.status,
                       style: ClearStateTypography.h3.copyWith(
-                        color: isUnlocked ? ClearStateColors.bone : ClearStateColors.smoke,
+                        color: isUnlocked
+                            ? ClearStateColors.bone
+                            : ClearStateColors.smoke,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       milestone.description,
                       style: ClearStateTypography.body.copyWith(
-                        color: isUnlocked ? ClearStateColors.smoke : ClearStateColors.smoke.withValues(alpha: 0.5),
+                        color: isUnlocked
+                            ? ClearStateColors.smoke
+                            : ClearStateColors.smoke.withValues(alpha: 0.5),
                         fontSize: 14,
                       ),
                     ),

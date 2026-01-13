@@ -11,6 +11,13 @@ This document provides context for AI coding agents working in this codebase.
 - Local Notifications: flutter_local_notifications (^17.2.0)
 - UI: Material 3 with custom dark theme
 
+## AI Agent Workflow
+
+To maintain codebase health, agents **must** follow these steps for every modification:
+1.  **Write Tests**: For every new feature or bug fix, implement corresponding unit or widget tests in the `test/` directory.
+2.  **Auto-Format**: Always run `dart format .` immediately after any code changes.
+3.  **Static Analysis**: Run `flutter analyze` to verify that no linting or type errors were introduced.
+
 ## Project Structure
 
 ```
@@ -75,7 +82,7 @@ import '../../core/theme/colors.dart';
 - **Providers**: camelCase + `Provider` suffix (`sobrietyRepositoryProvider`)
 
 ### Types & Formatting
-- Use `dart format` (2-space indent, 80 char lines)
+- Always run `dart format .` after any code change (2-space indent, 80 char lines)
 - Trailing commas for multi-line structures
 - Always specify types for class members and function signatures
 - Use `final` for immutable values, `const` constructors where possible

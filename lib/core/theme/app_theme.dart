@@ -49,15 +49,11 @@ class ClearStateTheme {
           foregroundColor: ClearStateColors.void_,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(2),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: ClearStateColors.signal,
-        ),
+        style: TextButton.styleFrom(foregroundColor: ClearStateColors.signal),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

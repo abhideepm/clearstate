@@ -10,7 +10,7 @@ class TimerDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final components = ref.watch(timerComponentsProvider);
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -36,9 +36,19 @@ class TimerDisplay extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _SmallTimerUnit(value: components.hours, label: 'H'),
-            Text(' : ', style: ClearStateTypography.statNumber.copyWith(color: ClearStateColors.smoke)),
+            Text(
+              ' : ',
+              style: ClearStateTypography.statNumber.copyWith(
+                color: ClearStateColors.smoke,
+              ),
+            ),
             _SmallTimerUnit(value: components.minutes, label: 'M'),
-            Text(' : ', style: ClearStateTypography.statNumber.copyWith(color: ClearStateColors.smoke)),
+            Text(
+              ' : ',
+              style: ClearStateTypography.statNumber.copyWith(
+                color: ClearStateColors.smoke,
+              ),
+            ),
             _SmallTimerUnit(value: components.seconds, label: 'S'),
           ],
         ),
@@ -50,9 +60,9 @@ class TimerDisplay extends ConsumerWidget {
 class _TimerUnit extends StatelessWidget {
   final int value;
   final String label;
-  
+
   const _TimerUnit({required this.value, required this.label});
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -63,10 +73,7 @@ class _TimerUnit extends StatelessWidget {
           style: ClearStateTypography.timerDisplay,
         ),
         const SizedBox(height: 4),
-        Text(
-          label,
-          style: ClearStateTypography.timerLabel,
-        ),
+        Text(label, style: ClearStateTypography.timerLabel),
       ],
     );
   }
@@ -75,9 +82,9 @@ class _TimerUnit extends StatelessWidget {
 class _SmallTimerUnit extends StatelessWidget {
   final int value;
   final String label;
-  
+
   const _SmallTimerUnit({required this.value, required this.label});
-  
+
   @override
   Widget build(BuildContext context) {
     return Text(

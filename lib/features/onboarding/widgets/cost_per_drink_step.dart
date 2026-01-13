@@ -8,8 +8,12 @@ import '../onboarding_provider.dart';
 class CostPerDrinkStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
-  
-  const CostPerDrinkStep({super.key, required this.onNext, required this.onBack});
+
+  const CostPerDrinkStep({
+    super.key,
+    required this.onNext,
+    required this.onBack,
+  });
 
   @override
   ConsumerState<CostPerDrinkStep> createState() => _CostPerDrinkStepState();
@@ -17,19 +21,19 @@ class CostPerDrinkStep extends ConsumerStatefulWidget {
 
 class _CostPerDrinkStepState extends ConsumerState<CostPerDrinkStep> {
   double _cost = 8.0;
-  
+
   void _increment() {
     HapticFeedback.selectionClick();
     setState(() => _cost += 1);
   }
-  
+
   void _decrement() {
     if (_cost > 1) {
       HapticFeedback.selectionClick();
       setState(() => _cost -= 1);
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,10 +44,7 @@ class _CostPerDrinkStepState extends ConsumerState<CostPerDrinkStep> {
           const Spacer(),
           Text(
             'AVERAGE COST\nPER DRINK?',
-            style: ClearStateTypography.h1.copyWith(
-              fontSize: 32,
-              height: 1.2,
-            ),
+            style: ClearStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -87,7 +88,12 @@ class _CostPerDrinkStepState extends ConsumerState<CostPerDrinkStep> {
           const SizedBox(height: 12),
           TextButton(
             onPressed: widget.onBack,
-            child: Text('BACK', style: ClearStateTypography.button.copyWith(color: ClearStateColors.smoke)),
+            child: Text(
+              'BACK',
+              style: ClearStateTypography.button.copyWith(
+                color: ClearStateColors.smoke,
+              ),
+            ),
           ),
           const SizedBox(height: 24),
         ],
@@ -99,9 +105,9 @@ class _CostPerDrinkStepState extends ConsumerState<CostPerDrinkStep> {
 class _StepperButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
-  
+
   const _StepperButton({required this.icon, required this.onTap});
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

@@ -53,76 +53,84 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
       body: NoiseBackground(
         opacity: 0.02,
         child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 60),
-              // Header
-              Text(
-                'BREATHE',
-                style: ClearStateTypography.timerDisplay.copyWith(
-                  fontSize: 48,
-                  letterSpacing: 8,
-                  color: ClearStateColors.bone,
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 60),
+                // Header
+                Text(
+                  'BREATHE',
+                  textAlign: TextAlign.center,
+                  style: ClearStateTypography.timerDisplay.copyWith(
+                    fontSize: 48,
+                    letterSpacing: 8,
+                    color: ClearStateColors.bone,
+                  ),
                 ),
-              ),
-              const Spacer(flex: 2),
-              // Breathing circle
-              BreathingCircle(phase: state.phase, isActive: state.isActive),
-              const SizedBox(height: 48),
-              // Phase text
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: Text(
-                  state.phaseText,
-                  key: ValueKey(state.phase),
-                  style: ClearStateTypography.h1.copyWith(
-                    fontSize: 24,
-                    letterSpacing: 6,
+                const Spacer(flex: 2),
+                // Breathing circle
+                BreathingCircle(phase: state.phase, isActive: state.isActive),
+                const SizedBox(height: 48),
+                // Phase text
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: Text(
+                    state.phaseText,
+                    key: ValueKey(state.phase),
+                    textAlign: TextAlign.center,
+                    style: ClearStateTypography.h1.copyWith(
+                      fontSize: 24,
+                      letterSpacing: 6,
+                      color: ClearStateColors.smoke,
+                    ),
+                  ),
+                ),
+                const Spacer(flex: 3),
+                // Countdown timer
+                Text(
+                  state.formattedTime,
+                  textAlign: TextAlign.center,
+                  style: ClearStateTypography.statNumber.copyWith(
+                    fontSize: 20,
                     color: ClearStateColors.smoke,
                   ),
                 ),
-              ),
-              const Spacer(flex: 3),
-              // Countdown timer
-              Text(
-                state.formattedTime,
-                style: ClearStateTypography.statNumber.copyWith(
-                  fontSize: 20,
-                  color: ClearStateColors.smoke,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'REMAINING',
-                style: ClearStateTypography.timerLabel.copyWith(
-                  fontSize: 10,
-                  color: ClearStateColors.ash,
-                ),
-              ),
-              const SizedBox(height: 40),
-              // Exit button
-              TextButton(
-                onPressed: () {
-                  HapticService.medium();
-                  ref.read(urgeSurfingProvider.notifier).stop();
-                  Navigator.of(context).pop();
-                },
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+                const SizedBox(height: 8),
+                Text(
+                  'REMAINING',
+                  textAlign: TextAlign.center,
+                  style: ClearStateTypography.timerLabel.copyWith(
+                    fontSize: 10,
+                    color: ClearStateColors.ash,
                   ),
                 ),
-                child: Text(
-                  "I'M OKAY NOW",
-                  style: ClearStateTypography.button.copyWith(
-                    color: ClearStateColors.bone,
-                    letterSpacing: 2,
+                const SizedBox(height: 40),
+                // Exit button
+                TextButton(
+                  onPressed: () {
+                    HapticService.medium();
+                    ref.read(urgeSurfingProvider.notifier).stop();
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                  ),
+                  child: Text(
+                    "I'M OKAY NOW",
+                    style: ClearStateTypography.button.copyWith(
+                      color: ClearStateColors.bone,
+                      letterSpacing: 2,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 48),
-            ],
+                const SizedBox(height: 48),
+              ],
+            ),
           ),
         ),
       ),

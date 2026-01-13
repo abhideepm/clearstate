@@ -4,6 +4,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/services/haptic_service.dart';
 import '../../../data/repositories/sobriety_repository.dart';
+import '../../onboarding/onboarding_provider.dart';
 import '../../timer/timer_provider.dart';
 import '../notification_provider.dart';
 
@@ -91,7 +92,7 @@ class _WipeConfirmationDialogState
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: ClearStateColors.relapse.withOpacity(0.15),
+                color: ClearStateColors.relapse.withAlpha((0.15 * 255).round()),
                 borderRadius: BorderRadius.circular(2),
               ),
               child: const Icon(
@@ -125,9 +126,11 @@ class _WipeConfirmationDialogState
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: ClearStateColors.relapse.withOpacity(0.08),
+                color: ClearStateColors.relapse.withAlpha((0.08 * 255).round()),
                 border: Border.all(
-                  color: ClearStateColors.relapse.withOpacity(0.3),
+                  color: ClearStateColors.relapse.withAlpha(
+                    (0.3 * 255).round(),
+                  ),
                   width: 1,
                 ),
                 borderRadius: BorderRadius.circular(2),
@@ -284,13 +287,13 @@ class _DialogButton extends StatelessWidget {
           color: isDestructive
               ? (enabled
                     ? ClearStateColors.relapse
-                    : ClearStateColors.relapse.withOpacity(0.3))
+                    : ClearStateColors.relapse.withAlpha((0.3 * 255).round()))
               : ClearStateColors.graphite,
           border: Border.all(
             color: isDestructive
                 ? (enabled
                       ? ClearStateColors.relapse
-                      : ClearStateColors.relapse.withOpacity(0.3))
+                      : ClearStateColors.relapse.withAlpha((0.3 * 255).round()))
                 : ClearStateColors.ash,
             width: 1,
           ),

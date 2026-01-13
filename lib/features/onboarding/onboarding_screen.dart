@@ -12,7 +12,7 @@ import 'widgets/cost_per_drink_step.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
-  
+
   const OnboardingScreen({super.key, required this.onComplete});
 
   @override
@@ -21,19 +21,19 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   late PageController _pageController;
-  
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
   }
-  
+
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
-  
+
   void _nextPage() {
     HapticService.light();
     final state = ref.read(onboardingProvider);
@@ -48,7 +48,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       widget.onComplete();
     }
   }
-  
+
   void _previousPage() {
     HapticService.light();
     if (ref.read(onboardingProvider).currentStep > 0) {
@@ -63,7 +63,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(onboardingProvider);
-    
+
     return Scaffold(
       backgroundColor: ClearStateColors.void_,
       body: NoiseBackground(

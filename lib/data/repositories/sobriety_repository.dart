@@ -7,9 +7,6 @@ import '../models/daily_log.dart';
 import '../../core/constants/drink_presets.dart';
 import '../../core/services/notification_service.dart';
 
-// Re-export onboarding provider for app.dart
-export '../../features/onboarding/onboarding_provider.dart';
-
 class SobrietyRepository {
   static const String userProfileBoxName = 'user_profile';
   static const String sessionsBoxName = 'sessions';

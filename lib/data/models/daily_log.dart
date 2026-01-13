@@ -13,11 +13,7 @@ class DailyLog extends HiveObject {
   @HiveField(2)
   int? drinksConsumed; // null if sober
 
-  DailyLog({
-    required this.date,
-    required this.isSober,
-    this.drinksConsumed,
-  });
+  DailyLog({required this.date, required this.isSober, this.drinksConsumed});
 
   // Get date as YYYY-MM-DD string for heatmap key
   String get dateKey {

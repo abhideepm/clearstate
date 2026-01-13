@@ -12,7 +12,9 @@ class ClearStateColors {
   static const Color ash = Color(0xFF2A2A2A); // Borders, dividers
 
   // Accent
-  static const Color signal = Color(0xFFFF6B35); // Primary accent (Signal Orange)
+  static const Color signal = Color(
+    0xFFFF6B35,
+  ); // Primary accent (Signal Orange)
   static const Color signalLight = Color(0xFFFF8F66); // Accent hover
 
   // Semantic

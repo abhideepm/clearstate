@@ -6,7 +6,7 @@ import '../onboarding_provider.dart';
 
 class LastDrinkStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
-  
+
   const LastDrinkStep({super.key, required this.onNext});
 
   @override
@@ -15,7 +15,7 @@ class LastDrinkStep extends ConsumerStatefulWidget {
 
 class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
   DateTime _selectedDate = DateTime.now();
-  
+
   Future<void> _selectDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -39,7 +39,7 @@ class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
       ref.read(onboardingProvider.notifier).setLastDrinkDate(picked);
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -50,10 +50,7 @@ class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
           const Spacer(),
           Text(
             'WHEN WAS YOUR\nLAST DRINK?',
-            style: ClearStateTypography.h1.copyWith(
-              fontSize: 32,
-              height: 1.2,
-            ),
+            style: ClearStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -75,7 +72,9 @@ class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
                 children: [
                   Text(
                     '${_selectedDate.day}',
-                    style: ClearStateTypography.timerDisplay.copyWith(fontSize: 64),
+                    style: ClearStateTypography.timerDisplay.copyWith(
+                      fontSize: 64,
+                    ),
                   ),
                   Text(
                     '${_monthName(_selectedDate.month)} ${_selectedDate.year}',
@@ -96,7 +95,9 @@ class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
           const Spacer(),
           ElevatedButton(
             onPressed: () {
-              ref.read(onboardingProvider.notifier).setLastDrinkDate(_selectedDate);
+              ref
+                  .read(onboardingProvider.notifier)
+                  .setLastDrinkDate(_selectedDate);
               widget.onNext();
             },
             child: const Text('CONTINUE'),
@@ -106,9 +107,22 @@ class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
       ),
     );
   }
-  
+
   String _monthName(int month) {
-    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const months = [
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
+    ];
     return months[month - 1];
   }
 }

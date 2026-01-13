@@ -8,8 +8,12 @@ import '../onboarding_provider.dart';
 class DrinksPerWeekStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onBack;
-  
-  const DrinksPerWeekStep({super.key, required this.onNext, required this.onBack});
+
+  const DrinksPerWeekStep({
+    super.key,
+    required this.onNext,
+    required this.onBack,
+  });
 
   @override
   ConsumerState<DrinksPerWeekStep> createState() => _DrinksPerWeekStepState();
@@ -17,19 +21,19 @@ class DrinksPerWeekStep extends ConsumerStatefulWidget {
 
 class _DrinksPerWeekStepState extends ConsumerState<DrinksPerWeekStep> {
   int _count = 10;
-  
+
   void _increment() {
     HapticFeedback.selectionClick();
     setState(() => _count++);
   }
-  
+
   void _decrement() {
     if (_count > 1) {
       HapticFeedback.selectionClick();
       setState(() => _count--);
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,10 +44,7 @@ class _DrinksPerWeekStepState extends ConsumerState<DrinksPerWeekStep> {
           const Spacer(),
           Text(
             'HOW MANY DRINKS\nPER WEEK?',
-            style: ClearStateTypography.h1.copyWith(
-              fontSize: 32,
-              height: 1.2,
-            ),
+            style: ClearStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -87,7 +88,12 @@ class _DrinksPerWeekStepState extends ConsumerState<DrinksPerWeekStep> {
           const SizedBox(height: 12),
           TextButton(
             onPressed: widget.onBack,
-            child: Text('BACK', style: ClearStateTypography.button.copyWith(color: ClearStateColors.smoke)),
+            child: Text(
+              'BACK',
+              style: ClearStateTypography.button.copyWith(
+                color: ClearStateColors.smoke,
+              ),
+            ),
           ),
           const SizedBox(height: 24),
         ],
@@ -99,9 +105,9 @@ class _DrinksPerWeekStepState extends ConsumerState<DrinksPerWeekStep> {
 class _StepperButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
-  
+
   const _StepperButton({required this.icon, required this.onTap});
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

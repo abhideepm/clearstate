@@ -8,6 +8,7 @@ import 'features/timeline/timeline_screen.dart';
 import 'features/analytics/analytics_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
+import 'features/onboarding/onboarding_provider.dart';
 import 'features/security/security_provider.dart';
 import 'features/security/biometric_lock_screen.dart';
 import 'data/repositories/sobriety_repository.dart';

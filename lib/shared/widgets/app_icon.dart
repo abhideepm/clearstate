@@ -8,11 +8,7 @@ class AppIconWidget extends StatelessWidget {
   final double size;
   final bool showBorder;
 
-  const AppIconWidget({
-    super.key,
-    this.size = 120,
-    this.showBorder = true,
-  });
+  const AppIconWidget({super.key, this.size = 120, this.showBorder = true});
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +29,7 @@ class AppIconWidget extends StatelessWidget {
             left: 0,
             right: 0,
             height: size * 0.15,
-            child: Container(
-              color: ClearStateColors.signal,
-            ),
+            child: Container(color: ClearStateColors.signal),
           ),
           // Typography
           Center(
@@ -72,19 +66,14 @@ class AppIconWidget extends StatelessWidget {
 class AppIconMinimal extends StatelessWidget {
   final double size;
 
-  const AppIconMinimal({
-    super.key,
-    this.size = 48,
-  });
+  const AppIconMinimal({super.key, this.size = 48});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(
-        color: ClearStateColors.void_,
-      ),
+      decoration: const BoxDecoration(color: ClearStateColors.void_),
       child: Stack(
         children: [
           // Signal accent bar at bottom
@@ -93,9 +82,7 @@ class AppIconMinimal extends StatelessWidget {
             left: 0,
             right: 0,
             height: size * 0.12,
-            child: Container(
-              color: ClearStateColors.signal,
-            ),
+            child: Container(color: ClearStateColors.signal),
           ),
           // Just "CS" letters
           Center(
