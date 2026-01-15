@@ -23,6 +23,8 @@ class SobrietyRepository {
   late Box _settingsBox;
   HiveAesCipher? _cipher;
 
+  SobrietySession? _activeSessionCache;
+
   bool _isInitialized = false;
 
   /// Throws if the repository has not been initialized.
@@ -190,19 +192,26 @@ class SobrietyRepository {
   // Sessions
   SobrietySession? getActiveSession() {
     _assertInitialized();
-    final sessions = _sessionsBox.values.where((s) => s.isActive).toList();
-    if (sessions.isEmpty) return null;
 
-    // Enforce invariant: should only have one active session
+    if (_activeSessionCache != null && _activeSessionCache!.isActive) {
+      return _activeSessionCache;
+    }
+
+    final sessions = _sessionsBox.values.where((s) => s.isActive).toList();
+    if (sessions.isEmpty) {
+      _activeSessionCache = null;
+      return null;
+    }
+
     if (sessions.length > 1) {
       debugPrint(
         'Warning: Found ${sessions.length} active sessions, using most recent',
       );
-      // Sort by start date descending and use the most recent
       sessions.sort((a, b) => b.startDate.compareTo(a.startDate));
     }
 
-    return sessions.first;
+    _activeSessionCache = sessions.first;
+    return _activeSessionCache;
   }
 
   Future<void> startNewSession(
@@ -211,26 +220,26 @@ class SobrietyRepository {
   }) async {
     _assertInitialized();
 
-    // End any existing active sessions first to enforce single-active invariant
     final existingActive = getActiveSession();
     if (existingActive != null) {
       await endCurrentSession();
     }
+
+    _activeSessionCache = null;
 
     final session = SobrietySession(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       startDate: startDate,
     );
     await _sessionsBox.put(session.id, session);
+    _activeSessionCache = session;
 
-    // Schedule milestone notifications for this session
     if (scheduleNotifications) {
       await NotificationService.instance.scheduleMilestoneNotifications(
         startDate,
       );
     }
 
-    // Update home screen widgets with new session data
     await triggerWidgetUpdate();
   }
 
@@ -241,6 +250,7 @@ class SobrietyRepository {
       session.endDate = DateTime.now();
       await session.save();
     }
+    _activeSessionCache = null;
   }
 
   // Relapses
@@ -420,6 +430,9 @@ class SobrietyRepository {
     // Cancel all pending notifications
     await NotificationService.instance.cancelAllMilestoneNotifications();
 
+    // Clear cache before clearing boxes
+    _activeSessionCache = null;
+
     await _userProfileBox.clear();
     await _sessionsBox.clear();
     await _relapseBox.clear();
@@ -436,6 +449,7 @@ class SobrietyRepository {
     await nukeAllData();
     await _settingsBox.clear();
     await _settingsBox.put(SettingsKeys.schemaVersion, currentSchemaVersion);
+    await EncryptionService.deleteEncryptionKey();
   }
 
   // Backup & Restore
@@ -454,7 +468,6 @@ class SobrietyRepository {
   Future<void> importData(Map<String, dynamic> data) async {
     _assertInitialized();
 
-    // Validate backup version
     final version = data['version'] as int? ?? 0;
     if (version > currentSchemaVersion) {
       throw Exception(
@@ -463,15 +476,73 @@ class SobrietyRepository {
       );
     }
 
-    // Validate required data
     if (!data.containsKey('profile') && !data.containsKey('sessions')) {
       throw Exception('Invalid backup file: missing required data');
     }
 
-    // 1. Wipe current data
-    await nukeAllData();
+    _validateAllDataStructures(data);
 
-    // 2. Import Profile
+    final previousData = exportData();
+
+    try {
+      await _importDataInternal(data);
+    } catch (e) {
+      try {
+        await _importDataInternal(previousData);
+      } catch (_) {}
+      rethrow;
+    }
+  }
+
+  void _validateAllDataStructures(Map<String, dynamic> data) {
+    if (data['profile'] != null) {
+      final profile = data['profile'] as Map<String, dynamic>;
+      if (!profile.containsKey('lastDrinkDate')) {
+        throw Exception('Invalid profile: missing lastDrinkDate');
+      }
+    }
+
+    if (data['sessions'] != null) {
+      final sessions = data['sessions'] as List;
+      for (final s in sessions) {
+        if (s is! Map<String, dynamic>) {
+          throw Exception('Invalid session: not a map');
+        }
+        if (!s.containsKey('id') || !s.containsKey('startDate')) {
+          throw Exception('Invalid session: missing required fields');
+        }
+      }
+    }
+
+    if (data['relapses'] != null) {
+      final relapses = data['relapses'] as List;
+      for (final r in relapses) {
+        if (r is! Map<String, dynamic>) {
+          throw Exception('Invalid relapse: not a map');
+        }
+        if (!r.containsKey('id') || !r.containsKey('timestamp')) {
+          throw Exception('Invalid relapse: missing required fields');
+        }
+      }
+    }
+
+    if (data['daily_logs'] != null) {
+      final logs = data['daily_logs'] as List;
+      for (final l in logs) {
+        if (l is! Map<String, dynamic>) {
+          throw Exception('Invalid daily log: not a map');
+        }
+        if (!l.containsKey('date')) {
+          throw Exception('Invalid daily log: missing date');
+        }
+      }
+    }
+  }
+
+  Future<void> _importDataInternal(Map<String, dynamic> data) async {
+    await nukeAllData();
+    _activeSessionCache = null;
+
     if (data['profile'] != null) {
       final profile = UserProfile.fromJson(
         data['profile'] as Map<String, dynamic>,
@@ -479,7 +550,6 @@ class SobrietyRepository {
       await _userProfileBox.put(UserProfileKeys.profile, profile);
     }
 
-    // 3. Import Sessions
     if (data['sessions'] != null) {
       final List sessions = data['sessions'] as List;
       for (final s in sessions) {
@@ -488,7 +558,6 @@ class SobrietyRepository {
       }
     }
 
-    // 4. Import Relapses
     if (data['relapses'] != null) {
       final List relapses = data['relapses'] as List;
       for (final r in relapses) {
@@ -497,7 +566,6 @@ class SobrietyRepository {
       }
     }
 
-    // 5. Import Daily Logs
     if (data['daily_logs'] != null) {
       final List logs = data['daily_logs'] as List;
       for (final l in logs) {
@@ -506,10 +574,8 @@ class SobrietyRepository {
       }
     }
 
-    // 6. Ensure schema version is updated if importing from older/newer
     await _settingsBox.put(SettingsKeys.schemaVersion, currentSchemaVersion);
 
-    // 7. Reschedule notifications if there's an active session
     final activeSession = getActiveSession();
     if (activeSession != null) {
       await NotificationService.instance.scheduleMilestoneNotifications(
@@ -517,7 +583,6 @@ class SobrietyRepository {
       );
     }
 
-    // 8. Update home screen widgets with restored data
     await triggerWidgetUpdate();
   }
 }

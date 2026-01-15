@@ -21,7 +21,7 @@ class MilestoneNotification {
       dayThreshold: milestone.dayThreshold,
       notificationId: milestone.dayThreshold, // ID = day threshold
       title: milestone.title,
-      body: milestone.status, // Use status as concise notification body
+      body: milestone.notificationBody, // Use generic notification body
     );
   }
 }

@@ -44,6 +44,9 @@ dependencies:
   # Secure storage for Hive encryption keys
   flutter_secure_storage: ^9.2.4
 
+  # Encryption for backups
+  pointycastle: ^3.9.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

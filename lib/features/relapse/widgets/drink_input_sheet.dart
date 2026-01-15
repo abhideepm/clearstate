@@ -170,10 +170,15 @@ class _DrinkInputSheetState extends State<DrinkInputSheet> {
   Future<void> _handleConfirm() async {
     setState(() => _isLogging = true);
 
-    await widget.onConfirm(_drinks, _totalCost, _totalCalories, _drinkType);
-
-    if (mounted) {
-      Navigator.pop(context);
+    try {
+      await widget.onConfirm(_drinks, _totalCost, _totalCalories, _drinkType);
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLogging = false);
+      }
     }
   }
 }

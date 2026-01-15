@@ -8,7 +8,6 @@ import 'data/models/widget_config.dart';
 import 'core/constants/hive_boxes.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/widget_update_service.dart';
-import 'core/services/widget_data_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,9 +62,7 @@ void main() async {
 }
 
 /// Updates all home screen widgets with current sobriety data on app startup.
-Future<void> _updateWidgetsOnStartup(
-  SobrietyRepository repository,
-) async {
+Future<void> _updateWidgetsOnStartup(SobrietyRepository repository) async {
   // Delegate to repository's centralized widget update method
   await repository.triggerWidgetUpdate();
 }

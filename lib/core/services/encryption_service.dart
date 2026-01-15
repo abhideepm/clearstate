@@ -71,4 +71,17 @@ class EncryptionService {
       return false;
     }
   }
+
+  static Future<Uint8List> getEncryptionKeyBytes() async {
+    final keyBase64 = await _secureStorage.read(key: _hiveKeyName);
+    if (keyBase64 == null) {
+      final key = Hive.generateSecureKey();
+      await _secureStorage.write(
+        key: _hiveKeyName,
+        value: base64UrlEncode(key),
+      );
+      return Uint8List.fromList(key);
+    }
+    return Uint8List.fromList(base64Url.decode(keyBase64));
+  }
 }

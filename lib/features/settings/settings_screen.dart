@@ -14,8 +14,9 @@ import 'notification_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   final VoidCallback? onDataWiped;
+  final VoidCallback? onRestoreComplete;
 
-  const SettingsScreen({super.key, this.onDataWiped});
+  const SettingsScreen({super.key, this.onDataWiped, this.onRestoreComplete});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,7 +62,7 @@ class SettingsScreen extends ConsumerWidget {
                       label: 'App Lock',
                       subtitle: canUseBiometrics.when(
                         data: (available) => available
-                            ? 'Require biometric to open app'
+                            ? 'Require biometric or device passcode to open app'
                             : 'Biometrics not available on this device',
                         loading: () => 'Checking biometric availability...',
                         error: (_, _) => 'Biometrics not available',
@@ -195,8 +196,7 @@ class SettingsScreen extends ConsumerWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Data restored successfully')),
               );
-              // Trigger a UI refresh if needed, or navigate to home
-              if (onDataWiped != null) onDataWiped!();
+              if (onRestoreComplete != null) onRestoreComplete!();
             }
           } catch (e) {
             if (context.mounted) {
