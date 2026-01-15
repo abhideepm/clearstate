@@ -20,6 +20,9 @@ abstract class HiveBoxes {
 
   /// Box storing notification preferences.
   static const String notificationSettings = 'notification_settings';
+
+  /// Box storing widget configurations.
+  static const String widgetConfigs = 'widget_configs';
 }
 
 /// Keys used within the [HiveBoxes.userProfile] box.

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stoic quote widget layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_stoic_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="@color/widget_background">
+
+    <!-- Quote text -->
+    <TextView
+        android:id="@+id/stoic_quote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="\"Stay present. Stay strong.\""
+        android:textColor="@color/widget_text_primary"
+        android:textSize="14sp"
+        android:lineSpacingMultiplier="1.2"
+        android:fontFamily="serif"
+        android:textStyle="italic"
+        android:maxLines="4"
+        android:ellipsize="end" />
+
+    <!-- Author attribution -->
+    <TextView
+        android:id="@+id/stoic_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/widget_text_secondary"
+        android:textSize="11sp"
+        android:fontFamily="sans-serif"
+        android:visibility="gone" />
+
+</LinearLayout>

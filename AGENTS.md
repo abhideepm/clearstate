@@ -23,14 +23,14 @@ To maintain codebase health, agents **must** follow these steps for every modifi
 ```
 clearstate_app/
 ├── lib/
-│   ├── main.dart         # App entry point, Hive setup
+│   ├── main.dart         # App entry point, Hive setup, widget init
 │   ├── app.dart          # Root widget, navigation
 │   ├── core/
-│   │   ├── constants/    # Milestones, drink presets
-│   │   ├── services/     # Haptic feedback, notifications
+│   │   ├── constants/    # Milestones, drink presets, bio_states, stoic_quotes
+│   │   ├── services/     # Haptic feedback, notifications, widget_update_service
 │   │   └── theme/        # Colors, typography, app theme
 │   ├── data/
-│   │   ├── models/       # Hive models (*.dart + *.g.dart)
+│   │   ├── models/       # Hive models (*.dart + *.g.dart), widget_config
 │   │   └── repositories/ # Data access layer
 │   ├── features/
 │   │   ├── timer/        # Main sobriety timer
@@ -38,7 +38,8 @@ clearstate_app/
 │   │   ├── analytics/    # Stats & heatmap
 │   │   ├── onboarding/   # Initial setup flow
 │   │   ├── relapse/      # Relapse tracking
-│   │   └── settings/     # Settings & data management
+│   │   ├── settings/     # Settings & data management
+│   │   └── widgets/      # Stealth widgets configuration
 │   └── shared/widgets/   # Shared UI components
 └── test/                 # Test files
 ```
@@ -152,11 +153,18 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 
 ## Key Files
 
-- `lib/main.dart` - App initialization, Hive setup
+- `lib/main.dart` - App initialization, Hive setup, widget initialization
 - `lib/app.dart` - Root widget, navigation with 4-tab bottom nav
-- `lib/data/repositories/sobriety_repository.dart` - Main data layer (includes `nukeAllData()`)
+- `lib/data/repositories/sobriety_repository.dart` - Main data layer (includes `nukeAllData()`, `triggerWidgetUpdate()`)
 - `lib/core/theme/colors.dart` - Color constants
 - `lib/core/constants/milestones.dart` - Recovery milestones
+- `lib/core/constants/bio_states.dart` - Bio-state recovery metrics
+- `lib/core/constants/stoic_quotes.dart` - Daily Stoic quotes database
+- `lib/core/services/widget_update_service.dart` - Home screen widget sync
+- `lib/core/services/widget_data_service.dart` - Widget data preparation
+- `lib/data/models/widget_config.dart` - Widget configuration model (typeId: 4)
+- `lib/features/widgets/widget_settings_screen.dart` - Stealth widget configuration UI
+- `lib/features/widgets/providers/widget_settings_provider.dart` - Widget settings state
 - `lib/features/settings/settings_screen.dart` - Settings with privacy & data management
 - `lib/features/settings/widgets/wipe_confirmation_dialog.dart` - Nuclear wipe confirmation
 - `lib/core/services/notification_service.dart` - Milestone notification scheduling

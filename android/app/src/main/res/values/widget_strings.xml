@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget descriptions for picker -->
+    <string name="widget_battery_description">Circular battery-style progress showing your sobriety status</string>
+    <string name="widget_stoic_description">Inspirational stoic quotes to keep you motivated</string>
+    <string name="widget_biostate_description">Biological recovery metrics and progress</string>
+    
+    <!-- Widget display names -->
+    <string name="widget_battery_name">Battery</string>
+    <string name="widget_stoic_name">Stoic Quote</string>
+    <string name="widget_biostate_name">BioState</string>
+</resources>

@@ -54,6 +54,21 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
         ref.read(securityProvider.notifier).lock();
       }
     }
+
+    // Update widgets when app returns to foreground
+    if (state == AppLifecycleState.resumed) {
+      _updateWidgetsOnResume();
+    }
+  }
+
+  /// Updates home screen widgets when the app returns to foreground.
+  void _updateWidgetsOnResume() {
+    try {
+      final repository = ref.read(sobrietyRepositoryProvider);
+      repository.triggerWidgetUpdate();
+    } catch (e) {
+      debugPrint('Error updating widgets on resume: $e');
+    }
   }
 
   void _checkOnboardingStatus() {

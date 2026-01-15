@@ -5,10 +5,13 @@ import '../models/user_profile.dart';
 import '../models/sobriety_session.dart';
 import '../models/relapse_event.dart';
 import '../models/daily_log.dart';
+import '../models/widget_config.dart';
 import '../../core/constants/drink_presets.dart';
 import '../../core/constants/hive_boxes.dart';
 import '../../core/services/encryption_service.dart';
 import '../../core/services/notification_service.dart';
+import '../../core/services/widget_update_service.dart';
+import '../../core/services/widget_data_service.dart';
 
 class SobrietyRepository {
   static const int currentSchemaVersion = 1;
@@ -93,6 +96,69 @@ class SobrietyRepository {
     // Future migrations will be handled here.
   }
 
+  /// Updates all home screen widgets with current sobriety data.
+  /// Call this after any sobriety state change (session start, relapse, slip).
+  /// If no active session, clears widget data to protect privacy after data wipe.
+  Future<void> triggerWidgetUpdate() async {
+    try {
+      final widgetService = WidgetUpdateService();
+
+      // Get widget configurations from Hive
+      Box<WidgetConfig>? configBox;
+      try {
+        configBox = Hive.box<WidgetConfig>(HiveBoxes.widgetConfigs);
+      } catch (e) {
+        // Box not open, skip widget update
+        debugPrint('Widget config box not open, skipping widget update');
+        return;
+      }
+
+      final session = getActiveSession();
+
+      // If no active session, clear widget data (privacy protection after data wipe)
+      if (session == null) {
+        await widgetService.clearAllWidgets();
+        return;
+      }
+
+      final dataService = WidgetDataService(this);
+
+      final batteryConfig = configBox.get('battery');
+      final stoicConfig = configBox.get('stoic');
+      final bioStateConfig = configBox.get('bioState');
+
+      // Build widget data
+      final quote = dataService.getStoicQuote();
+      final bioMetric = dataService.getBioStateMetric(
+        bioStateConfig?.bioStateMetricId ?? 'gaba',
+      );
+
+      final widgetData = WidgetData(
+        batteryProgress: dataService.getBatteryProgress(
+          batteryConfig?.displayMode ?? BatteryDisplayMode.milestone,
+          goalDays: batteryConfig?.goalDays,
+        ),
+        streakDays: dataService.getCurrentStreak(),
+        stoicQuote: quote.text,
+        stoicAuthor: quote.author,
+        bioStateLabel: bioMetric?.stealthLabel ?? 'Recovery',
+        bioStateValue: dataService.getBioStateValue(
+          bioStateConfig?.bioStateMetricId ?? 'gaba',
+        ),
+      );
+
+      await widgetService.updateAllWidgets(
+        data: widgetData,
+        batteryConfig: batteryConfig,
+        stoicConfig: stoicConfig,
+        bioStateConfig: bioStateConfig,
+      );
+    } catch (e) {
+      debugPrint('Error triggering widget update: $e');
+      // Don't crash the app if widget update fails
+    }
+  }
+
   // User Profile
   UserProfile? getUserProfile() {
     _assertInitialized();
@@ -163,6 +229,9 @@ class SobrietyRepository {
         startDate,
       );
     }
+
+    // Update home screen widgets with new session data
+    await triggerWidgetUpdate();
   }
 
   Future<void> endCurrentSession() async {
@@ -238,6 +307,9 @@ class SobrietyRepository {
 
     // Log daily as not sober (marks day red on heatmap)
     await logDay(DateTime.now(), false, drinksConsumed);
+
+    // Update home screen widgets to reflect slip
+    await triggerWidgetUpdate();
   }
 
   /// Get slips (not full relapses) from the past 7 days for gentle prompt logic.
@@ -444,6 +516,9 @@ class SobrietyRepository {
         activeSession.startDate,
       );
     }
+
+    // 8. Update home screen widgets with restored data
+    await triggerWidgetUpdate();
   }
 }
 

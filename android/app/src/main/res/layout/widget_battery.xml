@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Battery-style circular progress widget layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_battery_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp"
+    android:background="@color/widget_background">
+
+    <!-- Circular Progress Container -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <!-- Background ring -->
+        <ProgressBar
+            android:id="@+id/battery_progress_background"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            android:progressDrawable="@drawable/circular_progress_background"
+            android:layout_gravity="center" />
+
+        <!-- Foreground progress -->
+        <ProgressBar
+            android:id="@+id/battery_progress"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/circular_progress_foreground"
+            android:layout_gravity="center" />
+
+        <!-- Percentage text in center -->
+        <TextView
+            android:id="@+id/battery_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0%"
+            android:textColor="@color/widget_text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium" />
+    </FrameLayout>
+
+    <!-- Mode label -->
+    <TextView
+        android:id="@+id/battery_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Battery"
+        android:textColor="@color/widget_text_secondary"
+        android:textSize="11sp"
+        android:fontFamily="sans-serif" />
+
+    <!-- Streak indicator -->
+    <TextView
+        android:id="@+id/battery_streak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text=""
+        android:textColor="@color/widget_accent"
+        android:textSize="10sp"
+        android:fontFamily="sans-serif-medium" />
+
+</LinearLayout>

@@ -42,6 +42,47 @@
         </receiver>
         <!-- Notification receiver -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
+        
+        <!-- ClearState Stealth Widgets -->
+        <!-- Battery Widget -->
+        <receiver android:name=".widgets.BatteryWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_battery_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="es.antonborri.home_widget.action.UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/battery_widget_info" />
+        </receiver>
+        
+        <!-- Stoic Quote Widget -->
+        <receiver android:name=".widgets.StoicWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_stoic_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="es.antonborri.home_widget.action.UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stoic_widget_info" />
+        </receiver>
+        
+        <!-- BioState Widget -->
+        <receiver android:name=".widgets.BioStateWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_biostate_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="es.antonborri.home_widget.action.UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/bio_state_widget_info" />
+        </receiver>
+        
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

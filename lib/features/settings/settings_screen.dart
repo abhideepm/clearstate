@@ -6,6 +6,7 @@ import '../../core/services/haptic_service.dart';
 import '../../core/services/backup_service.dart';
 import '../../shared/widgets/noise_background.dart';
 import '../security/security_provider.dart';
+import '../widgets/widget_settings_screen.dart';
 import 'widgets/settings_toggle.dart';
 import 'widgets/wipe_confirmation_dialog.dart';
 import 'widgets/restore_confirmation_dialog.dart';
@@ -76,6 +77,25 @@ class SettingsScreen extends ConsumerWidget {
                         await ref
                             .read(securityProvider.notifier)
                             .toggleBiometric();
+                      },
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Widgets Section
+                    _SectionHeader(title: 'WIDGETS'),
+                    const SizedBox(height: 12),
+                    _SettingsItem(
+                      label: 'Stealth Widgets',
+                      subtitle: 'Discreet home screen widgets',
+                      icon: Icons.widgets_outlined,
+                      onTap: () {
+                        HapticService.light();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const WidgetSettingsScreen(),
+                          ),
+                        );
                       },
                     ),
 

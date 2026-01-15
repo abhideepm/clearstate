@@ -33,6 +33,9 @@ dependencies:
   flutter_local_notifications: ^17.2.0
   timezone: ^0.9.4
 
+  # Home Screen Widgets (iOS WidgetKit / Android AppWidget)
+  home_widget: ^0.6.0
+
   cupertino_icons: ^1.0.8
   path_provider: ^2.1.5
   share_plus: ^12.0.1
