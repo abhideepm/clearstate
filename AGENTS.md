@@ -21,7 +21,7 @@ To maintain codebase health, agents **must** follow these steps for every modifi
 ## Project Structure
 
 ```
-clearstate_app/
+clearstate/
 ├── lib/
 │   ├── main.dart         # App entry point, Hive setup, widget init
 │   ├── app.dart          # Root widget, navigation
@@ -41,18 +41,21 @@ clearstate_app/
 │   │   ├── settings/     # Settings & data management
 │   │   └── widgets/      # Stealth widgets configuration
 │   └── shared/widgets/   # Shared UI components
-└── test/                 # Test files
+└── test/
+    ├── shared/
+    │   └── widgets/      # Widget tests for shared UI components
+    └── unit/             # Unit tests
 ```
 
 ## Build/Lint/Test Commands
 
-Run from `clearstate_app/` directory:
+Run from project root:
 
 ```bash
 flutter pub get                    # Install dependencies
 flutter run                        # Run app (debug)
 flutter test                       # Run all tests
-flutter test test/widget_test.dart # Run single test file
+flutter test test/shared/widgets/  # Run widget tests
 flutter test --name "pattern"      # Run tests matching pattern
 flutter analyze                    # Static analysis
 dart format .                      # Format code
@@ -128,7 +131,8 @@ class _TimerUnit extends StatelessWidget {
 
 ### Theme & Colors
 - Use `ClearStateColors` static constants: `void_`, `charcoal`, `bone`, `signal`
-- Use `ClearStateTypography` for text styles
+- Use `ClearStateTypography` for text styles (JetBrains Mono)
+- Use `ClearStateMotion` for animation durations and curves
 - Primary accent: Signal Orange (`#FF6B35`)
 
 ### Error Handling
@@ -157,6 +161,9 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 - `lib/app.dart` - Root widget, navigation with 4-tab bottom nav
 - `lib/data/repositories/sobriety_repository.dart` - Main data layer (includes `nukeAllData()`, `triggerWidgetUpdate()`)
 - `lib/core/theme/colors.dart` - Color constants
+- `lib/core/theme/motion.dart` - Animation constants and accessibility utilities
+- `lib/core/theme/theme_provider.dart` - Theme state management with accent colors and background themes
+- `lib/core/theme/typography.dart` - JetBrains Mono text styles
 - `lib/core/constants/milestones.dart` - Recovery milestones
 - `lib/core/constants/bio_states.dart` - Bio-state recovery metrics
 - `lib/core/constants/stoic_quotes.dart` - Daily Stoic quotes database
@@ -171,6 +178,33 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 - `lib/features/settings/notification_provider.dart` - Notification settings state
 - `pubspec.yaml` - Dependencies
 - `analysis_options.yaml` - Lint config
+
+## Shared Widgets
+
+- `lib/shared/widgets/haptic_calendar.dart` - Modal calendar with haptic feedback
+- `lib/shared/widgets/animated_counter.dart` - Animated digit counter (slide/morph modes)
+- `lib/shared/widgets/brutalist_button.dart` - Brutalist-style buttons (primary/secondary)
+- `lib/shared/widgets/animated_stepper_button.dart` - Animated stepper navigation buttons
+- `lib/shared/widgets/celebration_overlay.dart` - Milestone celebration with confetti
+- `lib/shared/widgets/haptic_scroll_view.dart` - Scroll views with overscroll haptics
+- `lib/shared/widgets/animated_chip.dart` - Animated selection chips
+- `lib/shared/widgets/animated_tab_switcher.dart` - Animated tab switching with scale/opacity
+- `lib/shared/widgets/animated_nav_icon.dart` - Animated navigation icons (bounce effect)
+- `lib/shared/widgets/sunrise_logo.dart` - Sunrise logo widget (accent-adaptive)
+- `lib/shared/widgets/scroll_reveal.dart` - Scroll reveal animations (fade + slide up)
+- `lib/features/settings/widgets/theme_settings.dart` - Theme/color picker settings
+
+## Widget Tests
+
+Widget tests for shared UI components are located in `test/shared/widgets/`:
+
+- `animated_counter_test.dart` - Tests for AnimatedCounter widget
+- `brutalist_button_test.dart` - Tests for BrutalistButton widget
+- `haptic_calendar_test.dart` - Tests for HapticCalendar widget
+- `animated_chip_test.dart` - Tests for AnimatedChip widget
+- `celebration_overlay_test.dart` - Tests for CelebrationOverlay widget
+
+Run with: `flutter test test/shared/widgets/`
 
 ## iOS Widget Extension Configuration
 
