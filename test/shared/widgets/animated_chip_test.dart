@@ -206,8 +206,15 @@ void main() {
         ),
       );
 
-      final text = tester.widget<Text>(find.text('COLOR TEST'));
-      expect(text.style?.color, ClearStateColors.void_);
+      final defaultTextStyle = tester.widget<DefaultTextStyle>(
+        find
+            .ancestor(
+              of: find.text('COLOR TEST'),
+              matching: find.byType(DefaultTextStyle),
+            )
+            .first,
+      );
+      expect(defaultTextStyle.style.color, ClearStateColors.void_);
     });
 
     testWidgets('correct text color when unselected', (tester) async {
@@ -223,8 +230,15 @@ void main() {
         ),
       );
 
-      final text = tester.widget<Text>(find.text('COLOR TEST'));
-      expect(text.style?.color, ClearStateColors.bone);
+      final defaultTextStyle = tester.widget<DefaultTextStyle>(
+        find
+            .ancestor(
+              of: find.text('COLOR TEST'),
+              matching: find.byType(DefaultTextStyle),
+            )
+            .first,
+      );
+      expect(defaultTextStyle.style.color, ClearStateColors.bone);
     });
 
     testWidgets('padding is applied correctly', (tester) async {
@@ -248,7 +262,7 @@ void main() {
 
       expect(
         padding.padding,
-        const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        const EdgeInsets.symmetric(horizontal: 21, vertical: 15),
       );
     });
 

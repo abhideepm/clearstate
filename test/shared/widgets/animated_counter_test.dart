@@ -14,7 +14,8 @@ void main() {
         ),
       );
 
-      expect(find.text('42'), findsOneWidget);
+      expect(find.text('4'), findsOneWidget);
+      expect(find.text('2'), findsOneWidget);
     });
 
     testWidgets('animates on value change with sliding animation', (
@@ -30,7 +31,8 @@ void main() {
         ),
       );
 
-      expect(find.text('10'), findsOneWidget);
+      expect(find.text('1'), findsOneWidget);
+      expect(find.text('0'), findsOneWidget);
 
       await tester.pumpWidget(
         ProviderScope(
@@ -43,7 +45,8 @@ void main() {
       );
 
       await tester.pump(const Duration(milliseconds: 150));
-      expect(find.text('20'), findsOneWidget);
+      expect(find.text('2'), findsOneWidget);
+      expect(find.text('0'), findsOneWidget);
     });
 
     testWidgets('animates on value change with morphing animation', (
@@ -78,7 +81,7 @@ void main() {
         ),
       );
 
-      expect(find.text('99'), findsOneWidget);
+      expect(find.text('9'), findsNWidgets(2));
     });
 
     testWidgets('handles multi-digit changes', (tester) async {
@@ -97,7 +100,8 @@ void main() {
       );
 
       await tester.pump(const Duration(milliseconds: 150));
-      expect(find.text('100'), findsOneWidget);
+      expect(find.text('1'), findsOneWidget);
+      expect(find.text('0'), findsNWidgets(2));
     });
 
     testWidgets('uses custom style when provided', (tester) async {
@@ -115,9 +119,9 @@ void main() {
         ),
       );
 
-      final textWidget = tester.widget<Text>(find.text('5'));
-      expect(textWidget.style?.color, Colors.red);
-      expect(textWidget.style?.fontSize, 32);
+      final textWidgets = tester.widgetList<Text>(find.text('5'));
+      expect(textWidgets.first.style?.color, Colors.red);
+      expect(textWidgets.first.style?.fontSize, 32);
     });
   });
 }

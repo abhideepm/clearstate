@@ -21,7 +21,7 @@ class CelebrationOverlay extends StatefulWidget {
 }
 
 class _CelebrationOverlayState extends State<CelebrationOverlay>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _toastController;
   late AnimationController _confettiController;
   late Animation<Offset> _toastSlideAnimation;
