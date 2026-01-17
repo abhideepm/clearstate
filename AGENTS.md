@@ -171,3 +171,13 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 - `lib/features/settings/notification_provider.dart` - Notification settings state
 - `pubspec.yaml` - Dependencies
 - `analysis_options.yaml` - Lint config
+
+## iOS Widget Extension Configuration
+
+The ClearStateWidgetsExtension target is configured in `ios/Runner.xcodeproj/project.pbxproj`. To avoid Xcode build cycle errors when embedding the widget extension:
+
+1. **Do not use Xcode's native "Embed Foundation Extensions" build phase** - it can cause cycle errors
+2. **Use a shell script build phase instead** with `alwaysOutOfDate = 1` to copy the extension
+3. The shell script should check if the extension exists before copying
+
+The widget extension is embedded to `Runner.app/PlugIns/ClearStateWidgetsExtension.appex` via a custom shell script build phase in the Runner target.

@@ -223,13 +223,14 @@ class _DrinkTypeSelector extends StatelessWidget {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(preset.icon, style: const TextStyle(fontSize: 20)),
-                  const SizedBox(height: 4),
+                  Text(preset.icon, style: const TextStyle(fontSize: 18)),
+                  const SizedBox(height: 2),
                   Text(
                     preset.name,
                     style: ClearStateTypography.caption.copyWith(
-                      fontSize: 9,
+                      fontSize: 8,
                       color: isSelected
                           ? ClearStateColors.bone
                           : ClearStateColors.smoke,

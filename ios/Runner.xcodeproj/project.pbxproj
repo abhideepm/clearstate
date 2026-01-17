@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,11 +14,11 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		B9C1A280A8AEE6D0C5CA0EE5 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FBFC2663B360AFBDCBA2A8 /* Pods_Runner.framework */; };
+		A1E75D1D388179ED02BA8175 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E10EC6432D43147EB8B697 /* Pods_RunnerTests.framework */; };
+		B9C1A280A8AEE6D0C5CA0EE5 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		E2E65F712F18A7740093569E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E65F702F18A7740093569E /* WidgetKit.framework */; };
 		E2E65F732F18A7740093569E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E65F722F18A7740093569E /* SwiftUI.framework */; };
-		E2E65F842F18A7750093569E /* ClearStateWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E2E65F6F2F18A7740093569E /* ClearStateWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		EFEF570BCFB67A7756A42C62 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E10EC6432D43147EB8B697 /* Pods_RunnerTests.framework */; };
+		F912FBE73117869B96580F11 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D097AC6C5D3295500C5D29EA /* Pods_Runner.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,21 +49,9 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E2E65F852F18A7750093569E /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				E2E65F842F18A7750093569E /* ClearStateWidgetsExtension.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		00FBFC2663B360AFBDCBA2A8 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
@@ -83,6 +71,7 @@
 		9839A0022AC40239AD0FB936 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		AA79928220E4BC7D847EC14C /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		CB64A504CB53D6A7DB9A7EE0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		D097AC6C5D3295500C5D29EA /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDF9EB9C7F4CEBDF18CFEE85 /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E24F81C06225C8514E941D4E /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		E2E65F6F2F18A7740093569E /* ClearStateWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClearStateWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,7 +83,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E2E65F892F18A7750093569E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		E2E65F892F18A7750093569E /* Exceptions for "ClearStateWidgets" folder in "ClearStateWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -104,7 +93,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		E2E65F742F18A7740093569E /* ClearStateWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (E2E65F892F18A7750093569E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ClearStateWidgets; sourceTree = "<group>"; };
+		E2E65F742F18A7740093569E /* ClearStateWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E2E65F892F18A7750093569E /* Exceptions for "ClearStateWidgets" folder in "ClearStateWidgetsExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = ClearStateWidgets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EFEF570BCFB67A7756A42C62 /* Pods_RunnerTests.framework in Frameworks */,
+				A1E75D1D388179ED02BA8175 /* Pods_RunnerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,7 +120,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B9C1A280A8AEE6D0C5CA0EE5 /* Pods_Runner.framework in Frameworks */,
+				B9C1A280A8AEE6D0C5CA0EE5 /* BuildFile in Frameworks */,
+				F912FBE73117869B96580F11 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,10 +148,10 @@
 		82BA7D31913D92405D5F2C03 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				00FBFC2663B360AFBDCBA2A8 /* Pods_Runner.framework */,
 				F3E10EC6432D43147EB8B697 /* Pods_RunnerTests.framework */,
 				E2E65F702F18A7740093569E /* WidgetKit.framework */,
 				E2E65F722F18A7740093569E /* SwiftUI.framework */,
+				D097AC6C5D3295500C5D29EA /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -253,7 +254,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				2E45F88893FB5A0CA34C9613 /* [CP] Embed Pods Frameworks */,
-				E2E65F852F18A7750093569E /* Embed Foundation Extensions */,
+				E2E65F902F18A7750093569E /* Embed Widget Extension */,
 			);
 			buildRules = (
 			);
@@ -281,8 +282,6 @@
 				E2E65F742F18A7740093569E /* ClearStateWidgets */,
 			);
 			name = ClearStateWidgetsExtension;
-			packageProductDependencies = (
-			);
 			productName = ClearStateWidgetsExtension;
 			productReference = E2E65F6F2F18A7740093569E /* ClearStateWidgetsExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -368,13 +367,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -454,6 +449,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E2E65F902F18A7750093569E /* Embed Widget Extension */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Widget Extension";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "WIDGET_EXTENSION_PATH=\"${BUILT_PRODUCTS_DIR}/ClearStateWidgetsExtension.appex\"\nDESTINATION_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PlugIns/ClearStateWidgetsExtension.appex\"\n\nif [ -d \"$WIDGET_EXTENSION_PATH\" ]; then\n  mkdir -p \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PlugIns\"\n  cp -R \"$WIDGET_EXTENSION_PATH\" \"$DESTINATION_PATH\"\n  echo \"Embedded widget extension to $DESTINATION_PATH\"\nelse\n  echo \"Widget extension not found at $WIDGET_EXTENSION_PATH\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

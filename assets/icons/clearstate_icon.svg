@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Background vertical gradient (darker at bottom) -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A1A"/>
+      <stop offset="100%" stop-color="#0A0A0A"/>
+    </linearGradient>
+    
+    <!-- Sun radial gradient (lighter center) -->
+    <radialGradient id="sunGradient" cx="50%" cy="100%" r="100%">
+      <stop offset="0%" stop-color="#FF8C5A"/>
+      <stop offset="100%" stop-color="#FF6B35"/>
+    </radialGradient>
+    
+    <!-- Horizon glow effect -->
+    <linearGradient id="horizonGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </linearGradient>
+    
+    <!-- Clip path for rounded square -->
+    <clipPath id="roundedSquare">
+      <rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"/>
+    </clipPath>
+    
+    <!-- Clip path for sun semicircle (cuts off below horizon) -->
+    <clipPath id="sunClip">
+      <rect x="0" y="0" width="1024" height="594"/>
+    </clipPath>
+  </defs>
+  
+  <!-- Main container with rounded corners -->
+  <g clip-path="url(#roundedSquare)">
+    <!-- Background gradient -->
+    <rect width="1024" height="1024" fill="url(#bgGradient)"/>
+    
+    <!-- Horizon glow (soft light emanating upward) -->
+    <rect x="0" y="474" width="1024" height="120" fill="url(#horizonGlow)"/>
+    
+    <!-- Sun semicircle -->
+    <g clip-path="url(#sunClip)">
+      <!-- Sun circle: 55% of 1024 = 563px diameter, positioned so 15% shows above horizon -->
+      <!-- Horizon at y=594 (58% from top), sun center at y=594, radius=281.5 -->
+      <!-- Sun rises 15% above horizon = shows ~84px of arc above horizon line -->
+      <circle 
+        cx="512" 
+        cy="594" 
+        r="282" 
+        fill="url(#sunGradient)"
+      />
+    </g>
+    
+    <!-- Subtle horizon line -->
+    <line 
+      x1="123" 
+      y1="594" 
+      x2="901" 
+      y2="594" 
+      stroke="#FF6B35" 
+      stroke-opacity="0.3" 
+      stroke-width="2"
+    />
+  </g>
+</svg>
