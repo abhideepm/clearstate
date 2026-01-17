@@ -1,83 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 
 class ClearStateTypography {
-  // Timer display - Bebas Neue, massive
-  static TextStyle timerDisplay = GoogleFonts.bebasNeue(
-    fontSize: 96,
-    fontWeight: FontWeight.w400,
+  static const String fontFamily = 'JetBrains Mono';
+
+  static TextStyle timerDisplay = const TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 72,
+    fontWeight: FontWeight.w700,
     color: ClearStateColors.bone,
-    letterSpacing: 2,
-    height: 1.0,
+    letterSpacing: -2,
   );
 
-  // Timer labels (DAYS, HOURS, etc)
-  static TextStyle timerLabel = GoogleFonts.ibmPlexMono(
+  static TextStyle h1 = const TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    color: ClearStateColors.bone,
+    letterSpacing: 1,
+  );
+
+  static TextStyle body = const TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: ClearStateColors.bone,
+    height: 1.5,
+  );
+
+  static TextStyle timerLabel = const TextStyle(
+    fontFamily: fontFamily,
     fontSize: 11,
     fontWeight: FontWeight.w500,
     color: ClearStateColors.smoke,
     letterSpacing: 2,
   );
 
-  // Stats/numbers - IBM Plex Mono
-  static TextStyle statNumber = GoogleFonts.ibmPlexMono(
+  static TextStyle statNumber = const TextStyle(
+    fontFamily: fontFamily,
     fontSize: 28,
     fontWeight: FontWeight.w500,
     color: ClearStateColors.bone,
   );
 
-  static TextStyle statLabel = GoogleFonts.ibmPlexMono(
+  static TextStyle statLabel = const TextStyle(
+    fontFamily: fontFamily,
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: ClearStateColors.smoke,
     letterSpacing: 1.5,
   );
 
-  // Headings - Chivo
-  static TextStyle h1 = GoogleFonts.chivo(
-    fontSize: 28,
-    fontWeight: FontWeight.w700,
-    color: ClearStateColors.bone,
-  );
-
-  static TextStyle h2 = GoogleFonts.chivo(
+  static TextStyle h2 = const TextStyle(
+    fontFamily: fontFamily,
     fontSize: 22,
     fontWeight: FontWeight.w600,
     color: ClearStateColors.bone,
   );
 
-  static TextStyle h3 = GoogleFonts.chivo(
+  static TextStyle h3 = const TextStyle(
+    fontFamily: fontFamily,
     fontSize: 18,
     fontWeight: FontWeight.w600,
     color: ClearStateColors.bone,
   );
 
-  // Body - Chivo
-  static TextStyle body = GoogleFonts.chivo(
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    color: ClearStateColors.bone,
-    height: 1.5,
-  );
-
-  static TextStyle bodySecondary = GoogleFonts.chivo(
+  static TextStyle bodySecondary = const TextStyle(
+    fontFamily: fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: ClearStateColors.smoke,
     height: 1.5,
   );
 
-  // Caption
-  static TextStyle caption = GoogleFonts.ibmPlexMono(
+  static TextStyle caption = const TextStyle(
+    fontFamily: fontFamily,
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: ClearStateColors.smoke,
     letterSpacing: 1,
   );
 
-  // Button text
-  static TextStyle button = GoogleFonts.chivo(
+  static TextStyle button = const TextStyle(
+    fontFamily: fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: ClearStateColors.bone,

@@ -12,7 +12,6 @@ import 'core/services/widget_update_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Set system UI style
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -22,35 +21,29 @@ void main() async {
     ),
   );
 
-  // Lock to portrait mode
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Initialize Hive
   await Hive.initFlutter();
 
-  // Register WidgetConfig adapter (typeId: 4)
   if (!Hive.isAdapterRegistered(4)) {
     Hive.registerAdapter(WidgetConfigAdapter());
   }
 
-  // Open widget configs box
   await Hive.openBox<WidgetConfig>(HiveBoxes.widgetConfigs);
 
-  // Initialize notification service
+  await Hive.openBox('theme_settings');
+
   await NotificationService.instance.init();
 
-  // Create and initialize repository
   final repository = SobrietyRepository();
   await repository.init();
 
-  // Initialize widget update service
   final widgetService = WidgetUpdateService();
   await widgetService.initializeWidgets();
 
-  // Update all widgets with initial data on startup
   await _updateWidgetsOnStartup(repository);
 
   runApp(
@@ -61,8 +54,6 @@ void main() async {
   );
 }
 
-/// Updates all home screen widgets with current sobriety data on app startup.
 Future<void> _updateWidgetsOnStartup(SobrietyRepository repository) async {
-  // Delegate to repository's centralized widget update method
   await repository.triggerWidgetUpdate();
 }
