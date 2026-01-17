@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
+import '../../core/theme/theme_provider.dart';
 import '../../core/services/haptic_service.dart';
 import '../../shared/widgets/noise_background.dart';
+import '../../shared/widgets/sunrise_logo.dart';
 import 'onboarding_provider.dart';
 import 'widgets/last_drink_step.dart';
 import 'widgets/drinks_per_week_step.dart';
@@ -63,16 +65,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(onboardingProvider);
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
 
     return Scaffold(
-      backgroundColor: ClearStateColors.void_,
+      backgroundColor: themeState.background.value,
       body: NoiseBackground(
         opacity: 0.025,
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 24),
-              // Progress indicator
+              const SizedBox(height: 16),
+              SunriseLogo(size: 48, accentColor: accentColor, showLabel: false),
+              const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
@@ -83,20 +88,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         height: 2,
                         margin: const EdgeInsets.symmetric(horizontal: 2),
                         color: index <= state.currentStep
-                            ? ClearStateColors.signal
+                            ? accentColor
                             : ClearStateColors.ash,
                       ),
                     );
                   }),
                 ),
               ),
-              const SizedBox(height: 16),
-              // Step indicator
+              const SizedBox(height: 8),
               Text(
                 'STEP ${state.currentStep + 1} OF 4',
-                style: ClearStateTypography.timerLabel,
+                style: ClearStateTypography.timerLabel.copyWith(
+                  fontSize: 12,
+                  letterSpacing: 2,
+                ),
               ),
-              // Pages
+              const SizedBox(height: 8),
               Expanded(
                 child: PageView(
                   controller: _pageController,

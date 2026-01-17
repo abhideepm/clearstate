@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
+import '../../../core/services/haptic_service.dart';
 import '../onboarding_provider.dart';
+import '../../../shared/widgets/animated_counter.dart';
+import '../../../shared/widgets/animated_stepper_button.dart';
+import '../../../shared/widgets/brutalist_button.dart';
 
 class CostPerDrinkStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
@@ -23,13 +25,13 @@ class _CostPerDrinkStepState extends ConsumerState<CostPerDrinkStep> {
   double _cost = 8.0;
 
   void _increment() {
-    HapticFeedback.selectionClick();
+    HapticService.medium();
     setState(() => _cost += 1);
   }
 
   void _decrement() {
     if (_cost > 1) {
-      HapticFeedback.selectionClick();
+      HapticService.medium();
       setState(() => _cost -= 1);
     }
   }
@@ -57,18 +59,21 @@ class _CostPerDrinkStepState extends ConsumerState<CostPerDrinkStep> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _StepperButton(icon: Icons.remove, onTap: _decrement),
+              AnimatedStepperButton(
+                icon: Icons.remove,
+                onTap: _decrement,
+                enabled: _cost > 1,
+              ),
               const SizedBox(width: 24),
               SizedBox(
                 width: 120,
-                child: Text(
-                  '\$${_cost.toStringAsFixed(0)}',
+                child: AnimatedCounter(
+                  value: _cost.toInt(),
                   style: ClearStateTypography.timerDisplay,
-                  textAlign: TextAlign.center,
                 ),
               ),
               const SizedBox(width: 24),
-              _StepperButton(icon: Icons.add, onTap: _increment),
+              AnimatedStepperButton(icon: Icons.add, onTap: _increment),
             ],
           ),
           const SizedBox(height: 8),
@@ -78,48 +83,22 @@ class _CostPerDrinkStepState extends ConsumerState<CostPerDrinkStep> {
             textAlign: TextAlign.center,
           ),
           const Spacer(),
-          ElevatedButton(
+          BrutalistButton(
+            label: 'START MY JOURNEY',
             onPressed: () {
               ref.read(onboardingProvider.notifier).setCostPerDrink(_cost);
               widget.onNext();
             },
-            child: const Text('START MY JOURNEY'),
+            type: BrutalistButtonType.primary,
           ),
           const SizedBox(height: 12),
-          TextButton(
+          BrutalistButton(
+            label: 'BACK',
             onPressed: widget.onBack,
-            child: Text(
-              'BACK',
-              style: ClearStateTypography.button.copyWith(
-                color: ClearStateColors.smoke,
-              ),
-            ),
+            type: BrutalistButtonType.secondary,
           ),
           const SizedBox(height: 24),
         ],
-      ),
-    );
-  }
-}
-
-class _StepperButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _StepperButton({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          color: ClearStateColors.charcoal,
-          border: Border.all(color: ClearStateColors.ash),
-        ),
-        child: Icon(icon, color: ClearStateColors.bone),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
+import '../../core/theme/theme_provider.dart';
 import '../../core/services/haptic_service.dart';
 import '../../core/services/backup_service.dart';
 import '../../shared/widgets/noise_background.dart';
@@ -10,6 +11,7 @@ import '../widgets/widget_settings_screen.dart';
 import 'widgets/settings_toggle.dart';
 import 'widgets/wipe_confirmation_dialog.dart';
 import 'widgets/restore_confirmation_dialog.dart';
+import 'widgets/theme_settings.dart';
 import 'notification_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -24,15 +26,15 @@ class SettingsScreen extends ConsumerWidget {
     final canUseBiometrics = ref.watch(canUseBiometricsProvider);
     final notificationSettings = ref.watch(notificationSettingsProvider);
     final backupService = ref.watch(backupServiceProvider);
+    final themeState = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: ClearStateColors.void_,
+      backgroundColor: themeState.background.value,
       body: NoiseBackground(
         opacity: 0.025,
         child: SafeArea(
           child: Column(
             children: [
-              // Header
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
@@ -50,12 +52,34 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 32),
 
-              // Content
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   children: [
-                    // Privacy Section
+                    _SectionHeader(title: 'APPEARANCE'),
+                    const SizedBox(height: 12),
+                    ThemeSettings(
+                      onThemeChanged: (accent, background) {
+                        HapticService.light();
+                        final accentColor = AccentColor.values.firstWhere(
+                          (e) => e.value == accent,
+                          orElse: () => AccentColor.signalOrange,
+                        );
+                        final bgTheme = BackgroundTheme.values.firstWhere(
+                          (e) => e.value == background,
+                          orElse: () => BackgroundTheme.void_,
+                        );
+                        ref
+                            .read(themeProvider.notifier)
+                            .setAccentColor(accentColor);
+                        ref
+                            .read(themeProvider.notifier)
+                            .setBackgroundTheme(bgTheme);
+                      },
+                      currentAccentColor: themeState.accent.value,
+                      currentBackgroundColor: themeState.background.value,
+                    ),
+                    const SizedBox(height: 32),
                     _SectionHeader(title: 'PRIVACY'),
                     const SizedBox(height: 12),
                     SettingsToggle(

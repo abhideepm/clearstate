@@ -1,10 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../core/theme/colors.dart';
+import '../../core/theme/theme_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A widget that adds a subtle noise texture overlay to create depth.
 /// This gives the brutalist design a tactile, printed-paper quality.
-class NoiseBackground extends StatelessWidget {
+class NoiseBackground extends ConsumerWidget {
   final Widget child;
   final double opacity;
   final Color? backgroundColor;
@@ -17,18 +19,24 @@ class NoiseBackground extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    final bgOpacity = themeState.background == BackgroundTheme.texturedDark
+        ? 0.05
+        : 0.03;
+
     return Stack(
       children: [
-        // Base background
         Positioned.fill(
-          child: Container(color: backgroundColor ?? ClearStateColors.void_),
+          child: Container(
+            color: backgroundColor ?? themeState.background.value,
+          ),
         ),
-        // Noise texture overlay
         Positioned.fill(
-          child: CustomPaint(painter: NoisePainter(opacity: opacity)),
+          child: CustomPaint(
+            painter: NoisePainter(opacity: opacity > 0 ? opacity : bgOpacity),
+          ),
         ),
-        // Content
         child,
       ],
     );

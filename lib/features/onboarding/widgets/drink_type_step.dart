@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/constants/drink_presets.dart';
+import '../../../core/services/haptic_service.dart';
 import '../onboarding_provider.dart';
+import '../../../shared/widgets/animated_chip.dart';
+import '../../../shared/widgets/brutalist_button.dart';
 
 class DrinkTypeStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
@@ -45,55 +46,30 @@ class _DrinkTypeStepState extends ConsumerState<DrinkTypeStep> {
             alignment: WrapAlignment.center,
             children: DrinkPresets.presets.map((preset) {
               final isSelected = _selected == preset.name;
-              return GestureDetector(
+              return AnimatedChip(
+                isSelected: isSelected,
                 onTap: () {
-                  HapticFeedback.selectionClick();
+                  HapticService.selection();
                   setState(() => _selected = preset.name);
                 },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 14,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? ClearStateColors.signal
-                        : ClearStateColors.charcoal,
-                    border: Border.all(
-                      color: isSelected
-                          ? ClearStateColors.signal
-                          : ClearStateColors.ash,
-                    ),
-                  ),
-                  child: Text(
-                    preset.name.toUpperCase(),
-                    style: ClearStateTypography.button.copyWith(
-                      color: isSelected
-                          ? ClearStateColors.void_
-                          : ClearStateColors.bone,
-                    ),
-                  ),
-                ),
+                child: Text(preset.name.toUpperCase()),
               );
             }).toList(),
           ),
           const Spacer(),
-          ElevatedButton(
+          BrutalistButton(
+            label: 'CONTINUE',
             onPressed: () {
               ref.read(onboardingProvider.notifier).setDrinkType(_selected);
               widget.onNext();
             },
-            child: const Text('CONTINUE'),
+            type: BrutalistButtonType.primary,
           ),
           const SizedBox(height: 12),
-          TextButton(
+          BrutalistButton(
+            label: 'BACK',
             onPressed: widget.onBack,
-            child: Text(
-              'BACK',
-              style: ClearStateTypography.button.copyWith(
-                color: ClearStateColors.smoke,
-              ),
-            ),
+            type: BrutalistButtonType.secondary,
           ),
           const SizedBox(height: 24),
         ],

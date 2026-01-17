@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/colors.dart';
+import 'core/theme/theme_provider.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/haptic_service.dart';
 import 'features/timer/timer_screen.dart';
 import 'features/timeline/timeline_screen.dart';
 import 'features/analytics/analytics_screen.dart';
@@ -13,6 +15,7 @@ import 'features/security/security_provider.dart';
 import 'features/security/biometric_lock_screen.dart';
 import 'data/repositories/sobriety_repository.dart';
 import 'features/timer/timer_provider.dart';
+import 'shared/widgets/animated_tab_switcher.dart';
 
 class ClearStateApp extends ConsumerStatefulWidget {
   const ClearStateApp({super.key});
@@ -112,7 +115,6 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
   }
 
   void _handleDataWiped() {
-    // Reset to onboarding after data wipe
     setState(() {
       _showOnboarding = true;
       _currentIndex = 0;
@@ -120,48 +122,51 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
   }
 
   void _handleUnlock() {
-    // State is managed by securityProvider, just trigger a rebuild
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    // Watch security state for changes
     final securityState = ref.watch(securityProvider);
+    final themeState = ref.watch(themeProvider);
 
-    // Determine if we need to show lock screen
     final shouldShowLock =
         securityState.biometricEnabled && !securityState.isUnlocked;
 
     return MaterialApp(
       title: 'ClearState',
       debugShowCheckedModeBanner: false,
-      theme: ClearStateTheme.darkTheme,
+      theme: ClearStateTheme.darkTheme.copyWith(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: themeState.accent.value,
+          surface: themeState.background.value,
+        ),
+      ),
       home: _buildHome(shouldShowLock),
     );
   }
 
   Widget _buildHome(bool shouldShowLock) {
-    // Show lock screen if biometric is enabled and not unlocked
     if (shouldShowLock && !_showOnboarding) {
       return BiometricLockScreen(onUnlocked: _handleUnlock);
     }
 
-    // Show onboarding if needed
     if (_showOnboarding) {
       return OnboardingScreen(onComplete: _completeOnboarding);
     }
 
-    // Show main app
     return _MainShell(
       currentIndex: _currentIndex,
-      onIndexChanged: (index) => setState(() => _currentIndex = index),
+      onIndexChanged: (index) {
+        HapticService.light();
+        setState(() => _currentIndex = index);
+      },
       onDataWiped: _handleDataWiped,
     );
   }
 }
 
-class _MainShell extends StatelessWidget {
+class _MainShell extends ConsumerStatefulWidget {
   final int currentIndex;
   final ValueChanged<int> onIndexChanged;
   final VoidCallback onDataWiped;
@@ -173,49 +178,106 @@ class _MainShell extends StatelessWidget {
   });
 
   @override
+  ConsumerState<_MainShell> createState() => _MainShellState();
+}
+
+class _MainShellState extends ConsumerState<_MainShell>
+    with TickerProviderStateMixin {
+  late AnimationController _fadeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+  }
+
+  @override
+  void didUpdateWidget(_MainShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final themeState = ref.watch(themeProvider);
+
     return Scaffold(
-      backgroundColor: ClearStateColors.void_,
-      body: IndexedStack(
-        index: currentIndex,
-        children: [
-          const TimerScreen(),
-          const TimelineScreen(),
-          const AnalyticsScreen(),
-          SettingsScreen(onDataWiped: onDataWiped),
-        ],
+      backgroundColor: themeState.background.value,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: IndexedStack(
+          index: widget.currentIndex,
+          children: [
+            const TimerScreen(),
+            const TimelineScreen(),
+            const AnalyticsScreen(),
+            SettingsScreen(onDataWiped: widget.onDataWiped),
+          ],
+        ),
       ),
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           border: Border(
             top: BorderSide(color: ClearStateColors.ash, width: 1),
           ),
         ),
         child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: onIndexChanged,
-          items: const [
+          currentIndex: widget.currentIndex,
+          onTap: widget.onIndexChanged,
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.timer_outlined),
-              activeIcon: Icon(Icons.timer),
+              icon: AnimatedNavIcon(
+                icon: Icons.timer_outlined,
+                activeIcon: Icons.timer,
+                label: 'TIMER',
+                isActive: widget.currentIndex == 0,
+                onTap: () => widget.onIndexChanged(0),
+              ),
               label: 'TIMER',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.trending_up_outlined),
-              activeIcon: Icon(Icons.trending_up),
+              icon: AnimatedNavIcon(
+                icon: Icons.trending_up_outlined,
+                activeIcon: Icons.trending_up,
+                label: 'TIMELINE',
+                isActive: widget.currentIndex == 1,
+                onTap: () => widget.onIndexChanged(1),
+              ),
               label: 'TIMELINE',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart_outlined),
-              activeIcon: Icon(Icons.bar_chart),
+              icon: AnimatedNavIcon(
+                icon: Icons.bar_chart_outlined,
+                activeIcon: Icons.bar_chart,
+                label: 'STATS',
+                isActive: widget.currentIndex == 2,
+                onTap: () => widget.onIndexChanged(2),
+              ),
               label: 'STATS',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.tune_outlined),
-              activeIcon: Icon(Icons.tune),
+              icon: AnimatedNavIcon(
+                icon: Icons.tune_outlined,
+                activeIcon: Icons.tune,
+                label: 'SETTINGS',
+                isActive: widget.currentIndex == 3,
+                onTap: () => widget.onIndexChanged(3),
+              ),
               label: 'SETTINGS',
             ),
           ],
+          selectedItemColor: themeState.accent.value,
+          unselectedItemColor: ClearStateColors.smoke,
+          backgroundColor: themeState.background.value,
+          type: BottomNavigationBarType.fixed,
         ),
       ),
     );

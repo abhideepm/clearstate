@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/widget_config.dart';
@@ -5,6 +6,7 @@ import '../../data/repositories/sobriety_repository.dart';
 import '../constants/bio_states.dart';
 import '../constants/milestones.dart';
 import '../constants/stoic_quotes.dart';
+import '../theme/theme_provider.dart';
 
 /// Service that prepares data for home screen widgets.
 ///
@@ -16,6 +18,11 @@ class WidgetDataService {
 
   /// Creates a [WidgetDataService] with the given [SobrietyRepository].
   const WidgetDataService(this._repository);
+
+  /// Returns the current accent color for widgets.
+  Color getAccentColor(ThemeState themeState) {
+    return themeState.accent.value;
+  }
 
   /// Calculates battery progress based on the display mode.
   ///

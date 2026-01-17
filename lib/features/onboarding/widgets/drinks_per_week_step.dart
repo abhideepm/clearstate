@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
+import '../../../core/services/haptic_service.dart';
+import '../../../shared/widgets/brutalist_button.dart';
 import '../onboarding_provider.dart';
+import '../../../shared/widgets/animated_counter.dart';
+import '../../../shared/widgets/animated_stepper_button.dart';
 
 class DrinksPerWeekStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
@@ -23,13 +25,13 @@ class _DrinksPerWeekStepState extends ConsumerState<DrinksPerWeekStep> {
   int _count = 10;
 
   void _increment() {
-    HapticFeedback.selectionClick();
+    HapticService.medium();
     setState(() => _count++);
   }
 
   void _decrement() {
     if (_count > 1) {
-      HapticFeedback.selectionClick();
+      HapticService.medium();
       setState(() => _count--);
     }
   }
@@ -57,18 +59,21 @@ class _DrinksPerWeekStepState extends ConsumerState<DrinksPerWeekStep> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _StepperButton(icon: Icons.remove, onTap: _decrement),
+              AnimatedStepperButton(
+                icon: Icons.remove,
+                onTap: _decrement,
+                enabled: _count > 1,
+              ),
               const SizedBox(width: 32),
               SizedBox(
                 width: 100,
-                child: Text(
-                  '$_count',
+                child: AnimatedCounter(
+                  value: _count,
                   style: ClearStateTypography.timerDisplay,
-                  textAlign: TextAlign.center,
                 ),
               ),
               const SizedBox(width: 32),
-              _StepperButton(icon: Icons.add, onTap: _increment),
+              AnimatedStepperButton(icon: Icons.add, onTap: _increment),
             ],
           ),
           const SizedBox(height: 8),
@@ -78,48 +83,22 @@ class _DrinksPerWeekStepState extends ConsumerState<DrinksPerWeekStep> {
             textAlign: TextAlign.center,
           ),
           const Spacer(),
-          ElevatedButton(
+          BrutalistButton(
+            label: 'CONTINUE',
             onPressed: () {
               ref.read(onboardingProvider.notifier).setDrinksPerWeek(_count);
               widget.onNext();
             },
-            child: const Text('CONTINUE'),
+            type: BrutalistButtonType.primary,
           ),
           const SizedBox(height: 12),
-          TextButton(
+          BrutalistButton(
+            label: 'BACK',
             onPressed: widget.onBack,
-            child: Text(
-              'BACK',
-              style: ClearStateTypography.button.copyWith(
-                color: ClearStateColors.smoke,
-              ),
-            ),
+            type: BrutalistButtonType.secondary,
           ),
           const SizedBox(height: 24),
         ],
-      ),
-    );
-  }
-}
-
-class _StepperButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _StepperButton({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          color: ClearStateColors.charcoal,
-          border: Border.all(color: ClearStateColors.ash),
-        ),
-        child: Icon(icon, color: ClearStateColors.bone),
       ),
     );
   }
