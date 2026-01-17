@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../../core/theme/motion.dart';
+import '../../core/theme/theme_provider.dart';
 import '../../core/services/haptic_service.dart';
 
-class AnimatedTabSwitcher extends StatelessWidget {
+class AnimatedTabSwitcher extends ConsumerWidget {
   final int currentIndex;
   final ValueChanged<int> onIndexChanged;
   final List<BottomNavigationBarItem> items;
@@ -25,7 +27,10 @@ class AnimatedTabSwitcher extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
+
     return Container(
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: ClearStateColors.ash, width: 1)),
@@ -37,7 +42,7 @@ class AnimatedTabSwitcher extends StatelessWidget {
           onIndexChanged(index);
         },
         items: items,
-        selectedItemColor: selectedItemColor ?? ClearStateColors.signal,
+        selectedItemColor: selectedItemColor ?? accentColor,
         unselectedItemColor: unselectedItemColor ?? ClearStateColors.smoke,
         backgroundColor: backgroundColor ?? ClearStateColors.void_,
         elevation: elevation,
@@ -47,7 +52,7 @@ class AnimatedTabSwitcher extends StatelessWidget {
   }
 }
 
-class AnimatedNavIcon extends StatefulWidget {
+class AnimatedNavIcon extends ConsumerStatefulWidget {
   final IconData icon;
   final IconData? activeIcon;
   final String label;
@@ -66,10 +71,10 @@ class AnimatedNavIcon extends StatefulWidget {
   });
 
   @override
-  State<AnimatedNavIcon> createState() => _AnimatedNavIconState();
+  ConsumerState<AnimatedNavIcon> createState() => _AnimatedNavIconState();
 }
 
-class _AnimatedNavIconState extends State<AnimatedNavIcon>
+class _AnimatedNavIconState extends ConsumerState<AnimatedNavIcon>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -114,6 +119,9 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
 
   @override
   Widget build(BuildContext context) {
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
+
     return GestureDetector(
       onTap: () {
         HapticService.light();
@@ -135,18 +143,14 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
                   ? (widget.activeIcon ?? widget.icon)
                   : widget.icon,
               size: widget.size,
-              color: widget.isActive
-                  ? ClearStateColors.signal
-                  : ClearStateColors.smoke,
+              color: widget.isActive ? accentColor : ClearStateColors.smoke,
             ),
             const SizedBox(height: 4),
             Text(
               widget.label,
               style: ClearStateTypography.caption.copyWith(
                 fontSize: 10,
-                color: widget.isActive
-                    ? ClearStateColors.signal
-                    : ClearStateColors.smoke,
+                color: widget.isActive ? accentColor : ClearStateColors.smoke,
                 letterSpacing: 1,
               ),
             ),

@@ -2,26 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
+import '../../core/theme/theme_provider.dart';
 import '../../core/services/haptic_service.dart';
-import '../../data/repositories/sobriety_repository.dart';
-import '../timer/timer_provider.dart';
 import 'widgets/drink_input_sheet.dart';
-import 'widgets/slip_pattern_dialog.dart';
 
 /// Main sheet that asks user to categorize their incident as a slip or relapse.
 /// This is the "anti-shame" logic that preserves psychological momentum.
-class SlipVsRelapseSheet extends ConsumerStatefulWidget {
+class SlipVsRelapseSheet extends ConsumerWidget {
   const SlipVsRelapseSheet({super.key});
 
-  @override
-  ConsumerState<SlipVsRelapseSheet> createState() => _SlipVsRelapseSheetState();
-}
+  void _showDrinkInput(BuildContext context, {required bool isSlip}) {
+    HapticService.medium();
+    Navigator.pop(context); // Close this sheet
 
-class _SlipVsRelapseSheetState extends ConsumerState<SlipVsRelapseSheet> {
-  bool _isLogging = false;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: ClearStateColors.charcoal,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
+      ),
+      builder: (sheetContext) => DrinkInputSheet(isSlip: isSlip),
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
+
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -58,9 +67,8 @@ class _SlipVsRelapseSheetState extends ConsumerState<SlipVsRelapseSheet> {
             title: 'A MOMENTARY SLIP',
             subtitle: 'A one-time incident. Your timer continues.',
             icon: Icons.water_drop_outlined,
-            color: ClearStateColors.signal,
-            isLoading: _isLogging,
-            onTap: () => _showDrinkInput(isSlip: true),
+            color: accentColor,
+            onTap: () => _showDrinkInput(context, isSlip: true),
           ),
           const SizedBox(height: 16),
 
@@ -70,8 +78,7 @@ class _SlipVsRelapseSheetState extends ConsumerState<SlipVsRelapseSheet> {
             subtitle: 'Back to old patterns. Timer resets.',
             icon: Icons.restart_alt,
             color: ClearStateColors.relapse,
-            isLoading: _isLogging,
-            onTap: () => _showDrinkInput(isSlip: false),
+            onTap: () => _showDrinkInput(context, isSlip: false),
           ),
           const SizedBox(height: 24),
 
@@ -93,96 +100,6 @@ class _SlipVsRelapseSheetState extends ConsumerState<SlipVsRelapseSheet> {
       ),
     );
   }
-
-  void _showDrinkInput({required bool isSlip}) {
-    HapticService.medium();
-    Navigator.pop(context); // Close this sheet
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: ClearStateColors.charcoal,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
-      ),
-      builder: (context) => DrinkInputSheet(
-        isSlip: isSlip,
-        onConfirm: (drinks, cost, calories, drinkType) async {
-          await _logEvent(
-            isSlip: isSlip,
-            drinks: drinks,
-            cost: cost,
-            calories: calories,
-            drinkType: drinkType,
-          );
-        },
-      ),
-    );
-  }
-
-  Future<void> _logEvent({
-    required bool isSlip,
-    required int drinks,
-    required double cost,
-    required int calories,
-    required String drinkType,
-  }) async {
-    setState(() => _isLogging = true);
-
-    final repository = ref.read(sobrietyRepositoryProvider);
-
-    if (isSlip) {
-      await repository.logSlip(
-        drinksConsumed: drinks,
-        costIncurred: cost,
-        caloriesConsumed: calories,
-        drinkType: drinkType,
-      );
-
-      // Check for slip pattern (3+ slips in a week)
-      final slipsThisWeek = repository.getSlipsThisWeek();
-      if (slipsThisWeek >= 3 && mounted) {
-        HapticService.medium();
-        // Show gentle prompt dialog
-        _showSlipPatternDialog();
-      } else {
-        HapticService.success();
-      }
-    } else {
-      await repository.logRelapse(
-        drinksConsumed: drinks,
-        costIncurred: cost,
-        caloriesConsumed: calories,
-        drinkType: drinkType,
-      );
-
-      // Reset the timer state
-      ref.read(sobrietyStartDateProvider.notifier).state = DateTime.now();
-      HapticService.relapseConfirm();
-    }
-
-    setState(() => _isLogging = false);
-  }
-
-  void _showSlipPatternDialog() {
-    if (!mounted) return;
-    final navigator = Navigator.of(context);
-    showDialog(
-      context: context,
-      builder: (dialogContext) => SlipPatternDialog(
-        onKeepAsSlips: () {
-          Navigator.pop(dialogContext);
-        },
-        onConvertToRelapse: () async {
-          final repository = ref.read(sobrietyRepositoryProvider);
-          await repository.convertSlipsToRelapse();
-          ref.read(sobrietyStartDateProvider.notifier).state = DateTime.now();
-          HapticService.relapseConfirm();
-          navigator.pop();
-        },
-      ),
-    );
-  }
 }
 
 /// Choice card for slip vs relapse selection.
@@ -192,7 +109,6 @@ class _ChoiceCard extends StatelessWidget {
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
-  final bool isLoading;
 
   const _ChoiceCard({
     required this.title,
@@ -200,13 +116,12 @@ class _ChoiceCard extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.onTap,
-    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isLoading ? null : onTap,
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(

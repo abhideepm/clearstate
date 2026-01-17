@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
@@ -24,6 +25,8 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
 
+  bool get _isIOS => Platform.isIOS;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +38,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
       CurvedAnimation(parent: _shakeController, curve: Curves.easeInOut),
     );
 
+    // Auto-authenticate on app launch
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _authenticate();
     });
@@ -86,7 +90,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 64),
+                const Spacer(flex: 2),
                 AnimatedEntrance(
                   delay: const Duration(milliseconds: 0),
                   duration: const Duration(milliseconds: 300),
@@ -102,7 +106,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
                   duration: const Duration(milliseconds: 300),
                   child: Text('Unlock', style: ClearStateTypography.h1),
                 ),
-                const Spacer(),
+                const Spacer(flex: 2),
                 AnimatedEntrance(
                   delay: const Duration(milliseconds: 450),
                   duration: const Duration(milliseconds: 300),
@@ -113,11 +117,11 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
                   delay: const Duration(milliseconds: 600),
                   duration: const Duration(milliseconds: 300),
                   child: Text(
-                    'Tap to authenticate',
+                    _isIOS ? 'Authenticating...' : 'Tap to authenticate',
                     style: ClearStateTypography.caption,
                   ),
                 ),
-                const SizedBox(height: 64),
+                const Spacer(flex: 1),
               ],
             ),
           ),
@@ -138,8 +142,8 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
       child: GestureDetector(
         onTap: _isAuthenticating ? null : _authenticate,
         child: Container(
-          width: 80,
-          height: 80,
+          width: 100,
+          height: 100,
           decoration: BoxDecoration(
             color: ClearStateColors.charcoal,
             border: Border.all(color: accentColor, width: 2),
@@ -147,15 +151,19 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
           ),
           child: Center(
             child: _isAuthenticating
-                ? const SizedBox(
-                    width: 32,
-                    height: 32,
+                ? SizedBox(
+                    width: 40,
+                    height: 40,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: ClearStateColors.signal,
+                      color: accentColor,
                     ),
                   )
-                : Icon(Icons.fingerprint, size: 40, color: accentColor),
+                : Icon(
+                    _isIOS ? Icons.face : Icons.fingerprint,
+                    size: 48,
+                    color: accentColor,
+                  ),
           ),
         ),
       ),

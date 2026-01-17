@@ -203,10 +203,12 @@ class HeatmapCalendar extends ConsumerWidget {
                 date.day == startDate.day));
 
     if (isSober) {
-      return theme.accent.value.withValues(alpha: 0.8);
+      // Use the semantic sober color (green)
+      return ClearStateColors.sober.withValues(alpha: 0.8);
     }
 
-    return theme.accent.complementary.withValues(alpha: 0.3);
+    // Use the semantic relapse color (red) for non-sober days
+    return ClearStateColors.relapse.withValues(alpha: 0.6);
   }
 
   bool _isToday(DateTime? date, DateTime now) {

@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../../core/services/haptic_service.dart';
 import '../../../core/constants/drink_presets.dart';
+import '../../../data/repositories/sobriety_repository.dart';
+import '../../timer/timer_provider.dart';
+import 'slip_pattern_dialog.dart';
 
 /// Sheet for inputting drink details (quantity, type, cost).
 /// Used for both slips and relapses.
-class DrinkInputSheet extends StatefulWidget {
+class DrinkInputSheet extends ConsumerStatefulWidget {
   final bool isSlip;
-  final Future<void> Function(
-    int drinks,
-    double cost,
-    int calories,
-    String drinkType,
-  )
-  onConfirm;
 
-  const DrinkInputSheet({
-    super.key,
-    required this.isSlip,
-    required this.onConfirm,
-  });
+  const DrinkInputSheet({super.key, required this.isSlip});
 
   @override
-  State<DrinkInputSheet> createState() => _DrinkInputSheetState();
+  ConsumerState<DrinkInputSheet> createState() => _DrinkInputSheetState();
 }
 
-class _DrinkInputSheetState extends State<DrinkInputSheet> {
+class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
   int _drinks = 1;
   String _drinkType = 'Beer';
   bool _isLogging = false;
@@ -37,6 +31,9 @@ class _DrinkInputSheetState extends State<DrinkInputSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
+
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -62,9 +59,7 @@ class _DrinkInputSheetState extends State<DrinkInputSheet> {
             Text(
               widget.isSlip ? 'LOG SLIP' : 'LOG RELAPSE',
               style: ClearStateTypography.h2.copyWith(
-                color: widget.isSlip
-                    ? ClearStateColors.signal
-                    : ClearStateColors.relapse,
+                color: widget.isSlip ? accentColor : ClearStateColors.relapse,
               ),
               textAlign: TextAlign.center,
             ),
@@ -80,6 +75,7 @@ class _DrinkInputSheetState extends State<DrinkInputSheet> {
             const SizedBox(height: 12),
             _DrinkTypeSelector(
               selectedType: _drinkType,
+              accentColor: accentColor,
               onChanged: (type) {
                 HapticService.light();
                 setState(() => _drinkType = type);
@@ -131,7 +127,7 @@ class _DrinkInputSheetState extends State<DrinkInputSheet> {
               onPressed: _isLogging ? null : _handleConfirm,
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.isSlip
-                    ? ClearStateColors.signal
+                    ? accentColor
                     : ClearStateColors.relapse,
               ),
               child: _isLogging
@@ -171,7 +167,38 @@ class _DrinkInputSheetState extends State<DrinkInputSheet> {
     setState(() => _isLogging = true);
 
     try {
-      await widget.onConfirm(_drinks, _totalCost, _totalCalories, _drinkType);
+      final repository = ref.read(sobrietyRepositoryProvider);
+
+      if (widget.isSlip) {
+        await repository.logSlip(
+          drinksConsumed: _drinks,
+          costIncurred: _totalCost,
+          caloriesConsumed: _totalCalories,
+          drinkType: _drinkType,
+        );
+
+        // Check for slip pattern (3+ slips in a week)
+        final slipsThisWeek = repository.getSlipsThisWeek();
+        if (slipsThisWeek >= 3 && mounted) {
+          HapticService.medium();
+          _showSlipPatternDialog();
+          return; // Don't pop - dialog will handle navigation
+        } else {
+          HapticService.success();
+        }
+      } else {
+        await repository.logRelapse(
+          drinksConsumed: _drinks,
+          costIncurred: _totalCost,
+          caloriesConsumed: _totalCalories,
+          drinkType: _drinkType,
+        );
+
+        // Reset the timer state
+        ref.read(sobrietyStartDateProvider.notifier).state = DateTime.now();
+        HapticService.relapseConfirm();
+      }
+
       if (mounted) {
         Navigator.pop(context);
       }
@@ -181,15 +208,40 @@ class _DrinkInputSheetState extends State<DrinkInputSheet> {
       }
     }
   }
+
+  void _showSlipPatternDialog() {
+    if (!mounted) return;
+    final navigator = Navigator.of(context);
+    showDialog(
+      context: context,
+      builder: (dialogContext) => SlipPatternDialog(
+        onKeepAsSlips: () {
+          Navigator.pop(dialogContext);
+          navigator.pop(); // Close this sheet
+        },
+        onConvertToRelapse: () async {
+          final dialogNavigator = Navigator.of(dialogContext);
+          final repository = ref.read(sobrietyRepositoryProvider);
+          await repository.convertSlipsToRelapse();
+          ref.read(sobrietyStartDateProvider.notifier).state = DateTime.now();
+          HapticService.relapseConfirm();
+          dialogNavigator.pop();
+          navigator.pop(); // Close this sheet
+        },
+      ),
+    );
+  }
 }
 
 /// Horizontal drink type selector.
 class _DrinkTypeSelector extends StatelessWidget {
   final String selectedType;
+  final Color accentColor;
   final ValueChanged<String> onChanged;
 
   const _DrinkTypeSelector({
     required this.selectedType,
+    required this.accentColor,
     required this.onChanged,
   });
 
@@ -200,7 +252,7 @@ class _DrinkTypeSelector extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: DrinkPresets.presets.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 12),
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final preset = DrinkPresets.presets[index];
           final isSelected = preset.name == selectedType;
@@ -211,13 +263,11 @@ class _DrinkTypeSelector extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? ClearStateColors.signal.withValues(alpha: 0.15)
+                    ? accentColor.withValues(alpha: 0.15)
                     : ClearStateColors.void_,
                 borderRadius: BorderRadius.circular(2),
                 border: Border.all(
-                  color: isSelected
-                      ? ClearStateColors.signal
-                      : ClearStateColors.ash,
+                  color: isSelected ? accentColor : ClearStateColors.ash,
                   width: isSelected ? 2 : 1,
                 ),
               ),

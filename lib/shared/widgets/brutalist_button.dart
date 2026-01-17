@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/colors.dart';
-import '../../../core/theme/typography.dart';
-import '../../../core/theme/motion.dart';
-import '../../../core/services/haptic_service.dart';
+import '../../core/theme/colors.dart';
+import '../../core/theme/typography.dart';
+import '../../core/theme/motion.dart';
+import '../../core/theme/theme_provider.dart';
+import '../../core/services/haptic_service.dart';
 
 enum BrutalistButtonType { primary, secondary }
 
@@ -54,6 +55,13 @@ class _BrutalistButtonState extends ConsumerState<BrutalistButton> {
   @override
   Widget build(BuildContext context) {
     final isPrimary = widget.type == BrutalistButtonType.primary;
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
+    final accentColorLight = HSLColor.fromColor(accentColor)
+        .withLightness(
+          (HSLColor.fromColor(accentColor).lightness + 0.1).clamp(0.0, 1.0),
+        )
+        .toColor();
 
     return AnimatedContainer(
       duration: ClearStateMotion.duration(const Duration(milliseconds: 100)),
@@ -68,13 +76,13 @@ class _BrutalistButtonState extends ConsumerState<BrutalistButton> {
       decoration: BoxDecoration(
         color: isPrimary
             ? _isPressed
-                  ? ClearStateColors.signalLight
-                  : ClearStateColors.signal
+                  ? accentColorLight
+                  : accentColor
             : Colors.transparent,
         border: Border.all(
           color: _isPressed
               ? isPrimary
-                    ? ClearStateColors.signalLight
+                    ? accentColorLight
                     : ClearStateColors.smoke
               : ClearStateColors.ash,
           width: 1,
@@ -144,6 +152,13 @@ class _BrutalistButtonIconState extends ConsumerState<BrutalistButtonIcon> {
   @override
   Widget build(BuildContext context) {
     final isPrimary = widget.type == BrutalistButtonType.primary;
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
+    final accentColorLight = HSLColor.fromColor(accentColor)
+        .withLightness(
+          (HSLColor.fromColor(accentColor).lightness + 0.1).clamp(0.0, 1.0),
+        )
+        .toColor();
 
     return AnimatedContainer(
       duration: ClearStateMotion.duration(const Duration(milliseconds: 100)),
@@ -158,13 +173,13 @@ class _BrutalistButtonIconState extends ConsumerState<BrutalistButtonIcon> {
       decoration: BoxDecoration(
         color: isPrimary
             ? _isPressed
-                  ? ClearStateColors.signalLight
-                  : ClearStateColors.signal
+                  ? accentColorLight
+                  : accentColor
             : Colors.transparent,
         border: Border.all(
           color: _isPressed
               ? isPrimary
-                    ? ClearStateColors.signalLight
+                    ? accentColorLight
                     : ClearStateColors.smoke
               : ClearStateColors.ash,
           width: 1,

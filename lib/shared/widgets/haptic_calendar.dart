@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/colors.dart';
-import '../../../core/theme/typography.dart';
-import '../../../core/theme/motion.dart';
-import '../../../core/services/haptic_service.dart';
+import '../../core/theme/colors.dart';
+import '../../core/theme/typography.dart';
+import '../../core/theme/motion.dart';
+import '../../core/theme/theme_provider.dart';
+import '../../core/services/haptic_service.dart';
 
 final calendarControllerProvider = StateProvider.family<DateTime, DateTime>(
   (ref, initialDate) => initialDate,
@@ -200,6 +201,9 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
   }
 
   Widget _buildCalendarGrid(List<DateTime> days, DateTime today) {
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (Widget child, Animation<double> animation) {
@@ -229,6 +233,7 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
                 isToday: isToday,
                 isDisabled: isDisabled,
                 size: cellSize,
+                accentColor: accentColor,
                 onTap: () => _onDateTapped(date),
               );
             }).toList(),
@@ -266,6 +271,7 @@ class _CalendarCell extends StatelessWidget {
   final bool isToday;
   final bool isDisabled;
   final double size;
+  final Color accentColor;
   final VoidCallback onTap;
 
   const _CalendarCell({
@@ -275,6 +281,7 @@ class _CalendarCell extends StatelessWidget {
     required this.isToday,
     required this.isDisabled,
     required this.size,
+    required this.accentColor,
     required this.onTap,
   });
 
@@ -287,13 +294,13 @@ class _CalendarCell extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: isSelected
-            ? ClearStateColors.signal
+            ? accentColor
             : isToday
             ? Colors.transparent
             : ClearStateColors.charcoal,
         borderRadius: BorderRadius.circular(2),
         border: isToday && !isSelected
-            ? Border.all(color: ClearStateColors.signal, width: 1.5)
+            ? Border.all(color: accentColor, width: 1.5)
             : Border.all(
                 color: ClearStateColors.ash.withValues(alpha: 0.3),
                 width: 1,

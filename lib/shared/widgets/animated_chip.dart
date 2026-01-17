@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../../core/theme/motion.dart';
+import '../../core/theme/theme_provider.dart';
 import '../../core/services/haptic_service.dart';
 
-class AnimatedChip extends StatefulWidget {
+class AnimatedChip extends ConsumerStatefulWidget {
   final Widget child;
   final bool isSelected;
   final VoidCallback onTap;
@@ -17,10 +19,10 @@ class AnimatedChip extends StatefulWidget {
   });
 
   @override
-  State<AnimatedChip> createState() => _AnimatedChipState();
+  ConsumerState<AnimatedChip> createState() => _AnimatedChipState();
 }
 
-class _AnimatedChipState extends State<AnimatedChip>
+class _AnimatedChipState extends ConsumerState<AnimatedChip>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -59,6 +61,9 @@ class _AnimatedChipState extends State<AnimatedChip>
 
   @override
   Widget build(BuildContext context) {
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
+
     return GestureDetector(
       onTap: () {
         HapticService.selection();
@@ -72,13 +77,9 @@ class _AnimatedChipState extends State<AnimatedChip>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           decoration: BoxDecoration(
-            color: widget.isSelected
-                ? ClearStateColors.signal
-                : ClearStateColors.charcoal,
+            color: widget.isSelected ? accentColor : ClearStateColors.charcoal,
             border: Border.all(
-              color: widget.isSelected
-                  ? ClearStateColors.signal
-                  : ClearStateColors.ash,
+              color: widget.isSelected ? accentColor : ClearStateColors.ash,
             ),
           ),
           child: DefaultTextStyle.merge(
