@@ -200,34 +200,41 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
   }
 
   Widget _buildCalendarGrid(List<DateTime> days, DateTime today) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final cellSize = (constraints.maxWidth - 16) / 7;
-
-        return Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: days.map((date) {
-            final isCurrentMonth = _isCurrentMonth(date);
-            final isSelected =
-                _selectedDate.year == date.year &&
-                _selectedDate.month == date.month &&
-                _selectedDate.day == date.day;
-            final isToday = _isToday(date);
-            final isDisabled = widget.shouldDisableDate?.call(date) ?? false;
-
-            return _CalendarCell(
-              date: date,
-              isCurrentMonth: isCurrentMonth,
-              isSelected: isSelected,
-              isToday: isToday,
-              isDisabled: isDisabled,
-              size: cellSize,
-              onTap: () => _onDateTapped(date),
-            );
-          }).toList(),
-        );
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(opacity: animation, child: child);
       },
+      child: LayoutBuilder(
+        key: ValueKey(_currentMonth),
+        builder: (context, constraints) {
+          final cellSize = (constraints.maxWidth - 16) / 7;
+
+          return Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: days.map((date) {
+              final isCurrentMonth = _isCurrentMonth(date);
+              final isSelected =
+                  _selectedDate.year == date.year &&
+                  _selectedDate.month == date.month &&
+                  _selectedDate.day == date.day;
+              final isToday = _isToday(date);
+              final isDisabled = widget.shouldDisableDate?.call(date) ?? false;
+
+              return _CalendarCell(
+                date: date,
+                isCurrentMonth: isCurrentMonth,
+                isSelected: isSelected,
+                isToday: isToday,
+                isDisabled: isDisabled,
+                size: cellSize,
+                onTap: () => _onDateTapped(date),
+              );
+            }).toList(),
+          );
+        },
+      ),
     );
   }
 

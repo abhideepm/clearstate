@@ -172,6 +172,7 @@ class SobrietyRepository {
     required int avgDrinksPerWeek,
     required double avgCostPerDrink,
     required String defaultDrinkType,
+    String currency = 'USD',
   }) async {
     _assertInitialized();
     final preset = DrinkPresets.getByName(defaultDrinkType);
@@ -182,6 +183,7 @@ class SobrietyRepository {
       avgCaloriesPerDrink: preset.defaultCalories,
       defaultDrinkType: defaultDrinkType,
       onboardingComplete: true,
+      currency: currency,
     );
     await _userProfileBox.put(UserProfileKeys.profile, profile);
 

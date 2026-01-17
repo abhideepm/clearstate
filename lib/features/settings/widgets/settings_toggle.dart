@@ -90,6 +90,7 @@ class _CustomSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final enabled = onChanged != null;
+    final primaryColor = Theme.of(context).primaryColor;
 
     return GestureDetector(
       onTap: enabled
@@ -103,10 +104,10 @@ class _CustomSwitch extends StatelessWidget {
         width: 48,
         height: 28,
         decoration: BoxDecoration(
-          color: value ? ClearStateColors.signal : ClearStateColors.graphite,
+          color: value ? primaryColor : ClearStateColors.graphite,
           borderRadius: BorderRadius.circular(2),
           border: Border.all(
-            color: value ? ClearStateColors.signal : ClearStateColors.ash,
+            color: value ? primaryColor : ClearStateColors.ash,
             width: 1,
           ),
         ),

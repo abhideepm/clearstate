@@ -5,6 +5,7 @@ class OnboardingState {
   final int drinksPerWeek;
   final String drinkType;
   final double costPerDrink;
+  final String currency;
   final int currentStep;
 
   const OnboardingState({
@@ -12,6 +13,7 @@ class OnboardingState {
     this.drinksPerWeek = 10,
     this.drinkType = 'Beer',
     this.costPerDrink = 8.0,
+    this.currency = 'USD',
     this.currentStep = 0,
   });
 
@@ -20,6 +22,7 @@ class OnboardingState {
     int? drinksPerWeek,
     String? drinkType,
     double? costPerDrink,
+    String? currency,
     int? currentStep,
   }) {
     return OnboardingState(
@@ -27,6 +30,7 @@ class OnboardingState {
       drinksPerWeek: drinksPerWeek ?? this.drinksPerWeek,
       drinkType: drinkType ?? this.drinkType,
       costPerDrink: costPerDrink ?? this.costPerDrink,
+      currency: currency ?? this.currency,
       currentStep: currentStep ?? this.currentStep,
     );
   }
@@ -49,6 +53,10 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
 
   void setCostPerDrink(double cost) {
     state = state.copyWith(costPerDrink: cost);
+  }
+
+  void setCurrency(String currency) {
+    state = state.copyWith(currency: currency);
   }
 
   void nextStep() {

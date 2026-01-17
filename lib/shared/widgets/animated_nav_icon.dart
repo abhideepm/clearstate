@@ -6,17 +6,23 @@ import '../../core/services/haptic_service.dart';
 
 class AnimatedNavIcon extends StatefulWidget {
   final IconData icon;
-  final bool isSelected;
+  final IconData? activeIcon;
+  final String? label;
+  final bool isActive; // Matches app.dart usage
+  final bool isSelected; // Keep for backward compat if needed (aliased)
   final VoidCallback onTap;
   final double size;
 
   const AnimatedNavIcon({
     super.key,
     required this.icon,
-    required this.isSelected,
+    this.activeIcon,
+    this.label,
+    this.isActive = false,
+    bool? isSelected,
     required this.onTap,
     this.size = 24,
-  });
+  }) : isSelected = isSelected ?? isActive;
 
   @override
   State<AnimatedNavIcon> createState() => _AnimatedNavIconState();
@@ -56,7 +62,7 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
   @override
   void didUpdateWidget(AnimatedNavIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!oldWidget.isSelected && widget.isSelected) {
+    if (!oldWidget.isActive && widget.isActive) {
       _controller
         ..reset()
         ..forward();
@@ -71,12 +77,46 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final activeColor =
+        theme.bottomNavigationBarTheme.selectedItemColor ??
+        theme.colorScheme.primary;
+    final inactiveColor =
+        theme.bottomNavigationBarTheme.unselectedItemColor ??
+        ClearStateColors.smoke;
+
+    final effectiveIcon = (widget.isActive && widget.activeIcon != null)
+        ? widget.activeIcon!
+        : widget.icon;
+
+    final iconWidget = _buildIcon(effectiveIcon, activeColor, inactiveColor);
+
+    if (widget.label != null) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          iconWidget,
+          const SizedBox(height: 4),
+          Text(
+            widget.label!,
+            style: ClearStateTypography.caption.copyWith(
+              color: widget.isActive ? activeColor : inactiveColor,
+              fontSize: 10,
+              fontStyle: FontStyle.normal,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return iconWidget;
+  }
+
+  Widget _buildIcon(IconData iconData, Color activeColor, Color inactiveColor) {
     if (ClearStateMotion.reduceMotion) {
       return Icon(
-        widget.icon,
-        color: widget.isSelected
-            ? ClearStateColors.signal
-            : ClearStateColors.smoke,
+        iconData,
+        color: widget.isActive ? activeColor : inactiveColor,
         size: widget.size,
       );
     }
@@ -89,10 +129,8 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
       child: IconButton(
         onPressed: widget.onTap,
         icon: Icon(
-          widget.icon,
-          color: widget.isSelected
-              ? ClearStateColors.signal
-              : ClearStateColors.smoke,
+          iconData,
+          color: widget.isActive ? activeColor : inactiveColor,
           size: widget.size,
         ),
         padding: EdgeInsets.zero,

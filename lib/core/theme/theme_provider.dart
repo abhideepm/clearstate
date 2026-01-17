@@ -14,6 +14,11 @@ enum AccentColor {
 
   final Color value;
   const AccentColor(this.value);
+
+  Color get complementary {
+    final hsl = HSLColor.fromColor(value);
+    return hsl.withHue((hsl.hue + 180) % 360).toColor();
+  }
 }
 
 enum BackgroundTheme {

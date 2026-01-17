@@ -2,37 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'colors.dart';
 import 'typography.dart';
+import 'theme_provider.dart';
 
 class ClearStateTheme {
-  static ThemeData get darkTheme {
+  static ThemeData getTheme(AccentColor accent, BackgroundTheme background) {
+    final accentColor = accent.value;
+    final backgroundColor = background.value;
+
+    // Determine card/surface colors based on background
+    final surfaceColor = background == BackgroundTheme.void_
+        ? ClearStateColors.charcoal
+        : backgroundColor.withValues(
+            alpha: 0.05,
+          ); // Use withValues instead of withOpacity
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: ClearStateColors.void_,
-      colorScheme: const ColorScheme.dark(
-        surface: ClearStateColors.void_,
-        primary: ClearStateColors.signal,
-        secondary: ClearStateColors.signal,
+      scaffoldBackgroundColor: backgroundColor,
+      colorScheme: ColorScheme.dark(
+        surface: backgroundColor,
+        primary: accentColor,
+        secondary: accentColor,
         error: ClearStateColors.relapse,
         onSurface: ClearStateColors.bone,
-        onPrimary: ClearStateColors.void_,
+        onPrimary: backgroundColor,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: ClearStateColors.void_,
+        backgroundColor: backgroundColor,
         elevation: 0,
         centerTitle: true,
         titleTextStyle: ClearStateTypography.h3,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: ClearStateColors.void_,
-        selectedItemColor: ClearStateColors.signal,
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: backgroundColor,
+        selectedItemColor: accentColor,
         unselectedItemColor: ClearStateColors.smoke,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
       ),
       cardTheme: CardThemeData(
-        color: ClearStateColors.charcoal,
+        color: surfaceColor,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(2),
@@ -45,19 +56,19 @@ class ClearStateTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: ClearStateColors.signal,
-          foregroundColor: ClearStateColors.void_,
+          backgroundColor: accentColor,
+          foregroundColor: backgroundColor,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: ClearStateColors.signal),
+        style: TextButton.styleFrom(foregroundColor: accentColor),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: ClearStateColors.charcoal,
+        fillColor: surfaceColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(2),
           borderSide: const BorderSide(color: ClearStateColors.ash),
@@ -68,11 +79,16 @@ class ClearStateTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(2),
-          borderSide: const BorderSide(color: ClearStateColors.signal),
+          borderSide: BorderSide(color: accentColor),
         ),
         labelStyle: ClearStateTypography.caption,
         hintStyle: ClearStateTypography.bodySecondary,
       ),
     );
+  }
+
+  // Keep old getter for backward compatibility if needed, but updated to use default
+  static ThemeData get darkTheme {
+    return getTheme(AccentColor.signalOrange, BackgroundTheme.void_);
   }
 }

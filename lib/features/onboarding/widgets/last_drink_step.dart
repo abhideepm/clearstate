@@ -25,15 +25,48 @@ class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
       barrierDismissible: true,
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
-        child: HapticCalendar(
-          selectedDate: _selectedDate,
-          onDateSelected: (date) {
-            Navigator.of(context).pop();
-            setState(() => _selectedDate = date);
-            ref.read(onboardingProvider.notifier).setLastDrinkDate(date);
-          },
-          shouldDisableDate: (date) =>
-              date.isAfter(DateTime.now()) ? true : false,
+        child: Container(
+          decoration: BoxDecoration(
+            color: ClearStateColors.charcoal,
+            border: Border.all(color: ClearStateColors.ash, width: 1),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              HapticCalendar(
+                selectedDate: _selectedDate,
+                showModal: false, // Don't use internal modal wrapper
+                onDateSelected: (date) {
+                  setState(() => _selectedDate = date);
+                },
+                shouldDisableDate: (date) =>
+                    date.isAfter(DateTime.now()) ? true : false,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      ref
+                          .read(onboardingProvider.notifier)
+                          .setLastDrinkDate(_selectedDate);
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ClearStateColors.signal,
+                      foregroundColor: ClearStateColors.void_,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    child: const Text('CONFIRM DATE'),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

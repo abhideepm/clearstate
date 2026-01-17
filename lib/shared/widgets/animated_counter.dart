@@ -83,6 +83,7 @@ class __SlidingDigitCounterState extends State<_SlidingDigitCounter> {
 
     return Row(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(currentStr.length, (index) {
         final currentDigit = index < currentStr.length ? currentStr[index] : '';
         final previousDigit = index < previousStr.length

@@ -106,6 +106,7 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
       avgDrinksPerWeek: onboardingState.drinksPerWeek,
       avgCostPerDrink: onboardingState.costPerDrink,
       defaultDrinkType: onboardingState.drinkType,
+      currency: onboardingState.currency,
     );
 
     // Set the start date for timer (must match what was saved to profile)
@@ -136,12 +137,7 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     return MaterialApp(
       title: 'ClearState',
       debugShowCheckedModeBanner: false,
-      theme: ClearStateTheme.darkTheme.copyWith(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: themeState.accent.value,
-          surface: themeState.background.value,
-        ),
-      ),
+      theme: ClearStateTheme.getTheme(themeState.accent, themeState.background),
       home: _buildHome(shouldShowLock),
     );
   }
@@ -278,6 +274,8 @@ class _MainShellState extends ConsumerState<_MainShell>
           unselectedItemColor: ClearStateColors.smoke,
           backgroundColor: themeState.background.value,
           type: BottomNavigationBarType.fixed,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
         ),
       ),
     );

@@ -67,9 +67,11 @@ class _DrinksPerWeekStepState extends ConsumerState<DrinksPerWeekStep> {
               const SizedBox(width: 32),
               SizedBox(
                 width: 100,
-                child: AnimatedCounter(
-                  value: _count,
-                  style: ClearStateTypography.timerDisplay,
+                child: Center(
+                  child: AnimatedCounter(
+                    value: _count,
+                    style: ClearStateTypography.timerDisplay,
+                  ),
                 ),
               ),
               const SizedBox(width: 32),

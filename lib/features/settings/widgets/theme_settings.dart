@@ -4,6 +4,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/theme/motion.dart';
 import '../../../core/services/haptic_service.dart';
+import '../../../core/theme/theme_provider.dart';
 
 class ThemeSettings extends ConsumerStatefulWidget {
   final void Function(Color accentColor, Color backgroundColor) onThemeChanged;
@@ -22,44 +23,42 @@ class ThemeSettings extends ConsumerStatefulWidget {
 }
 
 class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
-  static const List<Color> _accentColors = [
-    Color(0xFFFF6B35),
-    Color(0xFF00D26A),
-    Color(0xFF6C63FF),
-    Color(0xFFFFD93D),
-    Color(0xFF00BCD4),
-    Color(0xFFFF4081),
-    Color(0xFF9C27B0),
-    Color(0xFF607D8B),
-  ];
+  // Use colors directly from AccentColor enum to ensure matching
+  List<Color> get _accentColors =>
+      AccentColor.values.map((e) => e.value).toList();
 
-  static const List<ThemeBackgroundOption> _backgroundOptions = [
-    ThemeBackgroundOption(
-      name: 'Void',
-      color: ClearStateColors.void_,
-      darkValue: 0.0,
-    ),
-    ThemeBackgroundOption(
-      name: 'Deep',
-      color: Color(0xFF0A0A0A),
-      darkValue: 0.1,
-    ),
-    ThemeBackgroundOption(
-      name: 'Abyss',
-      color: Color(0xFF080808),
-      darkValue: 0.2,
-    ),
-    ThemeBackgroundOption(
-      name: 'Void+',
-      color: Color(0xFF060606),
-      darkValue: 0.3,
-    ),
-    ThemeBackgroundOption(
-      name: 'Eclipse',
-      color: Color(0xFF0C0C0C),
-      darkValue: 0.4,
-    ),
-  ];
+  List<ThemeBackgroundOption> get _backgroundOptions =>
+      BackgroundTheme.values.map((e) {
+        String name = 'Void';
+        double darkValue = 0.0;
+        switch (e) {
+          case BackgroundTheme.void_:
+            name = 'Void';
+            darkValue = 0.0;
+            break;
+          case BackgroundTheme.oledBlack:
+            name = 'Deep';
+            darkValue = 0.1;
+            break;
+          case BackgroundTheme.charcoalDark:
+            name = 'Abyss';
+            darkValue = 0.2;
+            break;
+          case BackgroundTheme.deepNavy:
+            name = 'Navy';
+            darkValue = 0.3;
+            break;
+          case BackgroundTheme.texturedDark:
+            name = 'Texture';
+            darkValue = 0.4;
+            break;
+        }
+        return ThemeBackgroundOption(
+          name: name,
+          color: e.value,
+          darkValue: darkValue,
+        );
+      }).toList();
 
   Color _selectedAccent = const Color(0xFFFF6B35);
   Color _selectedBackground = ClearStateColors.void_;
@@ -202,7 +201,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                     color: option.color,
                     borderRadius: BorderRadius.circular(4),
                     border: isSelected
-                        ? Border.all(color: ClearStateColors.signal, width: 1.5)
+                        ? Border.all(color: _selectedAccent, width: 1.5)
                         : Border.all(color: ClearStateColors.ash, width: 1),
                   ),
                   child: Center(
@@ -210,7 +209,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                       option.name,
                       style: ClearStateTypography.caption.copyWith(
                         color: isSelected
-                            ? ClearStateColors.signal
+                            ? _selectedAccent
                             : ClearStateColors.smoke,
                       ),
                     ),

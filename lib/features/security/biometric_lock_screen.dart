@@ -86,7 +86,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Spacer(flex: 2),
+                const SizedBox(height: 64),
                 AnimatedEntrance(
                   delay: const Duration(milliseconds: 0),
                   duration: const Duration(milliseconds: 300),
@@ -98,24 +98,11 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
                 ),
                 const SizedBox(height: 24),
                 AnimatedEntrance(
-                  delay: const Duration(milliseconds: 150),
-                  duration: const Duration(milliseconds: 300),
-                  child: Text(
-                    'CLEARSTATE',
-                    style: ClearStateTypography.timerLabel.copyWith(
-                      fontSize: 14,
-                      letterSpacing: 4,
-                      color: ClearStateColors.smoke,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                AnimatedEntrance(
                   delay: const Duration(milliseconds: 300),
                   duration: const Duration(milliseconds: 300),
                   child: Text('Unlock', style: ClearStateTypography.h1),
                 ),
-                const Spacer(flex: 2),
+                const Spacer(),
                 AnimatedEntrance(
                   delay: const Duration(milliseconds: 450),
                   duration: const Duration(milliseconds: 300),
@@ -130,7 +117,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
                     style: ClearStateTypography.caption,
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(height: 64),
               ],
             ),
           ),

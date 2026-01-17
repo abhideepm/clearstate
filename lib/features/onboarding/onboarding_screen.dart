@@ -64,7 +64,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(onboardingProvider);
+    // Don't watch onboardingProvider here to avoid rebuilding PageView during animation
     final themeState = ref.watch(themeProvider);
     final accentColor = themeState.accent.value;
 
@@ -78,31 +78,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               const SizedBox(height: 16),
               SunriseLogo(size: 48, accentColor: accentColor, showLabel: false),
               const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  children: List.generate(4, (index) {
-                    return Expanded(
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        height: 2,
-                        margin: const EdgeInsets.symmetric(horizontal: 2),
-                        color: index <= state.currentStep
-                            ? accentColor
-                            : ClearStateColors.ash,
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'STEP ${state.currentStep + 1} OF 4',
-                style: ClearStateTypography.timerLabel.copyWith(
-                  fontSize: 12,
-                  letterSpacing: 2,
-                ),
-              ),
+              _OnboardingProgress(accentColor: accentColor),
               const SizedBox(height: 8),
               Expanded(
                 child: PageView(
@@ -120,6 +96,47 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _OnboardingProgress extends ConsumerWidget {
+  final Color accentColor;
+
+  const _OnboardingProgress({required this.accentColor});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(onboardingProvider);
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Row(
+            children: List.generate(4, (index) {
+              return Expanded(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: 2,
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  color: index <= state.currentStep
+                      ? accentColor
+                      : ClearStateColors.ash,
+                ),
+              );
+            }),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'STEP ${state.currentStep + 1} OF 4',
+          style: ClearStateTypography.timerLabel.copyWith(
+            fontSize: 12,
+            letterSpacing: 2,
+          ),
+        ),
+      ],
     );
   }
 }

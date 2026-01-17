@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../timer/timer_provider.dart';
 
 class HeatmapCalendar extends ConsumerWidget {
@@ -15,6 +16,7 @@ class HeatmapCalendar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final startDate = ref.watch(sobrietyStartDateProvider);
+    final themeState = ref.watch(themeProvider);
     final now = DateTime.now();
 
     // Generate weeks data (most recent on the right)
@@ -52,7 +54,12 @@ class HeatmapCalendar extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: weeks.asMap().entries.map((entry) {
                         final week = entry.value;
-                        return _buildWeekColumn(week, startDate, now);
+                        return _buildWeekColumn(
+                          week,
+                          startDate,
+                          now,
+                          themeState,
+                        );
                       }).toList(),
                     ),
                   ],
@@ -158,6 +165,7 @@ class HeatmapCalendar extends ConsumerWidget {
     List<DateTime?> week,
     DateTime? startDate,
     DateTime now,
+    ThemeState theme,
   ) {
     return Column(
       children: week.map((date) {
@@ -166,10 +174,10 @@ class HeatmapCalendar extends ConsumerWidget {
           height: _cellSize,
           margin: EdgeInsets.all(_cellSpacing / 2),
           decoration: BoxDecoration(
-            color: _getCellColor(date, startDate, now),
+            color: _getCellColor(date, startDate, now, theme),
             borderRadius: BorderRadius.circular(2),
             border: _isToday(date, now)
-                ? Border.all(color: ClearStateColors.signal, width: 1.5)
+                ? Border.all(color: theme.accent.value, width: 1.5)
                 : null,
           ),
         );
@@ -177,7 +185,12 @@ class HeatmapCalendar extends ConsumerWidget {
     );
   }
 
-  Color _getCellColor(DateTime? date, DateTime? startDate, DateTime now) {
+  Color _getCellColor(
+    DateTime? date,
+    DateTime? startDate,
+    DateTime now,
+    ThemeState theme,
+  ) {
     if (date == null) {
       return Colors.transparent;
     }
@@ -190,10 +203,10 @@ class HeatmapCalendar extends ConsumerWidget {
                 date.day == startDate.day));
 
     if (isSober) {
-      return ClearStateColors.sober.withValues(alpha: 0.8);
+      return theme.accent.value.withValues(alpha: 0.8);
     }
 
-    return ClearStateColors.ash.withValues(alpha: 0.3);
+    return theme.accent.complementary.withValues(alpha: 0.3);
   }
 
   bool _isToday(DateTime? date, DateTime now) {

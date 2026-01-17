@@ -22,6 +22,9 @@ class UserProfile extends HiveObject {
   @HiveField(5)
   bool onboardingComplete;
 
+  @HiveField(6, defaultValue: 'USD')
+  String currency;
+
   UserProfile({
     required this.lastDrinkDate,
     this.avgDrinksPerWeek = 10,
@@ -29,6 +32,7 @@ class UserProfile extends HiveObject {
     this.avgCaloriesPerDrink = 150,
     this.defaultDrinkType = 'Beer',
     this.onboardingComplete = false,
+    this.currency = 'USD',
   });
 
   // Calculate average daily spend
@@ -46,6 +50,7 @@ class UserProfile extends HiveObject {
       'avgCaloriesPerDrink': avgCaloriesPerDrink,
       'defaultDrinkType': defaultDrinkType,
       'onboardingComplete': onboardingComplete,
+      'currency': currency,
     };
   }
 
@@ -57,6 +62,7 @@ class UserProfile extends HiveObject {
       avgCaloriesPerDrink: json['avgCaloriesPerDrink'] as int,
       defaultDrinkType: json['defaultDrinkType'] as String,
       onboardingComplete: json['onboardingComplete'] as bool,
+      currency: json['currency'] as String? ?? 'USD',
     );
   }
 }

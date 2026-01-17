@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../../../core/services/haptic_service.dart';
 
@@ -44,7 +45,6 @@ class HapticScrollView extends StatelessWidget {
 
       if (overscroll != 0) {
         final intensity = (overscroll.abs() / 50.0).clamp(0.0, 1.0);
-
         if (intensity > 0) {
           _triggerHaptic(intensity);
         }
@@ -54,13 +54,86 @@ class HapticScrollView extends StatelessWidget {
   }
 
   void _triggerHaptic(double intensity) {
-    if (intensity >= 1.0) {
-      HapticService.selection();
-    } else if (intensity >= 0.5) {
-      HapticService.selection();
-    } else {
-      HapticService.selection();
+    HapticService.selection();
+  }
+}
+
+class HapticCustomScrollView extends StatelessWidget {
+  final List<Widget> slivers;
+  final Axis scrollDirection;
+  final bool reverse;
+  final ScrollController? controller;
+  final bool shrinkWrap;
+  final ScrollPhysics? physics;
+  final ScrollBehavior? scrollBehavior;
+  final String? restorationId;
+  final Clip clipBehavior;
+  final DragStartBehavior dragStartBehavior;
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+  final String? semanticChildCount;
+  final double? cacheExtent;
+  final double? anchor;
+  final Key? center;
+
+  const HapticCustomScrollView({
+    super.key,
+    required this.slivers,
+    this.scrollDirection = Axis.vertical,
+    this.reverse = false,
+    this.controller,
+    this.shrinkWrap = false,
+    this.physics,
+    this.scrollBehavior,
+    this.restorationId,
+    this.clipBehavior = Clip.hardEdge,
+    this.dragStartBehavior = DragStartBehavior.start,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    this.semanticChildCount,
+    this.cacheExtent,
+    this.anchor,
+    this.center,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: _handleScrollNotification,
+      child: CustomScrollView(
+        slivers: slivers,
+        scrollDirection: scrollDirection,
+        reverse: reverse,
+        controller: controller,
+        shrinkWrap: shrinkWrap,
+        physics: physics,
+        scrollBehavior: scrollBehavior,
+        restorationId: restorationId,
+        clipBehavior: clipBehavior,
+        dragStartBehavior: dragStartBehavior,
+        keyboardDismissBehavior: keyboardDismissBehavior,
+        semanticChildCount: semanticChildCount == null
+            ? null
+            : int.tryParse(semanticChildCount!) ?? 0,
+        cacheExtent: cacheExtent,
+        anchor: anchor ?? 0.0,
+        center: center,
+      ),
+    );
+  }
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is OverscrollNotification) {
+      final overscroll = scrollDirection == Axis.vertical
+          ? notification.overscroll
+          : notification.overscroll;
+
+      if (overscroll != 0) {
+        final intensity = (overscroll.abs() / 50.0).clamp(0.0, 1.0);
+        if (intensity > 0) {
+          HapticService.selection();
+        }
+      }
     }
+    return false;
   }
 }
 
