@@ -159,7 +159,10 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 
 - `lib/main.dart` - App initialization, Hive setup, widget initialization
 - `lib/app.dart` - Root widget, navigation with 4-tab bottom nav
-- `lib/data/repositories/sobriety_repository.dart` - Main data layer (includes `nukeAllData()`, `triggerWidgetUpdate()`)
+- `lib/data/repositories/sobriety_repository.dart` - Pure data persistence layer
+- `lib/core/services/sobriety_orchestrator.dart` - Orchestrates side-effects (notifications, widgets)
+- `lib/core/services/hive_adapter_registry.dart` - Centralized Hive adapter registration
+- `lib/core/services/id_generator.dart` - UUID generation for entity IDs
 - `lib/core/theme/colors.dart` - Color constants
 - `lib/core/theme/motion.dart` - Animation constants and accessibility utilities
 - `lib/core/theme/theme_provider.dart` - Theme state management with accent colors and background themes
@@ -169,15 +172,55 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 - `lib/core/constants/stoic_quotes.dart` - Daily Stoic quotes database
 - `lib/core/services/widget_update_service.dart` - Home screen widget sync
 - `lib/core/services/widget_data_service.dart` - Widget data preparation
+- `lib/core/services/haptic_service.dart` - Haptic feedback with testable interface
+- `lib/core/services/notification_service.dart` - Milestone notification scheduling
+- `lib/core/services/notification_service_interface.dart` - Testable notification interface
 - `lib/data/models/widget_config.dart` - Widget configuration model (typeId: 4)
 - `lib/features/widgets/widget_settings_screen.dart` - Stealth widget configuration UI
 - `lib/features/widgets/providers/widget_settings_provider.dart` - Widget settings state
 - `lib/features/settings/settings_screen.dart` - Settings with privacy & data management
 - `lib/features/settings/widgets/wipe_confirmation_dialog.dart` - Nuclear wipe confirmation
-- `lib/core/services/notification_service.dart` - Milestone notification scheduling
 - `lib/features/settings/notification_provider.dart` - Notification settings state
 - `pubspec.yaml` - Dependencies
 - `analysis_options.yaml` - Lint config
+
+## Architecture Patterns
+
+### Repository vs Orchestrator Pattern
+
+The codebase separates persistence from side-effects:
+
+- **SobrietyRepository**: Pure data persistence (Hive boxes). Does NOT trigger notifications or widget updates.
+- **SobrietyOrchestrator**: Coordinates side-effects (notifications, widgets) alongside data operations.
+
+Use the orchestrator for user-facing actions that need side-effects:
+```dart
+// Good: Uses orchestrator for side-effects
+final orchestrator = ref.read(sobrietyOrchestratorProvider);
+await orchestrator.logRelapse(...); // Cancels notifications, updates widgets
+
+// For data-only access (no side-effects needed):
+final repository = ref.read(sobrietyRepositoryProvider);
+final profile = repository.getUserProfile();
+```
+
+### Provider Safety
+
+The `sobrietyRepositoryProvider` throws if accessed without proper initialization. In `main.dart`, override with initialized instance:
+```dart
+runApp(
+  ProviderScope(
+    overrides: [
+      sobrietyRepositoryProvider.overrideWithValue(repository),
+    ],
+    child: const ClearStateApp(),
+  ),
+);
+```
+
+### Security Considerations
+
+Widget updates are blocked when biometric lock is active to prevent data exposure on home screen.
 
 ## Shared Widgets
 

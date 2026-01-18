@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/services/haptic_service.dart';
-import '../../../data/repositories/sobriety_repository.dart';
+import '../../../core/services/sobriety_orchestrator.dart';
 import '../../onboarding/onboarding_provider.dart';
 import '../../timer/timer_provider.dart';
 import '../notification_provider.dart';
@@ -41,9 +41,9 @@ class _WipeConfirmationDialogState
     HapticService.heavy();
 
     try {
-      // Wipe all data (this also cancels pending notifications)
-      final repository = ref.read(sobrietyRepositoryProvider);
-      await repository.nukeAllData();
+      // Wipe all data via orchestrator (handles notifications + widgets)
+      final orchestrator = ref.read(sobrietyOrchestratorProvider);
+      await orchestrator.nukeAllData();
 
       // Reset app state providers
       ref.read(sobrietyStartDateProvider.notifier).state = null;

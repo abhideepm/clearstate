@@ -8,6 +8,7 @@ import 'data/models/widget_config.dart';
 import 'core/constants/hive_boxes.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/widget_update_service.dart';
+import 'core/services/hive_adapter_registry.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,12 +29,10 @@ void main() async {
 
   await Hive.initFlutter();
 
-  if (!Hive.isAdapterRegistered(4)) {
-    Hive.registerAdapter(WidgetConfigAdapter());
-  }
+  // Register all Hive adapters in one place
+  HiveAdapterRegistry.registerAll();
 
   await Hive.openBox<WidgetConfig>(HiveBoxes.widgetConfigs);
-
   await Hive.openBox('theme_settings');
 
   await NotificationService.instance.init();
@@ -44,16 +43,13 @@ void main() async {
   final widgetService = WidgetUpdateService();
   await widgetService.initializeWidgets();
 
-  await _updateWidgetsOnStartup(repository);
-
   runApp(
     ProviderScope(
-      overrides: [sobrietyRepositoryProvider.overrideWithValue(repository)],
+      overrides: [
+        sobrietyRepositoryProvider.overrideWithValue(repository),
+        widgetUpdateServiceProvider.overrideWithValue(widgetService),
+      ],
       child: const ClearStateApp(),
     ),
   );
-}
-
-Future<void> _updateWidgetsOnStartup(SobrietyRepository repository) async {
-  await repository.triggerWidgetUpdate();
 }

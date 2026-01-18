@@ -4,6 +4,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../../core/services/haptic_service.dart';
+import '../../../core/services/sobriety_orchestrator.dart';
 import '../../../core/constants/drink_presets.dart';
 import '../../../data/repositories/sobriety_repository.dart';
 import '../../timer/timer_provider.dart';
@@ -167,10 +168,11 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
     setState(() => _isLogging = true);
 
     try {
+      final orchestrator = ref.read(sobrietyOrchestratorProvider);
       final repository = ref.read(sobrietyRepositoryProvider);
 
       if (widget.isSlip) {
-        await repository.logSlip(
+        await orchestrator.logSlip(
           drinksConsumed: _drinks,
           costIncurred: _totalCost,
           caloriesConsumed: _totalCalories,
@@ -187,7 +189,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
           HapticService.success();
         }
       } else {
-        await repository.logRelapse(
+        await orchestrator.logRelapse(
           drinksConsumed: _drinks,
           costIncurred: _totalCost,
           caloriesConsumed: _totalCalories,
@@ -221,8 +223,8 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
         },
         onConvertToRelapse: () async {
           final dialogNavigator = Navigator.of(dialogContext);
-          final repository = ref.read(sobrietyRepositoryProvider);
-          await repository.convertSlipsToRelapse();
+          final orchestrator = ref.read(sobrietyOrchestratorProvider);
+          await orchestrator.convertSlipsToRelapse();
           ref.read(sobrietyStartDateProvider.notifier).state = DateTime.now();
           HapticService.relapseConfirm();
           dialogNavigator.pop();

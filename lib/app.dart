@@ -5,6 +5,7 @@ import 'core/theme/colors.dart';
 import 'core/theme/theme_provider.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/haptic_service.dart';
+import 'core/services/sobriety_orchestrator.dart';
 import 'features/timer/timer_screen.dart';
 import 'features/timeline/timeline_screen.dart';
 import 'features/analytics/analytics_screen.dart';
@@ -15,7 +16,6 @@ import 'features/security/security_provider.dart';
 import 'features/security/biometric_lock_screen.dart';
 import 'data/repositories/sobriety_repository.dart';
 import 'features/timer/timer_provider.dart';
-import 'shared/widgets/animated_tab_switcher.dart';
 
 class ClearStateApp extends ConsumerStatefulWidget {
   const ClearStateApp({super.key});
@@ -37,6 +37,8 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkOnboardingStatus();
       _checkLockStatus();
+      // Trigger initial widget update (safe - checks lock status)
+      _updateWidgetsOnResume();
     });
   }
 
@@ -55,6 +57,12 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
       final securityState = ref.read(securityProvider);
       if (securityState.biometricEnabled) {
         ref.read(securityProvider.notifier).lock();
+        // Clear widgets for privacy when locking
+        try {
+          ref.read(sobrietyOrchestratorProvider).clearWidgetsForPrivacy();
+        } catch (e) {
+          debugPrint('Error clearing widgets on lock: $e');
+        }
       }
     }
 
@@ -65,10 +73,20 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
   }
 
   /// Updates home screen widgets when the app returns to foreground.
+  /// SECURITY: Only updates if biometric lock is NOT active (user authenticated).
   void _updateWidgetsOnResume() {
     try {
-      final repository = ref.read(sobrietyRepositoryProvider);
-      repository.triggerWidgetUpdate();
+      final securityState = ref.read(securityProvider);
+
+      // Security: Don't update widgets if biometric lock is enabled but not unlocked.
+      // This prevents exposing sobriety data on home screen when app is locked.
+      if (securityState.biometricEnabled && !securityState.isUnlocked) {
+        debugPrint('Skipping widget update: biometric lock active');
+        return;
+      }
+
+      final orchestrator = ref.read(sobrietyOrchestratorProvider);
+      orchestrator.triggerWidgetUpdate();
     } catch (e) {
       debugPrint('Error updating widgets on resume: $e');
     }
@@ -91,7 +109,7 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
   }
 
   void _completeOnboarding() async {
-    final repository = ref.read(sobrietyRepositoryProvider);
+    final orchestrator = ref.read(sobrietyOrchestratorProvider);
     final onboardingState = ref.read(onboardingProvider);
 
     // Request notification permissions during onboarding completion
@@ -101,7 +119,7 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     final startDate = onboardingState.lastDrinkDate ?? DateTime.now();
 
     // Save user profile (this also starts the session and schedules notifications)
-    await repository.saveUserProfile(
+    await orchestrator.saveUserProfile(
       lastDrinkDate: startDate,
       avgDrinksPerWeek: onboardingState.drinksPerWeek,
       avgCostPerDrink: onboardingState.costPerDrink,
@@ -124,6 +142,8 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
 
   void _handleUnlock() {
     setState(() {});
+    // Update widgets after successful unlock
+    _updateWidgetsOnResume();
   }
 
   @override
@@ -154,7 +174,6 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     return _MainShell(
       currentIndex: _currentIndex,
       onIndexChanged: (index) {
-        HapticService.light();
         setState(() => _currentIndex = index);
       },
       onDataWiped: _handleDataWiped,
@@ -162,7 +181,7 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
   }
 }
 
-class _MainShell extends ConsumerStatefulWidget {
+class _MainShell extends ConsumerWidget {
   final int currentIndex;
   final ValueChanged<int> onIndexChanged;
   final VoidCallback onDataWiped;
@@ -174,109 +193,188 @@ class _MainShell extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<_MainShell> createState() => _MainShellState();
-}
-
-class _MainShellState extends ConsumerState<_MainShell>
-    with TickerProviderStateMixin {
-  late AnimationController _fadeController;
-
-  @override
-  void initState() {
-    super.initState();
-    _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-  }
-
-  @override
-  void didUpdateWidget(_MainShell oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void dispose() {
-    _fadeController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final themeState = ref.watch(themeProvider);
 
     return Scaffold(
       backgroundColor: themeState.background.value,
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: IndexedStack(
-          index: widget.currentIndex,
-          children: [
-            const TimerScreen(),
-            const TimelineScreen(),
-            const AnalyticsScreen(),
-            SettingsScreen(onDataWiped: widget.onDataWiped),
-          ],
-        ),
+      body: _AnimatedTabContent(
+        currentIndex: currentIndex,
+        onDataWiped: onDataWiped,
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: ClearStateColors.ash, width: 1),
+      bottomNavigationBar: _BottomNavBar(
+        currentIndex: currentIndex,
+        onIndexChanged: onIndexChanged,
+        accentColor: themeState.accent.value,
+        backgroundColor: themeState.background.value,
+      ),
+    );
+  }
+}
+
+/// Animated content switcher that fades between tabs.
+class _AnimatedTabContent extends StatelessWidget {
+  final int currentIndex;
+  final VoidCallback onDataWiped;
+
+  const _AnimatedTabContent({
+    required this.currentIndex,
+    required this.onDataWiped,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      switchInCurve: Curves.easeOut,
+      switchOutCurve: Curves.easeIn,
+      transitionBuilder: (child, animation) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      child: KeyedSubtree(
+        key: ValueKey<int>(currentIndex),
+        child: _getScreen(currentIndex),
+      ),
+    );
+  }
+
+  Widget _getScreen(int index) {
+    switch (index) {
+      case 0:
+        return const TimerScreen();
+      case 1:
+        return const TimelineScreen();
+      case 2:
+        return const AnalyticsScreen();
+      case 3:
+        return SettingsScreen(onDataWiped: onDataWiped);
+      default:
+        return const TimerScreen();
+    }
+  }
+}
+
+/// Bottom navigation bar without duplicate tap handlers.
+class _BottomNavBar extends StatelessWidget {
+  final int currentIndex;
+  final ValueChanged<int> onIndexChanged;
+  final Color accentColor;
+  final Color backgroundColor;
+
+  const _BottomNavBar({
+    required this.currentIndex,
+    required this.onIndexChanged,
+    required this.accentColor,
+    required this.backgroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: ClearStateColors.ash, width: 1)),
+      ),
+      child: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: (index) {
+          HapticService.light();
+          onIndexChanged(index);
+        },
+        items: [
+          _buildNavItem(
+            icon: Icons.timer_outlined,
+            activeIcon: Icons.timer,
+            label: 'TIMER',
+            isActive: currentIndex == 0,
           ),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: widget.currentIndex,
-          onTap: widget.onIndexChanged,
-          items: [
-            BottomNavigationBarItem(
-              icon: AnimatedNavIcon(
-                icon: Icons.timer_outlined,
-                activeIcon: Icons.timer,
-                label: 'TIMER',
-                isActive: widget.currentIndex == 0,
-                onTap: () => widget.onIndexChanged(0),
-              ),
-              label: 'TIMER',
+          _buildNavItem(
+            icon: Icons.trending_up_outlined,
+            activeIcon: Icons.trending_up,
+            label: 'TIMELINE',
+            isActive: currentIndex == 1,
+          ),
+          _buildNavItem(
+            icon: Icons.bar_chart_outlined,
+            activeIcon: Icons.bar_chart,
+            label: 'STATS',
+            isActive: currentIndex == 2,
+          ),
+          _buildNavItem(
+            icon: Icons.tune_outlined,
+            activeIcon: Icons.tune,
+            label: 'SETTINGS',
+            isActive: currentIndex == 3,
+          ),
+        ],
+        selectedItemColor: accentColor,
+        unselectedItemColor: ClearStateColors.smoke,
+        backgroundColor: backgroundColor,
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+      ),
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem({
+    required IconData icon,
+    required IconData activeIcon,
+    required String label,
+    required bool isActive,
+  }) {
+    return BottomNavigationBarItem(
+      icon: _NavIcon(
+        icon: icon,
+        activeIcon: activeIcon,
+        label: label,
+        isActive: isActive,
+        accentColor: accentColor,
+      ),
+      label: label,
+    );
+  }
+}
+
+/// Simple nav icon without duplicate tap handler.
+/// Uses AnimatedContainer for smooth transitions.
+class _NavIcon extends StatelessWidget {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final bool isActive;
+  final Color accentColor;
+
+  const _NavIcon({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.isActive,
+    required this.accentColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isActive ? accentColor : ClearStateColors.smoke;
+
+    return AnimatedScale(
+      scale: isActive ? 1.1 : 1.0,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOutCubic,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(isActive ? activeIcon : icon, size: 24, color: color),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: color,
+              letterSpacing: 1,
+              fontFamily: 'JetBrains Mono',
             ),
-            BottomNavigationBarItem(
-              icon: AnimatedNavIcon(
-                icon: Icons.trending_up_outlined,
-                activeIcon: Icons.trending_up,
-                label: 'TIMELINE',
-                isActive: widget.currentIndex == 1,
-                onTap: () => widget.onIndexChanged(1),
-              ),
-              label: 'TIMELINE',
-            ),
-            BottomNavigationBarItem(
-              icon: AnimatedNavIcon(
-                icon: Icons.bar_chart_outlined,
-                activeIcon: Icons.bar_chart,
-                label: 'STATS',
-                isActive: widget.currentIndex == 2,
-                onTap: () => widget.onIndexChanged(2),
-              ),
-              label: 'STATS',
-            ),
-            BottomNavigationBarItem(
-              icon: AnimatedNavIcon(
-                icon: Icons.tune_outlined,
-                activeIcon: Icons.tune,
-                label: 'SETTINGS',
-                isActive: widget.currentIndex == 3,
-                onTap: () => widget.onIndexChanged(3),
-              ),
-              label: 'SETTINGS',
-            ),
-          ],
-          selectedItemColor: themeState.accent.value,
-          unselectedItemColor: ClearStateColors.smoke,
-          backgroundColor: themeState.background.value,
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,8 +1,40 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// Abstract interface for haptic feedback to enable testing.
+abstract class IHapticService {
+  Future<void> lightFeedback();
+  Future<void> mediumFeedback();
+  Future<void> heavyFeedback();
+  Future<void> selectionFeedback();
+  Future<void> vibrateFeedback();
+  Future<void> successFeedback();
+  Future<void> errorFeedback();
+  Future<void> tickFeedback();
+  Future<void> milestoneFeedback();
+  Future<void> relapseConfirmFeedback();
+  Future<void> buttonDownFeedback();
+  Future<void> buttonCompleteFeedback();
+}
 
 /// Centralized haptic feedback service for consistent tactile experience.
 /// Uses iOS-style haptic patterns for that premium feel.
-class HapticService {
+///
+/// For testability, use the provider (hapticServiceProvider) which can be
+/// overridden with MockHapticService in tests.
+///
+/// For convenience in widgets, static methods are provided that delegate
+/// to the singleton instance.
+class HapticService implements IHapticService {
+  static final HapticService _instance = HapticService._internal();
+
+  /// Singleton instance for provider-based access.
+  static HapticService get instance => _instance;
+
+  HapticService._internal();
+
+  // Static convenience methods (for backward compatibility)
+
   /// Light tap - used for selections, toggles, and minor interactions
   static Future<void> light() async {
     await HapticFeedback.lightImpact();
@@ -14,7 +46,6 @@ class HapticService {
   }
 
   /// Heavy thud - used for significant actions like timer reset
-  /// This simulates the "weight" of a major decision
   static Future<void> heavy() async {
     await HapticFeedback.heavyImpact();
   }
@@ -58,7 +89,6 @@ class HapticService {
   }
 
   /// Relapse confirmation - heavy, deliberate pattern
-  /// Simulates the gravity of resetting the timer
   static Future<void> relapseConfirm() async {
     await HapticFeedback.heavyImpact();
     await Future.delayed(const Duration(milliseconds: 150));
@@ -76,4 +106,69 @@ class HapticService {
   static Future<void> buttonComplete() async {
     await HapticFeedback.heavyImpact();
   }
+
+  // Instance methods (implement IHapticService for testing)
+
+  @override
+  Future<void> lightFeedback() => light();
+  @override
+  Future<void> mediumFeedback() => medium();
+  @override
+  Future<void> heavyFeedback() => heavy();
+  @override
+  Future<void> selectionFeedback() => selection();
+  @override
+  Future<void> vibrateFeedback() => vibrate();
+  @override
+  Future<void> successFeedback() => success();
+  @override
+  Future<void> errorFeedback() => error();
+  @override
+  Future<void> tickFeedback() => tick();
+  @override
+  Future<void> milestoneFeedback() => milestone();
+  @override
+  Future<void> relapseConfirmFeedback() => relapseConfirm();
+  @override
+  Future<void> buttonDownFeedback() => buttonDown();
+  @override
+  Future<void> buttonCompleteFeedback() => buttonComplete();
+}
+
+/// Provider for HapticService.
+/// Override in tests with a mock implementation.
+final hapticServiceProvider = Provider<IHapticService>((ref) {
+  return HapticService.instance;
+});
+
+/// Mock implementation for testing.
+class MockHapticService implements IHapticService {
+  final List<String> calls = [];
+
+  @override
+  Future<void> lightFeedback() async => calls.add('light');
+  @override
+  Future<void> mediumFeedback() async => calls.add('medium');
+  @override
+  Future<void> heavyFeedback() async => calls.add('heavy');
+  @override
+  Future<void> selectionFeedback() async => calls.add('selection');
+  @override
+  Future<void> vibrateFeedback() async => calls.add('vibrate');
+  @override
+  Future<void> successFeedback() async => calls.add('success');
+  @override
+  Future<void> errorFeedback() async => calls.add('error');
+  @override
+  Future<void> tickFeedback() async => calls.add('tick');
+  @override
+  Future<void> milestoneFeedback() async => calls.add('milestone');
+  @override
+  Future<void> relapseConfirmFeedback() async => calls.add('relapseConfirm');
+  @override
+  Future<void> buttonDownFeedback() async => calls.add('buttonDown');
+  @override
+  Future<void> buttonCompleteFeedback() async => calls.add('buttonComplete');
+
+  void clear() => calls.clear();
 }
