@@ -5,17 +5,19 @@ import '../../../core/theme/typography.dart';
 import '../../../core/services/haptic_service.dart';
 import '../onboarding_provider.dart';
 import '../../../shared/widgets/haptic_calendar.dart';
+import '../../../shared/widgets/brutalist_button.dart';
 
-class LastDrinkStep extends ConsumerStatefulWidget {
+class StartDateStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
+  final VoidCallback onBack;
 
-  const LastDrinkStep({super.key, required this.onNext});
+  const StartDateStep({super.key, required this.onNext, required this.onBack});
 
   @override
-  ConsumerState<LastDrinkStep> createState() => _LastDrinkStepState();
+  ConsumerState<StartDateStep> createState() => _StartDateStepState();
 }
 
-class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
+class _StartDateStepState extends ConsumerState<StartDateStep> {
   DateTime _selectedDate = DateTime.now();
 
   Future<void> _selectDate() async {
@@ -81,13 +83,13 @@ class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
         children: [
           const Spacer(),
           Text(
-            'WHEN WAS YOUR\nLAST DRINK?',
+            'WHEN DID YOU\nSTART?',
             style: ClearStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           Text(
-            'This is where your journey begins',
+            'The first day of your new chapter',
             style: ClearStateTypography.bodySecondary,
             textAlign: TextAlign.center,
           ),
@@ -105,14 +107,21 @@ class _LastDrinkStepState extends ConsumerState<LastDrinkStep> {
             textAlign: TextAlign.center,
           ),
           const Spacer(),
-          ElevatedButton(
+          BrutalistButton(
+            label: 'CONTINUE',
             onPressed: () {
               ref
                   .read(onboardingProvider.notifier)
                   .setLastDrinkDate(_selectedDate);
               widget.onNext();
             },
-            child: const Text('CONTINUE'),
+            type: BrutalistButtonType.primary,
+          ),
+          const SizedBox(height: 12),
+          BrutalistButton(
+            label: 'BACK',
+            onPressed: widget.onBack,
+            type: BrutalistButtonType.secondary,
           ),
           const SizedBox(height: 24),
         ],

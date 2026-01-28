@@ -7,8 +7,8 @@ import '../../core/services/haptic_service.dart';
 import '../../shared/widgets/noise_background.dart';
 import '../../shared/widgets/sunrise_logo.dart';
 import 'onboarding_provider.dart';
-import 'widgets/last_drink_step.dart';
-import 'widgets/drink_type_step.dart';
+import 'widgets/habit_stack_step.dart';
+import 'widgets/last_drink_step.dart' show StartDateStep;
 import 'widgets/motivation_step.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -84,8 +84,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   controller: _pageController,
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
-                    LastDrinkStep(onNext: _nextPage),
-                    DrinkTypeStep(onNext: _nextPage, onBack: _previousPage),
+                    HabitStackStep(onNext: _nextPage),
+                    StartDateStep(onNext: _nextPage, onBack: _previousPage),
                     MotivationStep(onNext: _nextPage, onBack: _previousPage),
                   ],
                 ),

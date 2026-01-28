@@ -38,6 +38,17 @@ class OnboardingState {
   /// Get selected habit IDs for repository operations.
   List<String> get selectedHabitIds =>
       selectedHabits.map((h) => h.id).toList();
+
+  /// Whether alcohol is among the selected habits.
+  bool get hasAlcoholSelected =>
+      selectedHabits.any((h) => h.id == 'alcohol');
+
+  /// Total onboarding steps: 4 if alcohol selected (Stack -> Date -> DrinkType -> Motivation), 3 otherwise.
+  int get totalSteps => hasAlcoholSelected ? 4 : 3;
+
+  /// Comma-separated display names of selected habits (e.g., "Alcohol, Weed").
+  String get habitNamesDisplay =>
+      selectedHabits.map((h) => h.name).join(', ');
 }
 
 class OnboardingNotifier extends StateNotifier<OnboardingState> {

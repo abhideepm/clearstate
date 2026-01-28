@@ -93,6 +93,8 @@ class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
         await NotificationService.instance.scheduleMilestoneNotifications(
           session.startDate,
         );
+        // Schedule daily check-in at 8 PM
+        await NotificationService.instance.scheduleDailyCheckIn(20, 0);
       }
     } else {
       // Disable notifications

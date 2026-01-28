@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
-import '../../../core/services/haptic_service.dart';
 import '../onboarding_provider.dart';
 import '../../../shared/widgets/brutalist_button.dart';
 
