@@ -22,7 +22,7 @@ class Habit extends HiveObject {
   final HabitType type;
 
   @HiveField(3)
-  final String themeColor; // Neon hex
+  final String themeColor;
 
   @HiveField(4)
   final String motivation;
@@ -31,7 +31,16 @@ class Habit extends HiveObject {
   final DateTime startDate;
 
   @HiveField(6)
-  DateTime? endDate; // null = currently active
+  DateTime? endDate;
+
+  @HiveField(7)
+  final int longestStreak;
+
+  @HiveField(8)
+  final int relapseCount;
+
+  @HiveField(9)
+  final int totalSoberDays;
 
   Habit({
     required this.id,
@@ -41,6 +50,9 @@ class Habit extends HiveObject {
     required this.motivation,
     required this.startDate,
     this.endDate,
+    this.longestStreak = 0,
+    this.relapseCount = 0,
+    this.totalSoberDays = 0,
   });
 
   bool get isActive => endDate == null;
@@ -52,7 +64,35 @@ class Habit extends HiveObject {
 
   int get totalDays => elapsed.inDays;
 
-  // JSON Serialization
+  int get currentStreak => totalDays;
+
+  /// Create a copy with updated fields
+  Habit copyWith({
+    String? id,
+    String? name,
+    HabitType? type,
+    String? themeColor,
+    String? motivation,
+    DateTime? startDate,
+    DateTime? endDate,
+    int? longestStreak,
+    int? relapseCount,
+    int? totalSoberDays,
+  }) {
+    return Habit(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      themeColor: themeColor ?? this.themeColor,
+      motivation: motivation ?? this.motivation,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      longestStreak: longestStreak ?? this.longestStreak,
+      relapseCount: relapseCount ?? this.relapseCount,
+      totalSoberDays: totalSoberDays ?? this.totalSoberDays,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -62,6 +102,9 @@ class Habit extends HiveObject {
       'motivation': motivation,
       'startDate': startDate.toIso8601String(),
       'endDate': endDate?.toIso8601String(),
+      'longestStreak': longestStreak,
+      'relapseCount': relapseCount,
+      'totalSoberDays': totalSoberDays,
     };
   }
 
@@ -76,6 +119,9 @@ class Habit extends HiveObject {
       endDate: json['endDate'] != null
           ? DateTime.parse(json['endDate'] as String)
           : null,
+      longestStreak: json['longestStreak'] as int? ?? 0,
+      relapseCount: json['relapseCount'] as int? ?? 0,
+      totalSoberDays: json['totalSoberDays'] as int? ?? 0,
     );
   }
 }

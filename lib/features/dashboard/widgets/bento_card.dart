@@ -1,56 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_provider.dart';
 
-class BentoCard extends StatelessWidget {
+/// Modern fintech-style card with soft shadows and rounded corners
+class BentoCard extends ConsumerWidget {
   final Widget child;
   final Color? backgroundColor;
-  final Color borderColor;
+  final Color? borderColor;
   final double borderWidth;
-  final double shadowOffset;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final EdgeInsetsGeometry padding;
+  final bool elevated;
 
   const BentoCard({
     super.key,
     required this.child,
     this.backgroundColor,
-    this.borderColor = ClearStateColors.ash,
-    this.borderWidth = 2.0,
-    this.shadowOffset = 4.0,
+    this.borderColor,
+    this.borderWidth = 0,
     this.onTap,
-    this.padding = const EdgeInsets.all(16.0),
+    this.onLongPress,
+    this.padding = const EdgeInsets.all(20.0),
+    this.elevated = true,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    final isDark = themeState.isDarkMode;
+
+    final bgColor = backgroundColor ?? 
+        (isDark ? ClearStateColors.darkCard : ClearStateColors.lightCard);
+    
+    final shadows = elevated 
+        ? (isDark ? ClearStateColors.cardShadowDark : ClearStateColors.cardShadowLight)
+        : null;
+
     final card = Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? ClearStateColors.charcoal,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor, width: borderWidth),
-        boxShadow: [
-          BoxShadow(
-            color: borderColor,
-            offset: Offset(shadowOffset, shadowOffset),
-            blurRadius: 0,
-          ),
-        ],
+        color: bgColor,
+        borderRadius: BorderRadius.circular(ClearStateTheme.borderRadiusLarge),
+        border: borderColor != null 
+            ? Border.all(color: borderColor!, width: borderWidth)
+            : null,
+        boxShadow: shadows,
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(10), // Slightly less than container
+        borderRadius: BorderRadius.circular(ClearStateTheme.borderRadiusLarge - 1),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
+            onLongPress: onLongPress,
+            borderRadius: BorderRadius.circular(ClearStateTheme.borderRadiusLarge - 1),
             child: Padding(padding: padding, child: child),
           ),
         ),
       ),
     );
 
-    return Padding(
-      padding: EdgeInsets.only(right: shadowOffset, bottom: shadowOffset),
-      child: card,
-    );
+    return card;
   }
 }

@@ -106,43 +106,9 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
 
   @override
   Widget build(BuildContext context) {
-    final themeState = ref.watch(themeProvider);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Vibe',
-          style: ClearStateTypography.caption.copyWith(
-            color: ClearStateColors.smoke,
-            letterSpacing: 1,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            _VibeOption(
-              label: 'CYBER',
-              isSelected: themeState.vibe == ThemeVibe.cyber,
-              onTap: () {
-                HapticService.light();
-                ref.read(themeProvider.notifier).setThemeVibe(ThemeVibe.cyber);
-              },
-              color: ClearStateColors.acidGreen,
-            ),
-            const SizedBox(width: 12),
-            _VibeOption(
-              label: 'COZY',
-              isSelected: themeState.vibe == ThemeVibe.cozy,
-              onTap: () {
-                HapticService.light();
-                ref.read(themeProvider.notifier).setThemeVibe(ThemeVibe.cozy);
-              },
-              color: ClearStateColors.sageGreen,
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
         Text(
           'Accent Color',
           style: ClearStateTypography.caption.copyWith(

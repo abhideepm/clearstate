@@ -104,7 +104,7 @@ class _CustomSwitch extends StatelessWidget {
         width: 48,
         height: 28,
         decoration: BoxDecoration(
-          color: value ? primaryColor : ClearStateColors.graphite,
+          color: value ? primaryColor : ClearStateColors.darkSurface,
           borderRadius: BorderRadius.circular(2),
           border: Border.all(
             color: value ? primaryColor : ClearStateColors.ash,

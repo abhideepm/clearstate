@@ -6,33 +6,36 @@ import '../../core/theme/motion.dart';
 import '../../core/theme/theme_provider.dart';
 import '../../core/services/haptic_service.dart';
 
-enum BrutalistButtonType { primary, secondary }
+enum ModernButtonType { primary, secondary, text }
 
-class BrutalistButton extends ConsumerStatefulWidget {
+/// Modern fintech-style button with soft shadows and rounded corners
+class ModernButton extends ConsumerStatefulWidget {
   final String label;
   final VoidCallback onPressed;
-  final BrutalistButtonType type;
+  final ModernButtonType type;
   final bool isLoading;
   final bool enabled;
   final double? width;
   final double? height;
+  final IconData? icon;
 
-  const BrutalistButton({
+  const ModernButton({
     super.key,
     required this.label,
     required this.onPressed,
-    this.type = BrutalistButtonType.primary,
+    this.type = ModernButtonType.primary,
     this.isLoading = false,
     this.enabled = true,
     this.width,
     this.height,
+    this.icon,
   });
 
   @override
-  ConsumerState<BrutalistButton> createState() => _BrutalistButtonState();
+  ConsumerState<ModernButton> createState() => _ModernButtonState();
 }
 
-class _BrutalistButtonState extends ConsumerState<BrutalistButton> {
+class _ModernButtonState extends ConsumerState<ModernButton> {
   bool _isPressed = false;
 
   void _handlePressDown() {
@@ -54,40 +57,68 @@ class _BrutalistButtonState extends ConsumerState<BrutalistButton> {
 
   @override
   Widget build(BuildContext context) {
-    final isPrimary = widget.type == BrutalistButtonType.primary;
     final themeState = ref.watch(themeProvider);
     final accentColor = themeState.accent.value;
-    final accentColorLight = HSLColor.fromColor(accentColor)
-        .withLightness(
-          (HSLColor.fromColor(accentColor).lightness + 0.1).clamp(0.0, 1.0),
-        )
-        .toColor();
+    final isDark = themeState.isDarkMode;
+
+    Color backgroundColor;
+    Color foregroundColor;
+    List<BoxShadow>? shadows;
+    Border? border;
+
+    switch (widget.type) {
+      case ModernButtonType.primary:
+        backgroundColor = accentColor;
+        foregroundColor = ClearStateColors.textPrimaryLight;
+        shadows = _isPressed ? null : [
+          BoxShadow(
+            color: accentColor.withValues(alpha: 0.3),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+          ),
+        ];
+        break;
+      case ModernButtonType.secondary:
+        backgroundColor = isDark 
+            ? ClearStateColors.darkCard 
+            : ClearStateColors.lightCard;
+        foregroundColor = isDark 
+            ? ClearStateColors.textPrimaryDark 
+            : ClearStateColors.textPrimaryLight;
+        border = Border.all(
+          color: isDark 
+              ? ClearStateColors.borderDark 
+              : ClearStateColors.borderLight,
+          width: 1,
+        );
+        break;
+      case ModernButtonType.text:
+        backgroundColor = Colors.transparent;
+        foregroundColor = accentColor;
+        break;
+    }
+
+    if (!widget.enabled) {
+      backgroundColor = backgroundColor.withValues(alpha: 0.5);
+      foregroundColor = foregroundColor.withValues(alpha: 0.5);
+      shadows = null;
+    }
 
     return AnimatedContainer(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 100)),
+      duration: ClearStateMotion.duration(const Duration(milliseconds: 150)),
       curve: Curves.easeOut,
       width: widget.width,
-      height: widget.height ?? 48,
+      height: widget.height ?? 56,
       transform: Matrix4.diagonal3Values(
-        _isPressed ? 0.95 : 1.0,
-        _isPressed ? 0.95 : 1.0,
+        _isPressed ? 0.98 : 1.0,
+        _isPressed ? 0.98 : 1.0,
         1.0,
       ),
       decoration: BoxDecoration(
-        color: isPrimary
-            ? _isPressed
-                  ? accentColorLight
-                  : accentColor
-            : Colors.transparent,
-        border: Border.all(
-          color: _isPressed
-              ? isPrimary
-                    ? accentColorLight
-                    : ClearStateColors.smoke
-              : ClearStateColors.ash,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(2),
+        color: backgroundColor,
+        border: border,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: shadows,
       ),
       child: Material(
         color: Colors.transparent,
@@ -96,25 +127,31 @@ class _BrutalistButtonState extends ConsumerState<BrutalistButton> {
           onTapDown: (_) => _handlePressDown(),
           onTapUp: (_) => _handlePressUp(),
           onTapCancel: _handlePressUp,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(16),
           child: Center(
             child: widget.isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
+                ? SizedBox(
+                    width: 24,
+                    height: 24,
                     child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: ClearStateColors.void_,
+                      strokeWidth: 2.5,
+                      color: foregroundColor,
                     ),
                   )
-                : Text(
-                    widget.label,
-                    style: ClearStateTypography.button.copyWith(
-                      color: isPrimary
-                          ? ClearStateColors.void_
-                          : ClearStateColors.smoke,
-                      letterSpacing: 0.5,
-                    ),
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.icon != null) ...[
+                        Icon(widget.icon, color: foregroundColor, size: 20),
+                        const SizedBox(width: 8),
+                      ],
+                      Text(
+                        widget.label,
+                        style: ClearStateTypography.button.copyWith(
+                          color: foregroundColor,
+                        ),
+                      ),
+                    ],
                   ),
           ),
         ),
@@ -123,45 +160,62 @@ class _BrutalistButtonState extends ConsumerState<BrutalistButton> {
   }
 }
 
-class BrutalistButtonIcon extends ConsumerStatefulWidget {
+/// Modern icon button with soft styling
+class ModernIconButton extends ConsumerStatefulWidget {
   final IconData icon;
   final VoidCallback onPressed;
-  final BrutalistButtonType type;
+  final ModernButtonType type;
   final bool isLoading;
   final bool enabled;
   final double size;
 
-  const BrutalistButtonIcon({
+  const ModernIconButton({
     super.key,
     required this.icon,
     required this.onPressed,
-    this.type = BrutalistButtonType.primary,
+    this.type = ModernButtonType.primary,
     this.isLoading = false,
     this.enabled = true,
     this.size = 48,
   });
 
   @override
-  ConsumerState<BrutalistButtonIcon> createState() =>
-      _BrutalistButtonIconState();
+  ConsumerState<ModernIconButton> createState() => _ModernIconButtonState();
 }
 
-class _BrutalistButtonIconState extends ConsumerState<BrutalistButtonIcon> {
+class _ModernIconButtonState extends ConsumerState<ModernIconButton> {
   bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
-    final isPrimary = widget.type == BrutalistButtonType.primary;
     final themeState = ref.watch(themeProvider);
     final accentColor = themeState.accent.value;
-    final accentColorLight = HSLColor.fromColor(accentColor)
-        .withLightness(
-          (HSLColor.fromColor(accentColor).lightness + 0.1).clamp(0.0, 1.0),
-        )
-        .toColor();
+    final isDark = themeState.isDarkMode;
+
+    Color backgroundColor;
+    Color iconColor;
+
+    switch (widget.type) {
+      case ModernButtonType.primary:
+        backgroundColor = accentColor;
+        iconColor = ClearStateColors.textPrimaryLight;
+        break;
+      case ModernButtonType.secondary:
+        backgroundColor = isDark 
+            ? ClearStateColors.darkCard 
+            : ClearStateColors.lightElevated;
+        iconColor = isDark 
+            ? ClearStateColors.textPrimaryDark 
+            : ClearStateColors.textPrimaryLight;
+        break;
+      case ModernButtonType.text:
+        backgroundColor = Colors.transparent;
+        iconColor = accentColor;
+        break;
+    }
 
     return AnimatedContainer(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 100)),
+      duration: const Duration(milliseconds: 150),
       curve: Curves.easeOut,
       width: widget.size,
       height: widget.size,
@@ -171,20 +225,17 @@ class _BrutalistButtonIconState extends ConsumerState<BrutalistButtonIcon> {
         1.0,
       ),
       decoration: BoxDecoration(
-        color: isPrimary
-            ? _isPressed
-                  ? accentColorLight
-                  : accentColor
-            : Colors.transparent,
-        border: Border.all(
-          color: _isPressed
-              ? isPrimary
-                    ? accentColorLight
-                    : ClearStateColors.smoke
-              : ClearStateColors.ash,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(2),
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(widget.size / 2),
+        boxShadow: widget.type == ModernButtonType.primary && !_isPressed
+            ? [
+                BoxShadow(
+                  color: accentColor.withValues(alpha: 0.3),
+                  offset: const Offset(0, 4),
+                  blurRadius: 12,
+                ),
+              ]
+            : null,
       ),
       child: Material(
         color: Colors.transparent,
@@ -211,23 +262,21 @@ class _BrutalistButtonIconState extends ConsumerState<BrutalistButtonIcon> {
               setState(() => _isPressed = false);
             }
           },
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(widget.size / 2),
           child: Center(
             child: widget.isLoading
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: ClearStateColors.void_,
+                      color: iconColor,
                     ),
                   )
                 : Icon(
                     widget.icon,
-                    color: isPrimary
-                        ? ClearStateColors.void_
-                        : ClearStateColors.smoke,
-                    size: 20,
+                    color: iconColor,
+                    size: 22,
                   ),
           ),
         ),
@@ -235,3 +284,8 @@ class _BrutalistButtonIconState extends ConsumerState<BrutalistButtonIcon> {
     );
   }
 }
+
+// Backwards compatibility aliases
+typedef BrutalistButton = ModernButton;
+typedef BrutalistButtonType = ModernButtonType;
+typedef BrutalistButtonIcon = ModernIconButton;

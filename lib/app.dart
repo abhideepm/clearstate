@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/colors.dart';
+import 'core/theme/typography.dart';
 import 'core/theme/theme_provider.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/haptic_service.dart';
@@ -134,7 +135,6 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     await orchestrator.saveUserProfile(
       selectedHabitIds: selectedHabitIds.isNotEmpty ? selectedHabitIds : const ['default'],
       lastDrinkDate: startDate,
-      avgDailySpend: 0,
     );
 
     // Set the start date for timer (must match what was saved to profile)
@@ -190,7 +190,7 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     return MaterialApp(
       title: 'ClearState',
       debugShowCheckedModeBanner: false,
-      theme: ClearStateTheme.getTheme(themeState.accent, themeState.background),
+      theme: ClearStateTheme.getThemeFromState(themeState),
       home: _buildHome(shouldShowLock),
     );
   }
@@ -230,7 +230,7 @@ class _MainShell extends ConsumerWidget {
     final themeState = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: themeState.background.value,
+      backgroundColor: themeState.background,
       body: _AnimatedTabContent(
         currentIndex: currentIndex,
         onDataWiped: onDataWiped,
@@ -239,7 +239,7 @@ class _MainShell extends ConsumerWidget {
         currentIndex: currentIndex,
         onIndexChanged: onIndexChanged,
         accentColor: themeState.accent.value,
-        backgroundColor: themeState.background.value,
+        backgroundColor: themeState.background,
       ),
     );
   }
@@ -305,109 +305,99 @@ class _BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: ClearStateColors.ash, width: 1)),
-      ),
-      child: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          HapticService.light();
-          onIndexChanged(index);
-        },
-        items: [
-          _buildNavItem(
-            icon: Icons.timer_outlined,
-            activeIcon: Icons.timer,
-            label: 'TIMER',
-            isActive: currentIndex == 0,
-          ),
-          _buildNavItem(
-            icon: Icons.trending_up_outlined,
-            activeIcon: Icons.trending_up,
-            label: 'TIMELINE',
-            isActive: currentIndex == 1,
-          ),
-          _buildNavItem(
-            icon: Icons.bar_chart_outlined,
-            activeIcon: Icons.bar_chart,
-            label: 'STATS',
-            isActive: currentIndex == 2,
-          ),
-          _buildNavItem(
-            icon: Icons.tune_outlined,
-            activeIcon: Icons.tune,
-            label: 'SETTINGS',
-            isActive: currentIndex == 3,
+        color: backgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            offset: const Offset(0, -2),
+            blurRadius: 12,
           ),
         ],
-        selectedItemColor: accentColor,
-        unselectedItemColor: ClearStateColors.smoke,
-        backgroundColor: backgroundColor,
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(
+                icon: Icons.timer_outlined,
+                activeIcon: Icons.timer,
+                label: 'Timer',
+                isActive: currentIndex == 0,
+                index: 0,
+              ),
+              _buildNavItem(
+                icon: Icons.timeline_outlined,
+                activeIcon: Icons.timeline,
+                label: 'Timeline',
+                isActive: currentIndex == 1,
+                index: 1,
+              ),
+              _buildNavItem(
+                icon: Icons.bar_chart_outlined,
+                activeIcon: Icons.bar_chart_rounded,
+                label: 'Stats',
+                isActive: currentIndex == 2,
+                index: 2,
+              ),
+              _buildNavItem(
+                icon: Icons.settings_outlined,
+                activeIcon: Icons.settings,
+                label: 'Settings',
+                isActive: currentIndex == 3,
+                index: 3,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  BottomNavigationBarItem _buildNavItem({
+  Widget _buildNavItem({
     required IconData icon,
     required IconData activeIcon,
     required String label,
     required bool isActive,
+    required int index,
   }) {
-    return BottomNavigationBarItem(
-      icon: _NavIcon(
-        icon: icon,
-        activeIcon: activeIcon,
-        label: label,
-        isActive: isActive,
-        accentColor: accentColor,
-      ),
-      label: label,
-    );
-  }
-}
-
-/// Simple nav icon without duplicate tap handler.
-/// Uses AnimatedContainer for smooth transitions.
-class _NavIcon extends StatelessWidget {
-  final IconData icon;
-  final IconData activeIcon;
-  final String label;
-  final bool isActive;
-  final Color accentColor;
-
-  const _NavIcon({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-    required this.isActive,
-    required this.accentColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isActive ? accentColor : ClearStateColors.smoke;
-
-    return AnimatedScale(
-      scale: isActive ? 1.1 : 1.0,
-      duration: const Duration(milliseconds: 200),
-      curve: Curves.easeOutCubic,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(isActive ? activeIcon : icon, size: 24, color: color),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 10,
-              color: color,
-              letterSpacing: 1,
-              fontFamily: 'JetBrains Mono',
+    return GestureDetector(
+      onTap: () {
+        HapticService.light();
+        onIndexChanged(index);
+      },
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: isActive
+            ? BoxDecoration(
+                color: accentColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16),
+              )
+            : null,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isActive ? activeIcon : icon,
+              size: 22,
+              color: isActive ? accentColor : ClearStateColors.textMutedDark,
             ),
-          ),
-        ],
+            if (isActive) ...[
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: ClearStateTypography.navLabel.copyWith(
+                  color: accentColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

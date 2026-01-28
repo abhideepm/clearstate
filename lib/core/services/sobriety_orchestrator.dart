@@ -31,7 +31,6 @@ class SobrietyOrchestrator {
   ISobrietyRepository get repository => _repository;
 
   /// Triggers home screen widget update with current sobriety data.
-  /// If no active session, clears widget data to protect privacy.
   Future<void> triggerWidgetUpdate() async {
     try {
       final profile = _repository.getUserProfile();
@@ -42,7 +41,6 @@ class SobrietyOrchestrator {
           ? _repository.getActiveSession(habitId)
           : null;
 
-      // If no active session, clear widget data (privacy protection)
       if (session == null) {
         await _widgetService.clearAllWidgets();
         return;
@@ -91,7 +89,6 @@ class SobrietyOrchestrator {
     await _repository.startNewSession(habitId, startDate: startDate);
 
     if (scheduleNotifications) {
-      // Cancel existing notifications before scheduling new ones
       await _notificationService.cancelAllMilestoneNotifications();
       await _notificationService.scheduleMilestoneNotifications(startDate);
     }
@@ -99,8 +96,7 @@ class SobrietyOrchestrator {
     await triggerWidgetUpdate();
   }
 
-  /// Logs a relapse: cancels notifications, ends session, logs event,
-  /// starts new session with fresh notifications.
+  /// Logs a relapse: ends session, logs event, starts new session.
   Future<void> logRelapse(
     String habitId, {
     required int drinksConsumed,
@@ -108,7 +104,6 @@ class SobrietyOrchestrator {
     required int caloriesConsumed,
     required String drinkType,
   }) async {
-    // Cancel pending notifications before ending session
     await _notificationService.cancelAllMilestoneNotifications();
 
     await _repository.logRelapse(
@@ -119,7 +114,6 @@ class SobrietyOrchestrator {
       drinkType: drinkType,
     );
 
-    // Schedule new notifications for the fresh session
     final activeSession = _repository.getActiveSession(habitId);
     if (activeSession != null) {
       await _notificationService.scheduleMilestoneNotifications(
@@ -130,7 +124,7 @@ class SobrietyOrchestrator {
     await triggerWidgetUpdate();
   }
 
-  /// Logs a slip without resetting the timer, updates widgets.
+  /// Logs a slip without resetting the timer.
   Future<void> logSlip(
     String habitId, {
     required int drinksConsumed,
@@ -149,7 +143,7 @@ class SobrietyOrchestrator {
     await triggerWidgetUpdate();
   }
 
-  /// Converts recent slips to a relapse (user acknowledges pattern).
+  /// Converts recent slips to a relapse.
   Future<void> convertSlipsToRelapse(String habitId) async {
     await _notificationService.cancelAllMilestoneNotifications();
 
@@ -186,12 +180,10 @@ class SobrietyOrchestrator {
 
   /// Imports data and schedules notifications for any active session.
   Future<void> importData(Map<String, dynamic> data) async {
-    // Cancel existing notifications before importing new data
     await _notificationService.cancelAllMilestoneNotifications();
 
     await _repository.importData(data);
 
-    // Schedule notifications for the first active habit session
     final profile = _repository.getUserProfile();
     if (profile != null && profile.selectedHabitIds.isNotEmpty) {
       final activeSession = _repository.getActiveSession(
@@ -211,9 +203,6 @@ class SobrietyOrchestrator {
   Future<void> saveUserProfile({
     required List<String> selectedHabitIds,
     required DateTime lastDrinkDate,
-    int avgDrinksPerWeek = 0,
-    double avgDailySpend = 0,
-    int avgDailyCalories = 0,
     bool onboardingComplete = true,
   }) async {
     await _repository.saveUserProfile(
@@ -221,13 +210,11 @@ class SobrietyOrchestrator {
       onboardingComplete: onboardingComplete,
     );
 
-    // Update profile with additional fields
     final profile = _repository.getUserProfile();
     if (profile != null) {
       profile.lastDrinkDate = lastDrinkDate;
-      profile.avgDrinksPerWeek = avgDrinksPerWeek;
-      profile.avgDailySpend = avgDailySpend;
-      profile.avgDailyCalories = avgDailyCalories;
+      // Start trial for new users
+      profile.trialStartDate ??= DateTime.now();
       await _repository.updateUserProfile(profile);
     }
 
@@ -237,7 +224,6 @@ class SobrietyOrchestrator {
 }
 
 /// Provider for SobrietyOrchestrator.
-/// Depends on repository, notification service, and widget service.
 final sobrietyOrchestratorProvider = Provider<SobrietyOrchestrator>((ref) {
   final repository = ref.watch(sobrietyRepositoryProvider);
   final notificationService = ref.watch(notificationServiceProvider);

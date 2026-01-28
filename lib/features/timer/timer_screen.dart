@@ -10,7 +10,8 @@ import '../relapse/slip_vs_relapse_sheet.dart';
 import '../urge_surfing/urge_surfing_screen.dart';
 import 'widgets/timer_display.dart';
 import 'widgets/status_indicator.dart';
-import 'widgets/roi_cards.dart';
+import 'widgets/habit_dropdown.dart';
+import 'widgets/streak_stats_card.dart';
 import 'widgets/reset_button.dart';
 
 class TimerScreen extends ConsumerStatefulWidget {
@@ -22,28 +23,28 @@ class TimerScreen extends ConsumerStatefulWidget {
 
 class _TimerScreenState extends ConsumerState<TimerScreen>
     with TickerProviderStateMixin {
-  late AnimationController _countUpController;
-  late Animation<double> _countUpAnimation;
-  late AnimationController _roiRevealController;
-  late Animation<double> _roiRevealAnimation;
+  late AnimationController _fadeInController;
+  late Animation<double> _fadeInAnimation;
+  late AnimationController _statsRevealController;
+  late Animation<double> _statsRevealAnimation;
 
   @override
   void initState() {
     super.initState();
-    _countUpController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+    _fadeInController = AnimationController(
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    _countUpAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _countUpController, curve: Curves.easeOutCubic),
+    _fadeInAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _fadeInController, curve: Curves.easeOutCubic),
     );
 
-    _roiRevealController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+    _statsRevealController = AnimationController(
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    _roiRevealAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _roiRevealController, curve: Curves.easeOutCubic),
+    _statsRevealAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _statsRevealController, curve: Curves.easeOutCubic),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,16 +54,16 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
 
   @override
   void dispose() {
-    _countUpController.dispose();
-    _roiRevealController.dispose();
+    _fadeInController.dispose();
+    _statsRevealController.dispose();
     super.dispose();
   }
 
   Future<void> _startLaunchSequence() async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    await _fadeInController.forward();
     await Future.delayed(const Duration(milliseconds: 200));
-    await _countUpController.forward();
-    await Future.delayed(const Duration(milliseconds: 300));
-    await _roiRevealController.forward();
+    await _statsRevealController.forward();
   }
 
   @override
@@ -71,95 +72,77 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
     final accentColor = themeState.accent.value;
 
     return Scaffold(
-      backgroundColor: themeState.background.value,
+      backgroundColor: themeState.background,
       body: NoiseBackground(
-        opacity: 0.025,
+        opacity: 0.02,
         child: SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    AnimatedBuilder(
-                      animation: _countUpAnimation,
-                      builder: (context, child) {
-                        return Opacity(
-                          opacity: _countUpAnimation.value,
-                          child: Transform.translate(
-                            offset: Offset(
-                              -20 * (1 - _countUpAnimation.value),
-                              0,
-                            ),
-                            child: SunriseLogoSmall(
-                              size: 28,
-                              accentColor: accentColor,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
+                // Header with logo and habit selector
                 AnimatedBuilder(
-                  animation: _countUpAnimation,
+                  animation: _fadeInAnimation,
                   builder: (context, child) {
                     return Opacity(
-                      opacity: _countUpAnimation.value,
+                      opacity: _fadeInAnimation.value,
                       child: Transform.translate(
-                        offset: Offset(0, 20 * (1 - _countUpAnimation.value)),
+                        offset: Offset(0, -10 * (1 - _fadeInAnimation.value)),
                         child: child,
                       ),
                     );
                   },
-                  child: Text(
-                    'CLEARSTATE',
-                    style: ClearStateTypography.timerLabel.copyWith(
-                      fontSize: 14,
-                      letterSpacing: 6,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SunriseLogoSmall(
+                        size: 28,
+                        accentColor: accentColor,
+                      ),
+                      const HabitDropdown(),
+                    ],
                   ),
                 ),
-                const Spacer(flex: 2),
+                const SizedBox(height: 48),
+                // Timer Display
                 AnimatedBuilder(
-                  animation: _countUpAnimation,
+                  animation: _fadeInAnimation,
                   builder: (context, child) {
                     return Transform.scale(
-                      scale: 0.5 + (0.5 * _countUpAnimation.value),
+                      scale: 0.9 + (0.1 * _fadeInAnimation.value),
                       child: Opacity(
-                        opacity: _countUpAnimation.value,
+                        opacity: _fadeInAnimation.value,
                         child: child,
                       ),
                     );
                   },
                   child: const TimerDisplay(),
                 ),
-                const SizedBox(height: 32),
-                const StatusIndicator(),
                 const SizedBox(height: 24),
+                // Status Indicator
+                const StatusIndicator(),
+                const SizedBox(height: 32),
+                // Streak Stats Card
                 AnimatedBuilder(
-                  animation: _roiRevealAnimation,
+                  animation: _statsRevealAnimation,
                   builder: (context, child) {
                     return Transform.translate(
-                      offset: Offset(0, 30 * (1 - _roiRevealAnimation.value)),
+                      offset: Offset(0, 20 * (1 - _statsRevealAnimation.value)),
                       child: Opacity(
-                        opacity: _roiRevealAnimation.value.clamp(0.0, 1.0),
+                        opacity: _statsRevealAnimation.value.clamp(0.0, 1.0),
                         child: child,
                       ),
                     );
                   },
-                  child: const RoiCards(),
+                  child: const StreakStatsCard(),
                 ),
-                const Spacer(flex: 3),
+                const SizedBox(height: 48),
+                // Action Buttons
                 ResetButton(
-                  onReset: () {
-                    _showSlipVsRelapseSheet(context);
-                  },
+                  onReset: () => _showSlipVsRelapseSheet(context),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
                     HapticService.medium();
@@ -172,12 +155,12 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                   child: Text(
                     "I'M STRUGGLING",
                     style: ClearStateTypography.caption.copyWith(
-                      color: ClearStateColors.smoke,
+                      color: themeState.textMuted,
                       letterSpacing: 2,
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
               ],
             ),
           ),
@@ -187,13 +170,14 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
   }
 
   void _showSlipVsRelapseSheet(BuildContext context) {
+    final themeState = ref.read(themeProvider);
     HapticService.heavy();
     showModalBottomSheet(
       context: context,
-      backgroundColor: ClearStateColors.charcoal,
+      backgroundColor: themeState.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => const SlipVsRelapseSheet(),
     );

@@ -30,7 +30,7 @@ class SettingsScreen extends ConsumerWidget {
     final themeState = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: themeState.background.value,
+      backgroundColor: themeState.background,
       body: NoiseBackground(
         opacity: 0.025,
         child: SafeArea(
@@ -40,12 +40,12 @@ class SettingsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   children: [
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 32),
                     Text(
-                      'SETTINGS',
-                      style: ClearStateTypography.timerLabel.copyWith(
-                        fontSize: 14,
-                        letterSpacing: 6,
+                      'Settings',
+                      style: ClearStateTypography.h1.copyWith(
+                        color: themeState.textPrimary,
+                        fontSize: 28,
                       ),
                     ),
                   ],
@@ -57,34 +57,27 @@ class SettingsScreen extends ConsumerWidget {
                 child: ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   children: [
-                    _SectionHeader(title: 'APPEARANCE'),
+                    _SectionHeader(title: 'Appearance'),
                     const SizedBox(height: 12),
                     ProFeatureGate(
-                      featureName: 'CUSTOM THEMES',
+                      featureName: 'Custom Themes',
                       child: ThemeSettings(
                         onThemeChanged: (accent, background) {
                           HapticService.light();
                           final accentColor = AccentColor.values.firstWhere(
                             (e) => e.value == accent,
-                            orElse: () => AccentColor.signalOrange,
-                          );
-                          final bgTheme = BackgroundTheme.values.firstWhere(
-                            (e) => e.value == background,
-                            orElse: () => BackgroundTheme.void_,
+                            orElse: () => AccentColor.sunYellow,
                           );
                           ref
                               .read(themeProvider.notifier)
                               .setAccentColor(accentColor);
-                          ref
-                              .read(themeProvider.notifier)
-                              .setBackgroundTheme(bgTheme);
                         },
                         currentAccentColor: themeState.accent.value,
-                        currentBackgroundColor: themeState.background.value,
+                        currentBackgroundColor: themeState.background,
                       ),
                     ),
                     const SizedBox(height: 32),
-                    _SectionHeader(title: 'PRIVACY'),
+                    _SectionHeader(title: 'Privacy'),
                     const SizedBox(height: 12),
                     SettingsToggle(
                       label: 'App Lock',
@@ -112,7 +105,7 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
 
                     // Widgets Section
-                    _SectionHeader(title: 'WIDGETS'),
+                    _SectionHeader(title: 'Widgets'),
                     const SizedBox(height: 12),
                     ProFeatureGate(
                       featureName: 'STEALTH WIDGETS',
@@ -133,7 +126,7 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
 
                     // Notifications Section
-                    _SectionHeader(title: 'NOTIFICATIONS'),
+                    _SectionHeader(title: 'Notifications'),
                     const SizedBox(height: 12),
                     SettingsToggle(
                       label: 'Milestone Alerts',
@@ -150,7 +143,7 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
 
                     // Data Section
-                    _SectionHeader(title: 'DATA'),
+                    _SectionHeader(title: 'Data'),
                     const SizedBox(height: 12),
                     _SettingsItem(
                       label: 'Export Backup',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../../core/services/haptic_service.dart';
 import '../onboarding_provider.dart';
 import '../../../shared/widgets/brutalist_button.dart';
@@ -21,12 +22,12 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
   final Set<String> _selectedChips = {};
 
   static const List<Map<String, dynamic>> _motivationChips = [
-    {'label': 'For my health', 'icon': Icons.favorite_outline},
-    {'label': 'For my family', 'icon': Icons.people_outline},
-    {'label': 'To save money', 'icon': Icons.savings_outlined},
-    {'label': 'For my future', 'icon': Icons.trending_up},
-    {'label': 'To feel better', 'icon': Icons.sentiment_satisfied_alt},
-    {'label': 'Other', 'icon': Icons.edit_outlined},
+    {'label': 'For my health', 'icon': Icons.favorite_outline, 'emoji': '❤️'},
+    {'label': 'For my family', 'icon': Icons.people_outline, 'emoji': '👨‍👩‍👧‍👦'},
+    {'label': 'To save money', 'icon': Icons.savings_outlined, 'emoji': '💰'},
+    {'label': 'For my future', 'icon': Icons.trending_up, 'emoji': '🚀'},
+    {'label': 'To feel better', 'icon': Icons.sentiment_satisfied_alt, 'emoji': '😊'},
+    {'label': 'Other', 'icon': Icons.edit_outlined, 'emoji': '✏️'},
   ];
 
   bool get _showOtherTextField => _selectedChips.contains('Other');
@@ -39,17 +40,10 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
       } else {
         _selectedChips.add(label);
       }
-      _updateTextFromChips();
     });
   }
 
-  void _updateTextFromChips() {
-    // Don't auto-populate text field - let user write their own when "Other" is selected
-    // The chip labels (excluding "Other") will be combined with custom text on submit
-  }
-
   void _handleContinue() {
-    // Combine selected chip labels (excluding "Other") with custom text
     final chipMotivations = _selectedChips
         .where((label) => label != 'Other')
         .toList();
@@ -82,6 +76,8 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
 
   @override
   Widget build(BuildContext context) {
+    final themeState = ref.watch(themeProvider);
+    
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
@@ -92,57 +88,37 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
           children: [
             const SizedBox(height: 24),
             Text(
-              'WHY ARE YOU\nQUITTING?',
-              style: ClearStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
+              'Why are you\nquitting?',
+              style: ClearStateTypography.h1.copyWith(
+                fontSize: 32,
+                height: 1.2,
+                color: themeState.textPrimary,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             Text(
               'Your personal motivation for staying sober',
-              style: ClearStateTypography.bodySecondary,
+              style: ClearStateTypography.bodySecondary.copyWith(
+                color: themeState.textSecondary,
+              ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            // Motivation chips
+            const SizedBox(height: 32),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: 10,
+              runSpacing: 10,
               alignment: WrapAlignment.center,
               children: _motivationChips.map((chip) {
                 final label = chip['label'] as String;
-                final icon = chip['icon'] as IconData;
+                final emoji = chip['emoji'] as String;
                 final isSelected = _selectedChips.contains(label);
-                return GestureDetector(
+                return _MotivationChip(
+                  label: label,
+                  emoji: emoji,
+                  isSelected: isSelected,
+                  themeState: themeState,
                   onTap: () => _toggleChip(label),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? ClearStateColors.signal : ClearStateColors.charcoal,
-                      border: Border.all(
-                        color: isSelected ? ClearStateColors.signal : ClearStateColors.ash,
-                      ),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          icon,
-                          size: 16,
-                          color: isSelected ? ClearStateColors.void_ : ClearStateColors.smoke,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          label,
-                          style: ClearStateTypography.caption.copyWith(
-                            color: isSelected ? ClearStateColors.void_ : ClearStateColors.bone,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 );
               }).toList(),
             ),
@@ -150,8 +126,9 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
               const SizedBox(height: 24),
               Container(
                 decoration: BoxDecoration(
-                  color: ClearStateColors.charcoal,
-                  border: Border.all(color: ClearStateColors.ash),
+                  color: themeState.card,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: themeState.border),
                 ),
                 child: TextField(
                   controller: _controller,
@@ -159,48 +136,47 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
                   maxLength: 200,
                   textAlign: TextAlign.center,
                   style: ClearStateTypography.body.copyWith(
-                    color: ClearStateColors.bone,
+                    color: themeState.textPrimary,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Write your reason...',
                     hintStyle: ClearStateTypography.body.copyWith(
-                      color: ClearStateColors.smoke,
+                      color: themeState.textMuted,
                     ),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.all(16),
+                    contentPadding: const EdgeInsets.all(20),
                     counterStyle: ClearStateTypography.caption.copyWith(
-                      color: ClearStateColors.smoke,
+                      color: themeState.textMuted,
                     ),
                   ),
                 ),
               ),
             ],
             const Spacer(),
-            BrutalistButton(
-              label: 'START MY JOURNEY',
+            ModernButton(
+              label: 'Start My Journey',
               onPressed: _handleContinue,
-              type: BrutalistButtonType.primary,
+              type: ModernButtonType.primary,
             ),
             const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
-                  child: BrutalistButton(
-                    label: 'BACK',
+                  child: ModernButton(
+                    label: 'Back',
                     onPressed: widget.onBack,
-                    type: BrutalistButtonType.secondary,
+                    type: ModernButtonType.secondary,
                   ),
                 ),
                 const SizedBox(width: 12),
                 GestureDetector(
                   onTap: _handleSkip,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                     child: Text(
-                      'SKIP',
-                      style: ClearStateTypography.caption.copyWith(
-                        color: ClearStateColors.smoke,
-                        letterSpacing: 1,
+                      'Skip',
+                      style: ClearStateTypography.button.copyWith(
+                        color: themeState.textMuted,
                       ),
                     ),
                   ),
@@ -208,6 +184,68 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
               ],
             ),
             const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MotivationChip extends StatelessWidget {
+  final String label;
+  final String emoji;
+  final bool isSelected;
+  final ThemeState themeState;
+  final VoidCallback onTap;
+
+  const _MotivationChip({
+    required this.label,
+    required this.emoji,
+    required this.isSelected,
+    required this.themeState,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accentColor = themeState.accent.value;
+    
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected ? accentColor : themeState.card,
+          border: Border.all(
+            color: isSelected ? accentColor : themeState.border,
+          ),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: accentColor.withValues(alpha: 0.3),
+                    offset: const Offset(0, 4),
+                    blurRadius: 12,
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 18)),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: ClearStateTypography.body.copyWith(
+                color: isSelected 
+                    ? ClearStateColors.textPrimaryLight 
+                    : themeState.textPrimary,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
           ],
         ),
       ),

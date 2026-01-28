@@ -18,7 +18,7 @@ class TimelineScreen extends ConsumerWidget {
     final themeState = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: themeState.background.value,
+      backgroundColor: themeState.background,
       body: NoiseBackground(
         opacity: 0.025,
         child: SafeArea(
@@ -35,17 +35,17 @@ class TimelineScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'RECOVERY',
-                            style: ClearStateTypography.timerLabel.copyWith(
-                              fontSize: 14,
-                              letterSpacing: 6,
+                            'Timeline',
+                            style: ClearStateTypography.h1.copyWith(
+                              color: themeState.textPrimary,
+                              fontSize: 28,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'TIMELINE',
-                            style: ClearStateTypography.h1.copyWith(
-                              fontSize: 36,
+                            'Your recovery milestones',
+                            style: ClearStateTypography.bodySecondary.copyWith(
+                              color: themeState.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 8),

@@ -42,12 +42,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final state = ref.read(onboardingProvider);
     if (state.currentStep < 2) {
       _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
       );
       ref.read(onboardingProvider.notifier).nextStep();
     } else {
-      // Show celebration screen instead of completing immediately
       setState(() {
         _showCelebration = true;
       });
@@ -58,8 +57,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     HapticService.light();
     if (ref.read(onboardingProvider).currentStep > 0) {
       _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
       );
       ref.read(onboardingProvider.notifier).previousStep();
     }
@@ -70,10 +69,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final themeState = ref.watch(themeProvider);
     final accentColor = themeState.accent.value;
 
-    // Show celebration screen
     if (_showCelebration) {
       return Scaffold(
-        backgroundColor: themeState.background.value,
+        backgroundColor: themeState.background,
         body: NoiseBackground(
           opacity: 0.025,
           child: CelebrationStep(onComplete: widget.onComplete),
@@ -82,17 +80,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     }
 
     return Scaffold(
-      backgroundColor: themeState.background.value,
+      backgroundColor: themeState.background,
       body: NoiseBackground(
         opacity: 0.025,
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 16),
-              SunriseLogo(size: 48, accentColor: accentColor, showLabel: false),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
+              SunriseLogo(size: 56, accentColor: accentColor, showLabel: false),
+              const SizedBox(height: 24),
               _OnboardingProgress(accentColor: accentColor),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               Expanded(
                 child: PageView(
                   controller: _pageController,
@@ -120,32 +118,37 @@ class _OnboardingProgress extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(onboardingProvider);
+    final themeState = ref.watch(themeProvider);
 
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 48),
           child: Row(
             children: List.generate(3, (index) {
+              final isActive = index <= state.currentStep;
               return Expanded(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: 2,
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                  color: index <= state.currentStep
-                      ? accentColor
-                      : ClearStateColors.ash,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isActive ? accentColor : themeState.border,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
                 ),
               );
             }),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         Text(
-          'STEP ${state.currentStep + 1} OF 3',
-          style: ClearStateTypography.timerLabel.copyWith(
-            fontSize: 12,
-            letterSpacing: 2,
+          'Step ${state.currentStep + 1} of 3',
+          style: ClearStateTypography.caption.copyWith(
+            color: themeState.textMuted,
           ),
         ),
       ],

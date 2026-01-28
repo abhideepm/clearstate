@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/typography.dart';
-import '../../../core/theme/colors.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../timer_provider.dart';
 import '../../../shared/widgets/animated_counter.dart';
 
@@ -27,6 +27,7 @@ class _TimerDisplayState extends ConsumerState<TimerDisplay> {
   @override
   Widget build(BuildContext context) {
     final components = ref.watch(timerComponentsProvider);
+    final themeState = ref.watch(themeProvider);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -36,32 +37,32 @@ class _TimerDisplayState extends ConsumerState<TimerDisplay> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             if (components.years > 0) ...[
-              _TimerUnit(value: components.years, label: 'YRS'),
+              _TimerUnit(value: components.years, label: 'Years'),
               const SizedBox(width: 16),
             ],
             if (components.years > 0 || components.months > 0) ...[
-              _TimerUnit(value: components.months, label: 'MOS'),
+              _TimerUnit(value: components.months, label: 'Months'),
               const SizedBox(width: 16),
             ],
-            _TimerUnit(value: components.days, label: 'DAYS'),
+            _TimerUnit(value: components.days, label: 'Days'),
           ],
         ),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _SmallTimerUnit(value: components.hours, label: 'H'),
+            _SmallTimerUnit(value: components.hours, label: 'h'),
             Text(
               ' : ',
               style: ClearStateTypography.statNumber.copyWith(
-                color: ClearStateColors.smoke,
+                color: themeState.textSecondary,
               ),
             ),
-            _SmallTimerUnit(value: components.minutes, label: 'M'),
+            _SmallTimerUnit(value: components.minutes, label: 'm'),
             Text(
               ' : ',
               style: ClearStateTypography.statNumber.copyWith(
-                color: ClearStateColors.smoke,
+                color: themeState.textSecondary,
               ),
             ),
             _AnimatedSecondsUnit(value: components.seconds),
@@ -133,44 +134,68 @@ class _AnimatedSecondsUnitState extends State<_AnimatedSecondsUnit>
           child: child,
         );
       },
-      child: _SmallTimerUnit(value: widget.value, label: 'S'),
+      child: _SmallTimerUnit(value: widget.value, label: 's'),
     );
   }
 }
 
-class _TimerUnit extends StatelessWidget {
+class _TimerUnit extends ConsumerWidget {
   final int value;
   final String label;
 
   const _TimerUnit({required this.value, required this.label});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AnimatedCounter(value: value, style: ClearStateTypography.timerDisplay),
+        AnimatedCounter(
+          value: value, 
+          style: ClearStateTypography.timerDisplay.copyWith(
+            color: themeState.textPrimary,
+          ),
+        ),
         const SizedBox(height: 4),
-        Text(label, style: ClearStateTypography.timerLabel),
+        Text(
+          label,
+          style: ClearStateTypography.timerLabel.copyWith(
+            color: themeState.textSecondary,
+          ),
+        ),
       ],
     );
   }
 }
 
-class _SmallTimerUnit extends StatelessWidget {
+class _SmallTimerUnit extends ConsumerWidget {
   final int value;
   final String label;
 
   const _SmallTimerUnit({required this.value, required this.label});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AnimatedCounter(value: value, style: ClearStateTypography.statNumber),
+        AnimatedCounter(
+          value: value, 
+          style: ClearStateTypography.statNumber.copyWith(
+            color: themeState.textPrimary,
+          ),
+        ),
         const SizedBox(width: 4),
-        Text(label, style: ClearStateTypography.statLabel),
+        Text(
+          label,
+          style: ClearStateTypography.statLabel.copyWith(
+            color: themeState.textSecondary,
+          ),
+        ),
       ],
     );
   }

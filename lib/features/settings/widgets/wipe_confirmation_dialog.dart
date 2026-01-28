@@ -288,7 +288,7 @@ class _DialogButton extends StatelessWidget {
               ? (enabled
                     ? ClearStateColors.relapse
                     : ClearStateColors.relapse.withAlpha((0.3 * 255).round()))
-              : ClearStateColors.graphite,
+              : ClearStateColors.darkSurface,
           border: Border.all(
             color: isDestructive
                 ? (enabled

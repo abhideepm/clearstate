@@ -13,33 +13,57 @@ class UserProfile extends HiveObject {
   @HiveField(2)
   DateTime? lastDrinkDate;
 
-  @HiveField(3)
-  double avgDailySpend;
+  @HiveField(6)
+  DateTime? trialStartDate;
 
-  @HiveField(4)
-  int avgDailyCalories;
-
-  @HiveField(5)
-  int avgDrinksPerWeek;
+  @HiveField(7)
+  bool isPremium;
 
   UserProfile({
     this.onboardingComplete = false,
     this.selectedHabitIds = const [],
     this.lastDrinkDate,
-    this.avgDailySpend = 0,
-    this.avgDailyCalories = 0,
-    this.avgDrinksPerWeek = 0,
+    this.trialStartDate,
+    this.isPremium = false,
   });
 
-  // JSON Serialization
+  /// Check if user is in trial period (14 days)
+  bool get isInTrial {
+    if (isPremium) return false;
+    if (trialStartDate == null) return false;
+    
+    final trialEnd = trialStartDate!.add(const Duration(days: 14));
+    return DateTime.now().isBefore(trialEnd);
+  }
+
+  /// Check if trial has expired
+  bool get isTrialExpired {
+    if (isPremium) return false;
+    if (trialStartDate == null) return false;
+    
+    final trialEnd = trialStartDate!.add(const Duration(days: 14));
+    return DateTime.now().isAfter(trialEnd);
+  }
+
+  /// Days remaining in trial
+  int get trialDaysRemaining {
+    if (isPremium || trialStartDate == null) return 0;
+    
+    final trialEnd = trialStartDate!.add(const Duration(days: 14));
+    final remaining = trialEnd.difference(DateTime.now()).inDays;
+    return remaining.clamp(0, 14);
+  }
+
+  /// Whether user has premium access (either paid or trial)
+  bool get hasPremiumAccess => isPremium || isInTrial;
+
   Map<String, dynamic> toJson() {
     return {
       'onboardingComplete': onboardingComplete,
       'selectedHabitIds': selectedHabitIds,
-      'lastDrinkDate': (lastDrinkDate ?? DateTime.now()).toIso8601String(),
-      'avgDailySpend': avgDailySpend,
-      'avgDailyCalories': avgDailyCalories,
-      'avgDrinksPerWeek': avgDrinksPerWeek,
+      'lastDrinkDate': lastDrinkDate?.toIso8601String(),
+      'trialStartDate': trialStartDate?.toIso8601String(),
+      'isPremium': isPremium,
     };
   }
 
@@ -51,9 +75,10 @@ class UserProfile extends HiveObject {
       lastDrinkDate: json['lastDrinkDate'] != null
           ? DateTime.tryParse(json['lastDrinkDate'] as String)
           : null,
-      avgDailySpend: (json['avgDailySpend'] as num?)?.toDouble() ?? 0,
-      avgDailyCalories: (json['avgDailyCalories'] as num?)?.toInt() ?? 0,
-      avgDrinksPerWeek: (json['avgDrinksPerWeek'] as num?)?.toInt() ?? 0,
+      trialStartDate: json['trialStartDate'] != null
+          ? DateTime.tryParse(json['trialStartDate'] as String)
+          : null,
+      isPremium: json['isPremium'] as bool? ?? false,
     );
   }
 }
