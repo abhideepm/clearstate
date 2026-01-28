@@ -1,11 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/user_profile.dart';
-import '../models/sobriety_session.dart';
+import '../models/habit.dart';
 import '../models/relapse_event.dart';
 import '../models/daily_log.dart';
-import '../../core/constants/drink_presets.dart';
+import '../models/sobriety_session.dart';
 import '../../core/constants/hive_boxes.dart';
 import '../../core/services/encryption_service.dart';
 import '../../core/services/id_generator.dart';
@@ -17,13 +16,14 @@ class SobrietyRepository {
   static const int currentSchemaVersion = 1;
 
   late Box<UserProfile> _userProfileBox;
-  late Box<SobrietySession> _sessionsBox;
+  late Box<Habit> _habitsBox;
   late Box<RelapseEvent> _relapseBox;
   late Box<DailyLog> _dailyLogBox;
+  late Box<SobrietySession> _sessionsBox;
   late Box _settingsBox;
   HiveAesCipher? _cipher;
 
-  SobrietySession? _activeSessionCache;
+  final Map<String, SobrietySession?> _activeSessionCache = {};
 
   bool _isInitialized = false;
 
@@ -54,8 +54,8 @@ class SobrietyRepository {
       HiveBoxes.userProfile,
       encryptionCipher: _cipher,
     );
-    _sessionsBox = await Hive.openBox<SobrietySession>(
-      HiveBoxes.sessions,
+    _habitsBox = await Hive.openBox<Habit>(
+      HiveBoxes.habits,
       encryptionCipher: _cipher,
     );
     _relapseBox = await Hive.openBox<RelapseEvent>(
@@ -64,6 +64,10 @@ class SobrietyRepository {
     );
     _dailyLogBox = await Hive.openBox<DailyLog>(
       HiveBoxes.dailyLogs,
+      encryptionCipher: _cipher,
+    );
+    _sessionsBox = await Hive.openBox<SobrietySession>(
+      HiveBoxes.sessions,
       encryptionCipher: _cipher,
     );
 
@@ -97,278 +101,298 @@ class SobrietyRepository {
   }
 
   Future<void> saveUserProfile({
-    required DateTime lastDrinkDate,
-    required int avgDrinksPerWeek,
-    required double avgCostPerDrink,
-    required String defaultDrinkType,
-    String currency = 'USD',
+    required List<String> selectedHabitIds,
+    bool onboardingComplete = true,
   }) async {
     _assertInitialized();
-    final preset = DrinkPresets.getByName(defaultDrinkType);
     final profile = UserProfile(
-      lastDrinkDate: lastDrinkDate,
-      avgDrinksPerWeek: avgDrinksPerWeek,
-      avgCostPerDrink: avgCostPerDrink,
-      avgCaloriesPerDrink: preset.defaultCalories,
-      defaultDrinkType: defaultDrinkType,
-      onboardingComplete: true,
-      currency: currency,
+      selectedHabitIds: selectedHabitIds,
+      onboardingComplete: onboardingComplete,
     );
     await _userProfileBox.put(UserProfileKeys.profile, profile);
-
-    // Also create initial sobriety session
-    await startNewSession(lastDrinkDate);
   }
 
-  // Sessions
-  SobrietySession? getActiveSession() {
+  // Habits
+  Habit? getHabit(String id) {
     _assertInitialized();
-
-    if (_activeSessionCache != null && _activeSessionCache!.isActive) {
-      return _activeSessionCache;
-    }
-
-    final sessions = _sessionsBox.values.where((s) => s.isActive).toList();
-    if (sessions.isEmpty) {
-      _activeSessionCache = null;
-      return null;
-    }
-
-    // Repair multiple active sessions by ending all except most recent
-    if (sessions.length > 1) {
-      debugPrint(
-        'Repairing: Found ${sessions.length} active sessions, keeping most recent',
-      );
-      sessions.sort((a, b) => b.startDate.compareTo(a.startDate));
-
-      // End all but the first (most recent)
-      for (int i = 1; i < sessions.length; i++) {
-        sessions[i].endDate = sessions[i].startDate;
-        sessions[i].save();
-      }
-    }
-
-    _activeSessionCache = sessions.first;
-    return _activeSessionCache;
+    return _habitsBox.get(id);
   }
 
-  /// Get all sessions for analytics/history.
-  List<SobrietySession> getAllSessions() {
+  List<Habit> getAllHabits() {
     _assertInitialized();
-    return _sessionsBox.values.toList()
-      ..sort((a, b) => b.startDate.compareTo(a.startDate));
+    return _habitsBox.values.toList();
   }
 
-  Future<void> startNewSession(DateTime startDate) async {
+  Future<void> saveHabit(Habit habit) async {
     _assertInitialized();
-
-    final existingActive = getActiveSession();
-    if (existingActive != null) {
-      await endCurrentSession();
-    }
-
-    _activeSessionCache = null;
-
-    final session = SobrietySession(
-      id: IdGenerator.uuid(),
-      startDate: startDate,
-    );
-    await _sessionsBox.put(session.id, session);
-    _activeSessionCache = session;
+    await _habitsBox.put(habit.id, habit);
   }
 
-  Future<void> endCurrentSession() async {
-    _assertInitialized();
-    final session = getActiveSession();
-    if (session != null) {
-      session.endDate = DateTime.now();
-      await session.save();
-    }
-    _activeSessionCache = null;
-  }
-
-  // Relapses (pure persistence - no side-effects)
-  Future<void> logRelapse({
+  // Relapses (habit-aware)
+  Future<void> logRelapse(
+    String habitId, {
     required int drinksConsumed,
     required double costIncurred,
     required int caloriesConsumed,
     required String drinkType,
   }) async {
     _assertInitialized();
-    final currentSession = getActiveSession();
-    final streakDays = currentSession?.totalDays ?? 0;
-
-    // End current session
-    await endCurrentSession();
+    final habit = getHabit(habitId);
 
     // Log relapse event
     final relapse = RelapseEvent(
       id: IdGenerator.uuid(),
+      habitId: habitId,
       timestamp: DateTime.now(),
       drinksConsumed: drinksConsumed,
       costIncurred: costIncurred,
       caloriesConsumed: caloriesConsumed,
-      streakDaysLost: streakDays,
+      streakDaysLost: habit?.totalDays ?? 0,
       drinkType: drinkType,
       isSlip: false,
     );
     await _relapseBox.put(relapse.id, relapse);
 
-    // Log daily as not sober
-    await logDay(DateTime.now(), false, drinksConsumed);
+    // Update habit start date to reset timer
+    if (habit != null) {
+      final updatedHabit = Habit(
+        id: habit.id,
+        name: habit.name,
+        type: habit.type,
+        themeColor: habit.themeColor,
+        motivation: habit.motivation,
+        startDate: DateTime.now(),
+      );
+      await saveHabit(updatedHabit);
+    }
 
-    // Start new session
-    await startNewSession(DateTime.now());
+    // Log daily
+    await logDay(
+      date: DateTime.now(),
+      habitId: habitId,
+      isSober: false,
+      drinks: drinksConsumed,
+      moodScore: 3, // Default mood for relapse
+      symptoms: [],
+    );
   }
 
-  /// Log a slip (momentary incident) WITHOUT resetting the sobriety timer.
-  /// Only marks the day on heatmap and records the event for analytics.
-  Future<void> logSlip({
+  Future<void> logSlip(
+    String habitId, {
     required int drinksConsumed,
     required double costIncurred,
     required int caloriesConsumed,
     required String drinkType,
   }) async {
     _assertInitialized();
-    final currentSession = getActiveSession();
-    final streakDays = currentSession?.totalDays ?? 0;
 
-    // Log slip event (does NOT end session or reset timer)
     final slip = RelapseEvent(
       id: IdGenerator.uuid(),
+      habitId: habitId,
       timestamp: DateTime.now(),
       drinksConsumed: drinksConsumed,
       costIncurred: costIncurred,
       caloriesConsumed: caloriesConsumed,
-      streakDaysLost: streakDays,
+      streakDaysLost: 0, // Slip doesn't lose streak
       drinkType: drinkType,
       isSlip: true,
     );
     await _relapseBox.put(slip.id, slip);
 
-    // Log daily as not sober (marks day red on heatmap)
-    await logDay(DateTime.now(), false, drinksConsumed);
-  }
-
-  /// Get slips (not full relapses) from the past 7 days for gentle prompt logic.
-  int getSlipsThisWeek() {
-    _assertInitialized();
-    final weekAgo = DateTime.now().subtract(const Duration(days: 7));
-    return _relapseBox.values
-        .where((event) => event.isSlip && event.timestamp.isAfter(weekAgo))
-        .length;
-  }
-
-  /// Convert recent slips to a relapse (user acknowledges pattern).
-  /// This ends the current session and starts fresh.
-  Future<void> convertSlipsToRelapse() async {
-    _assertInitialized();
-    final weekAgo = DateTime.now().subtract(const Duration(days: 7));
-    final recentSlips = _relapseBox.values
-        .where((event) => event.isSlip && event.timestamp.isAfter(weekAgo))
-        .toList();
-
-    // Calculate totals from slips
-    int totalDrinks = 0;
-    double totalCost = 0;
-    int totalCalories = 0;
-    for (final slip in recentSlips) {
-      totalDrinks += slip.drinksConsumed;
-      totalCost += slip.costIncurred;
-      totalCalories += slip.caloriesConsumed;
-    }
-
-    // Delete the slip records (they're being merged into relapse)
-    for (final slip in recentSlips) {
-      await _relapseBox.delete(slip.id);
-    }
-
-    // Log as a full relapse
-    final profile = getUserProfile();
-    await logRelapse(
-      drinksConsumed: totalDrinks,
-      costIncurred: totalCost,
-      caloriesConsumed: totalCalories,
-      drinkType: profile?.defaultDrinkType ?? 'Other',
+    await logDay(
+      date: DateTime.now(),
+      habitId: habitId,
+      isSober: false,
+      drinks: drinksConsumed,
+      moodScore: 3,
+      symptoms: [],
     );
   }
 
-  // Daily logs for heatmap
-  Future<void> logDay(DateTime date, bool isSober, [int? drinks]) async {
+  double getSuccessRate(String habitId) {
+    _assertInitialized();
+    final habit = getHabit(habitId);
+    if (habit == null) return 0.0;
+
+    final duration = DateTime.now().difference(habit.startDate);
+    final totalDays = duration.inDays + 1;
+
+    final slips = _relapseBox.values
+        .where((e) => e.habitId == habitId && e.isSlip)
+        .length;
+
+    return ((totalDays - slips) / totalDays).clamp(0.0, 1.0);
+  }
+
+  // Daily logs (habit-aware)
+  DailyLog? getDailyLog(String habitId, DateTime date) {
+    _assertInitialized();
+    final dateKey = DateTime(date.year, date.month, date.day).toIso8601String().split('T')[0];
+    return _dailyLogBox.get('${habitId}_$dateKey');
+  }
+
+  Future<void> logDay({
+    required DateTime date,
+    required String habitId,
+    required bool isSober,
+    int? drinks,
+    int moodScore = 5,
+    List<String> symptoms = const [],
+  }) async {
     _assertInitialized();
     final log = DailyLog(
       date: DateTime(date.year, date.month, date.day),
-      isSober: isSober,
-      drinksConsumed: drinks,
+      habitId: habitId,
+      moodScore: moodScore,
+      symptoms: symptoms,
+      isSlip: !isSober,
+      isRelapse: false,
     );
-    await _dailyLogBox.put(log.dateKey, log);
+    await _dailyLogBox.put('${habitId}_${log.dateKey}', log);
   }
 
-  DailyLog? getDayLog(DateTime date) {
+  int getTotalSoberDays(String habitId) {
     _assertInitialized();
-    final key = DailyLog(
-      date: DateTime(date.year, date.month, date.day),
-      isSober: true,
-    ).dateKey;
-    return _dailyLogBox.get(key);
-  }
+    final habit = getHabit(habitId);
+    if (habit == null) return 0;
 
-  List<DailyLog> getLogsForRange(DateTime start, DateTime end) {
-    _assertInitialized();
-    return _dailyLogBox.values
-        .where(
-          (log) =>
-              log.date.isAfter(start.subtract(const Duration(days: 1))) &&
-              log.date.isBefore(end.add(const Duration(days: 1))),
+    final duration = DateTime.now().difference(habit.startDate);
+    final totalDays = duration.inDays;
+
+    final nonSoberDays = _relapseBox.values
+        .where((r) => r.habitId == habitId)
+        .map(
+          (r) => DateTime(r.timestamp.year, r.timestamp.month, r.timestamp.day),
         )
+        .toSet()
+        .length;
+
+    return (totalDays - nonSoberDays).clamp(0, 100000);
+  }
+
+  // Session management
+  SobrietySession? getActiveSession(String habitId) {
+    _assertInitialized();
+
+    if (_activeSessionCache.containsKey(habitId)) {
+      return _activeSessionCache[habitId];
+    }
+
+    final active = _sessionsBox.values
+        .where((s) => s.habitId == habitId && s.endDate == null)
+        .cast<SobrietySession?>()
+        .firstOrNull;
+
+    _activeSessionCache[habitId] = active;
+    return active;
+  }
+
+  Future<SobrietySession> startNewSession(
+    String habitId, {
+    DateTime? startDate,
+  }) async {
+    _assertInitialized();
+    final now = startDate ?? DateTime.now();
+
+    // End any existing active session for this habit
+    final current = getActiveSession(habitId);
+    if (current != null) {
+      final ended = current.copyWith(endDate: now);
+      await _sessionsBox.put(ended.id, ended);
+    }
+
+    final session = SobrietySession(
+      id: IdGenerator.uuid(),
+      habitId: habitId,
+      startDate: now,
+      endDate: null,
+    );
+
+    await _sessionsBox.put(session.id, session);
+    _activeSessionCache[habitId] = session;
+
+    // Keep Habit.startDate in sync with active sobriety period
+    final habit = getHabit(habitId);
+    if (habit != null) {
+      await saveHabit(
+        Habit(
+          id: habit.id,
+          name: habit.name,
+          type: habit.type,
+          themeColor: habit.themeColor,
+          motivation: habit.motivation,
+          startDate: now,
+        ),
+      );
+    }
+
+    return session;
+  }
+
+  int getTotalSlips(String habitId) {
+    _assertInitialized();
+    return _relapseBox.values
+        .where((e) => e.habitId == habitId && e.isSlip)
+        .length;
+  }
+
+  int getSlipsThisWeek(String habitId) {
+    _assertInitialized();
+    final now = DateTime.now();
+    final startOfWeek = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: now.weekday - 1)); // Monday
+    return _relapseBox.values
+        .where(
+          (e) =>
+              e.habitId == habitId &&
+              e.isSlip &&
+              !e.timestamp.isBefore(startOfWeek),
+        )
+        .length;
+  }
+
+  Future<void> convertSlipsToRelapse(String habitId) async {
+    _assertInitialized();
+
+    final now = DateTime.now();
+    final habit = getHabit(habitId);
+
+    final slips = _relapseBox.values
+        .where((e) => e.habitId == habitId && e.isSlip)
         .toList();
+
+    for (final slip in slips) {
+      final updated = RelapseEvent(
+        id: slip.id,
+        timestamp: slip.timestamp,
+        habitId: slip.habitId,
+        drinksConsumed: slip.drinksConsumed,
+        costIncurred: slip.costIncurred,
+        caloriesConsumed: slip.caloriesConsumed,
+        streakDaysLost: habit == null
+            ? 0
+            : now.difference(habit.startDate).inDays,
+        drinkType: slip.drinkType,
+        isSlip: false,
+      );
+      await _relapseBox.put(updated.id, updated);
+    }
+
+    // A "real relapse" resets the timer
+    await startNewSession(habitId, startDate: now);
   }
 
-  // Stats
-  int getTotalSoberDays() {
-    _assertInitialized();
-    return _dailyLogBox.values.where((log) => log.isSober).length;
-  }
-
-  int getTotalRelapses() {
-    _assertInitialized();
-    return _relapseBox.values.where((r) => !r.isSlip).length;
-  }
-
-  int getTotalSlips() {
-    _assertInitialized();
-    return _relapseBox.values.where((r) => r.isSlip).length;
-  }
-
-  double getTotalMoneySaved() {
-    _assertInitialized();
-    final profile = getUserProfile();
-    if (profile == null) return 0;
-    return getTotalSoberDays() * profile.avgDailySpend;
-  }
-
-  int getTotalCaloriesAvoided() {
-    _assertInitialized();
-    final profile = getUserProfile();
-    if (profile == null) return 0;
-    return (getTotalSoberDays() * profile.avgDailyCalories).round();
-  }
-
-  /// Nuclear wipe - deletes ALL user data from all boxes.
-  /// This is irreversible and should only be called after user confirmation.
-  /// Note: Security settings (biometric) persist across wipes by design.
   Future<void> nukeAllData() async {
     _assertInitialized();
-
-    // Clear cache before clearing boxes
-    _activeSessionCache = null;
-
     await _userProfileBox.clear();
-    await _sessionsBox.clear();
+    await _habitsBox.clear();
     await _relapseBox.clear();
     await _dailyLogBox.clear();
-
-    // Reset schema version so migrations run again if needed
+    await _sessionsBox.clear();
+    _activeSessionCache.clear();
     await _settingsBox.put(SettingsKeys.schemaVersion, currentSchemaVersion);
   }
 
@@ -557,7 +581,6 @@ class SobrietyRepository {
 
   Future<void> _importDataInternal(Map<String, dynamic> data) async {
     await nukeAllData();
-    _activeSessionCache = null;
 
     if (data['profile'] != null) {
       final profile = UserProfile.fromJson(
