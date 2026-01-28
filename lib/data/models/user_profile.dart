@@ -5,64 +5,55 @@ part 'user_profile.g.dart';
 @HiveType(typeId: 0)
 class UserProfile extends HiveObject {
   @HiveField(0)
-  DateTime lastDrinkDate;
-
-  @HiveField(1)
-  int avgDrinksPerWeek;
-
-  @HiveField(2)
-  double avgCostPerDrink;
-
-  @HiveField(3)
-  int avgCaloriesPerDrink;
-
-  @HiveField(4)
-  String defaultDrinkType;
-
-  @HiveField(5)
   bool onboardingComplete;
 
-  @HiveField(6, defaultValue: 'USD')
-  String currency;
+  @HiveField(1)
+  List<String> selectedHabitIds;
+
+  @HiveField(2)
+  DateTime? lastDrinkDate;
+
+  @HiveField(3)
+  double avgDailySpend;
+
+  @HiveField(4)
+  int avgDailyCalories;
+
+  @HiveField(5)
+  int avgDrinksPerWeek;
 
   UserProfile({
-    required this.lastDrinkDate,
-    this.avgDrinksPerWeek = 10,
-    this.avgCostPerDrink = 8.0,
-    this.avgCaloriesPerDrink = 150,
-    this.defaultDrinkType = 'Beer',
     this.onboardingComplete = false,
-    this.currency = 'USD',
+    this.selectedHabitIds = const [],
+    this.lastDrinkDate,
+    this.avgDailySpend = 0,
+    this.avgDailyCalories = 0,
+    this.avgDrinksPerWeek = 0,
   });
-
-  // Calculate average daily spend
-  double get avgDailySpend => (avgDrinksPerWeek * avgCostPerDrink) / 7;
-
-  // Calculate average daily calories
-  double get avgDailyCalories => (avgDrinksPerWeek * avgCaloriesPerDrink) / 7;
 
   // JSON Serialization
   Map<String, dynamic> toJson() {
     return {
-      'lastDrinkDate': lastDrinkDate.toIso8601String(),
-      'avgDrinksPerWeek': avgDrinksPerWeek,
-      'avgCostPerDrink': avgCostPerDrink,
-      'avgCaloriesPerDrink': avgCaloriesPerDrink,
-      'defaultDrinkType': defaultDrinkType,
       'onboardingComplete': onboardingComplete,
-      'currency': currency,
+      'selectedHabitIds': selectedHabitIds,
+      'lastDrinkDate': (lastDrinkDate ?? DateTime.now()).toIso8601String(),
+      'avgDailySpend': avgDailySpend,
+      'avgDailyCalories': avgDailyCalories,
+      'avgDrinksPerWeek': avgDrinksPerWeek,
     };
   }
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
-      lastDrinkDate: DateTime.parse(json['lastDrinkDate'] as String),
-      avgDrinksPerWeek: json['avgDrinksPerWeek'] as int,
-      avgCostPerDrink: (json['avgCostPerDrink'] as num).toDouble(),
-      avgCaloriesPerDrink: json['avgCaloriesPerDrink'] as int,
-      defaultDrinkType: json['defaultDrinkType'] as String,
-      onboardingComplete: json['onboardingComplete'] as bool,
-      currency: json['currency'] as String? ?? 'USD',
+      onboardingComplete: json['onboardingComplete'] as bool? ?? false,
+      selectedHabitIds:
+          (json['selectedHabitIds'] as List?)?.cast<String>() ?? [],
+      lastDrinkDate: json['lastDrinkDate'] != null
+          ? DateTime.tryParse(json['lastDrinkDate'] as String)
+          : null,
+      avgDailySpend: (json['avgDailySpend'] as num?)?.toDouble() ?? 0,
+      avgDailyCalories: (json['avgDailyCalories'] as num?)?.toInt() ?? 0,
+      avgDrinksPerWeek: (json['avgDrinksPerWeek'] as num?)?.toInt() ?? 0,
     );
   }
 }

@@ -15,6 +15,9 @@ abstract class HiveBoxes {
   /// Box storing daily log entries.
   static const String dailyLogs = 'daily_logs';
 
+  /// Box storing habit configurations.
+  static const String habits = 'habits';
+
   /// Box storing app settings and configuration.
   static const String settings = 'settings';
 

@@ -39,7 +39,7 @@ clearstate/
 │   │   ├── onboarding/   # Initial setup flow
 │   │   ├── relapse/      # Relapse tracking
 │   │   ├── settings/     # Settings & data management
-│   │   └── widgets/      # Stealth widgets configuration
+│   │   └── home_widgets/  # Home screen widgets configuration (iOS/Android)
 │   └── shared/widgets/   # Shared UI components
 └── test/
     ├── shared/
@@ -176,8 +176,8 @@ Uses `flutter_lints` package. Run `flutter analyze` to check.
 - `lib/core/services/notification_service.dart` - Milestone notification scheduling
 - `lib/core/services/notification_service_interface.dart` - Testable notification interface
 - `lib/data/models/widget_config.dart` - Widget configuration model (typeId: 4)
-- `lib/features/widgets/widget_settings_screen.dart` - Stealth widget configuration UI
-- `lib/features/widgets/providers/widget_settings_provider.dart` - Widget settings state
+- `lib/features/home_widgets/widget_settings_screen.dart` - Home screen widget configuration UI
+- `lib/features/home_widgets/providers/widget_settings_provider.dart` - Widget settings state
 - `lib/features/settings/settings_screen.dart` - Settings with privacy & data management
 - `lib/features/settings/widgets/wipe_confirmation_dialog.dart` - Nuclear wipe confirmation
 - `lib/features/settings/notification_provider.dart` - Notification settings state

@@ -11,28 +11,32 @@ class RelapseEvent extends HiveObject {
   DateTime timestamp;
 
   @HiveField(2)
-  int drinksConsumed;
+  String habitId;
 
   @HiveField(3)
-  double costIncurred;
+  int drinksConsumed;
 
   @HiveField(4)
-  int caloriesConsumed;
+  double costIncurred;
 
   @HiveField(5)
-  int streakDaysLost;
+  int caloriesConsumed;
 
   @HiveField(6)
+  int streakDaysLost;
+
+  @HiveField(7)
   String drinkType;
 
   /// Whether this was a momentary slip (true) or a full relapse (false).
   /// Slips do NOT reset the sobriety timer - they only mark the day on heatmap.
-  @HiveField(7)
+  @HiveField(8)
   bool isSlip;
 
   RelapseEvent({
     required this.id,
     required this.timestamp,
+    required this.habitId,
     required this.drinksConsumed,
     required this.costIncurred,
     required this.caloriesConsumed,
@@ -46,6 +50,7 @@ class RelapseEvent extends HiveObject {
     return {
       'id': id,
       'timestamp': timestamp.toIso8601String(),
+      'habitId': habitId,
       'drinksConsumed': drinksConsumed,
       'costIncurred': costIncurred,
       'caloriesConsumed': caloriesConsumed,
@@ -59,6 +64,7 @@ class RelapseEvent extends HiveObject {
     return RelapseEvent(
       id: json['id'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
+      habitId: json['habitId'] as String? ?? 'default', // Migration fallback
       drinksConsumed: json['drinksConsumed'] as int,
       costIncurred: (json['costIncurred'] as num).toDouble(),
       caloriesConsumed: json['caloriesConsumed'] as int,

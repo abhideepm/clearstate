@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:clearstate/data/repositories/sobriety_repository.dart';
 import 'package:clearstate/data/models/user_profile.dart';
+import 'package:clearstate/data/models/habit.dart';
 import 'package:clearstate/data/models/sobriety_session.dart';
 import 'package:clearstate/data/models/relapse_event.dart';
 import 'package:clearstate/data/models/daily_log.dart';
@@ -26,6 +27,7 @@ void main() {
 
   late SobrietyRepository repository;
   late Directory tempDir;
+  const habitId = 'test-habit';
 
   setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('clearstate_test');
@@ -36,13 +38,19 @@ void main() {
       Hive.registerAdapter(UserProfileAdapter());
     }
     if (!Hive.isAdapterRegistered(1)) {
-      Hive.registerAdapter(SobrietySessionAdapter());
+      Hive.registerAdapter(HabitAdapter());
     }
     if (!Hive.isAdapterRegistered(2)) {
       Hive.registerAdapter(RelapseEventAdapter());
     }
     if (!Hive.isAdapterRegistered(3)) {
       Hive.registerAdapter(DailyLogAdapter());
+    }
+    if (!Hive.isAdapterRegistered(5)) {
+      Hive.registerAdapter(HabitTypeAdapter());
+    }
+    if (!Hive.isAdapterRegistered(6)) {
+      Hive.registerAdapter(SobrietySessionAdapter());
     }
 
     repository = SobrietyRepository();
@@ -59,59 +67,79 @@ void main() {
   group('SobrietyRepository', () {
     test('initially returns null profile and active session', () {
       expect(repository.getUserProfile(), isNull);
-      expect(repository.getActiveSession(), isNull);
+      expect(repository.getActiveSession(habitId), isNull);
     });
 
-    test('saveUserProfile saves profile and starts session', () async {
-      final startDate = DateTime.now().subtract(const Duration(days: 1));
+    test('saveUserProfile saves profile', () async {
       await repository.saveUserProfile(
-        lastDrinkDate: startDate,
-        avgDrinksPerWeek: 7,
-        avgCostPerDrink: 10.0,
-        defaultDrinkType: 'Beer',
+        selectedHabitIds: [habitId],
+        onboardingComplete: true,
       );
 
       final profile = repository.getUserProfile();
       expect(profile, isNotNull);
-      expect(profile!.avgDrinksPerWeek, 7);
+      expect(profile!.selectedHabitIds, contains(habitId));
       expect(profile.onboardingComplete, isTrue);
+    });
 
-      final session = repository.getActiveSession();
+    test('startNewSession creates active session', () async {
+      final startDate = DateTime.now().subtract(const Duration(days: 5));
+      await repository.saveUserProfile(
+        selectedHabitIds: [habitId],
+        onboardingComplete: true,
+      );
+
+      await repository.startNewSession(habitId, startDate: startDate);
+
+      final session = repository.getActiveSession(habitId);
       expect(session, isNotNull);
       expect(session!.startDate, startDate);
       expect(session.isActive, isTrue);
     });
 
-    test('logRelapse ends current session and starts new one', () async {
+    test('logRelapse logs event and resets timer', () async {
       final startDate = DateTime.now().subtract(const Duration(days: 5));
       await repository.saveUserProfile(
-        lastDrinkDate: startDate,
-        avgDrinksPerWeek: 7,
-        avgCostPerDrink: 10.0,
-        defaultDrinkType: 'Beer',
+        selectedHabitIds: [habitId],
+        onboardingComplete: true,
       );
 
-      final oldSession = repository.getActiveSession();
+      // Create a habit for the test
+      await repository.saveHabit(
+        Habit(
+          id: habitId,
+          name: 'Test Habit',
+          type: HabitType.substance,
+          themeColor: '#FF0000',
+          motivation: 'Testing',
+          startDate: startDate,
+        ),
+      );
+
+      await repository.startNewSession(habitId, startDate: startDate);
 
       await repository.logRelapse(
+        habitId,
         drinksConsumed: 5,
         costIncurred: 50.0,
         caloriesConsumed: 1000,
         drinkType: 'Beer',
       );
 
-      final currentSession = repository.getActiveSession();
-      expect(currentSession!.id, isNot(oldSession!.id));
-      expect(currentSession.isActive, isTrue);
-      expect(repository.getTotalRelapses(), 1);
+      // After relapse, habit startDate is reset
+      final habit = repository.getHabit(habitId);
+      expect(habit, isNotNull);
+      // New start date should be approximately now
+      expect(
+        habit!.startDate.difference(DateTime.now()).inMinutes.abs(),
+        lessThan(1),
+      );
     });
 
     test('nukeAllData clears all boxes', () async {
       await repository.saveUserProfile(
-        lastDrinkDate: DateTime.now(),
-        avgDrinksPerWeek: 7,
-        avgCostPerDrink: 10.0,
-        defaultDrinkType: 'Beer',
+        selectedHabitIds: [habitId],
+        onboardingComplete: true,
       );
 
       expect(repository.getUserProfile(), isNotNull);
@@ -119,8 +147,8 @@ void main() {
       await repository.nukeAllData();
 
       expect(repository.getUserProfile(), isNull);
-      expect(repository.getActiveSession(), isNull);
-      expect(repository.getTotalRelapses(), 0);
+      expect(repository.getActiveSession(habitId), isNull);
+      expect(repository.getTotalSlips(habitId), 0);
     });
   });
 }

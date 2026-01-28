@@ -67,6 +67,15 @@ class _DrinkTypeStepState extends ConsumerState<DrinkTypeStep> {
           ),
           const SizedBox(height: 12),
           BrutalistButton(
+            label: 'SKIP',
+            onPressed: () {
+              ref.read(onboardingProvider.notifier).setDrinkType('');
+              widget.onNext();
+            },
+            type: BrutalistButtonType.secondary,
+          ),
+          const SizedBox(height: 12),
+          BrutalistButton(
             label: 'BACK',
             onPressed: widget.onBack,
             type: BrutalistButtonType.secondary,

@@ -170,9 +170,21 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
     try {
       final orchestrator = ref.read(sobrietyOrchestratorProvider);
       final repository = ref.read(sobrietyRepositoryProvider);
+      final profile = repository.getUserProfile();
+      final habitId = profile?.selectedHabitIds.isNotEmpty == true
+          ? profile!.selectedHabitIds.first
+          : null;
+
+      if (habitId == null) {
+        if (mounted) {
+          setState(() => _isLogging = false);
+        }
+        return;
+      }
 
       if (widget.isSlip) {
         await orchestrator.logSlip(
+          habitId,
           drinksConsumed: _drinks,
           costIncurred: _totalCost,
           caloriesConsumed: _totalCalories,
@@ -180,7 +192,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
         );
 
         // Check for slip pattern (3+ slips in a week)
-        final slipsThisWeek = repository.getSlipsThisWeek();
+        final slipsThisWeek = repository.getSlipsThisWeek(habitId);
         if (slipsThisWeek >= 3 && mounted) {
           HapticService.medium();
           _showSlipPatternDialog();
@@ -190,6 +202,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
         }
       } else {
         await orchestrator.logRelapse(
+          habitId,
           drinksConsumed: _drinks,
           costIncurred: _totalCost,
           caloriesConsumed: _totalCalories,
@@ -214,6 +227,14 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
   void _showSlipPatternDialog() {
     if (!mounted) return;
     final navigator = Navigator.of(context);
+    final repository = ref.read(sobrietyRepositoryProvider);
+    final profile = repository.getUserProfile();
+    final habitId = profile?.selectedHabitIds.isNotEmpty == true
+        ? profile!.selectedHabitIds.first
+        : null;
+
+    if (habitId == null) return;
+
     showDialog(
       context: context,
       builder: (dialogContext) => SlipPatternDialog(
@@ -224,7 +245,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
         onConvertToRelapse: () async {
           final dialogNavigator = Navigator.of(dialogContext);
           final orchestrator = ref.read(sobrietyOrchestratorProvider);
-          await orchestrator.convertSlipsToRelapse();
+          await orchestrator.convertSlipsToRelapse(habitId);
           ref.read(sobrietyStartDateProvider.notifier).state = DateTime.now();
           HapticService.relapseConfirm();
           dialogNavigator.pop();

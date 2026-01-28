@@ -8,9 +8,8 @@ import '../../shared/widgets/noise_background.dart';
 import '../../shared/widgets/sunrise_logo.dart';
 import 'onboarding_provider.dart';
 import 'widgets/last_drink_step.dart';
-import 'widgets/drinks_per_week_step.dart';
 import 'widgets/drink_type_step.dart';
-import 'widgets/cost_per_drink_step.dart';
+import 'widgets/motivation_step.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
@@ -39,7 +38,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   void _nextPage() {
     HapticService.light();
     final state = ref.read(onboardingProvider);
-    if (state.currentStep < 3) {
+    if (state.currentStep < 2) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
@@ -86,9 +85,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   physics: const NeverScrollableScrollPhysics(),
                   children: [
                     LastDrinkStep(onNext: _nextPage),
-                    DrinksPerWeekStep(onNext: _nextPage, onBack: _previousPage),
                     DrinkTypeStep(onNext: _nextPage, onBack: _previousPage),
-                    CostPerDrinkStep(onNext: _nextPage, onBack: _previousPage),
+                    MotivationStep(onNext: _nextPage, onBack: _previousPage),
                   ],
                 ),
               ),
@@ -114,7 +112,7 @@ class _OnboardingProgress extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(
-            children: List.generate(4, (index) {
+            children: List.generate(3, (index) {
               return Expanded(
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
@@ -130,7 +128,7 @@ class _OnboardingProgress extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          'STEP ${state.currentStep + 1} OF 4',
+          'STEP ${state.currentStep + 1} OF 3',
           style: ClearStateTypography.timerLabel.copyWith(
             fontSize: 12,
             letterSpacing: 2,

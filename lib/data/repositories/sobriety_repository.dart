@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/user_profile.dart';
@@ -5,14 +6,16 @@ import '../models/habit.dart';
 import '../models/relapse_event.dart';
 import '../models/daily_log.dart';
 import '../models/sobriety_session.dart';
+import '../models/widget_config.dart';
 import '../../core/constants/hive_boxes.dart';
 import '../../core/services/encryption_service.dart';
 import '../../core/services/id_generator.dart';
 import '../../core/services/hive_adapter_registry.dart';
+import 'i_sobriety_repository.dart';
 
 /// Pure persistence layer for sobriety data.
 /// Side-effects (notifications, widgets) are handled by SobrietyOrchestrator.
-class SobrietyRepository {
+class SobrietyRepository implements ISobrietyRepository {
   static const int currentSchemaVersion = 1;
 
   late Box<UserProfile> _userProfileBox;
@@ -20,6 +23,7 @@ class SobrietyRepository {
   late Box<RelapseEvent> _relapseBox;
   late Box<DailyLog> _dailyLogBox;
   late Box<SobrietySession> _sessionsBox;
+  late Box<WidgetConfig> _widgetConfigsBox;
   late Box _settingsBox;
   HiveAesCipher? _cipher;
 
@@ -71,6 +75,11 @@ class SobrietyRepository {
       encryptionCipher: _cipher,
     );
 
+    // Widget configurations
+    _widgetConfigsBox = await Hive.openBox<WidgetConfig>(
+      HiveBoxes.widgetConfigs,
+    );
+
     // Settings box is not encrypted (contains only schema version, etc.)
     _settingsBox = await Hive.openBox(HiveBoxes.settings);
 
@@ -109,7 +118,23 @@ class SobrietyRepository {
       selectedHabitIds: selectedHabitIds,
       onboardingComplete: onboardingComplete,
     );
+    await updateUserProfile(profile);
+  }
+
+  Future<void> updateUserProfile(UserProfile profile) async {
+    _assertInitialized();
     await _userProfileBox.put(UserProfileKeys.profile, profile);
+  }
+
+  // Widget Configs
+  WidgetConfig? getWidgetConfig(String key) {
+    _assertInitialized();
+    return _widgetConfigsBox.get(key);
+  }
+
+  Future<void> saveWidgetConfig(String key, WidgetConfig config) async {
+    _assertInitialized();
+    await _widgetConfigsBox.put(key, config);
   }
 
   // Habits
@@ -407,20 +432,41 @@ class SobrietyRepository {
   }
 
   // Backup & Restore
+  String exportEncryptedData(String password) {
+    _assertInitialized();
+    final data = exportData();
+    return EncryptionService.encryptPayload(jsonEncode(data), password);
+  }
+
   Map<String, dynamic> exportData() {
     _assertInitialized();
     return {
       'version': currentSchemaVersion,
       'timestamp': DateTime.now().toIso8601String(),
       'profile': _userProfileBox.get(UserProfileKeys.profile)?.toJson(),
+      'habits': _habitsBox.values.map((h) => h.toJson()).toList(),
       'sessions': _sessionsBox.values.map((s) => s.toJson()).toList(),
       'relapses': _relapseBox.values.map((r) => r.toJson()).toList(),
       'daily_logs': _dailyLogBox.values.map((l) => l.toJson()).toList(),
     };
   }
 
-  Future<void> importData(Map<String, dynamic> data) async {
+  Future<void> importData(dynamic input, {String? password}) async {
     _assertInitialized();
+
+    Map<String, dynamic> data;
+
+    if (input is String) {
+      if (password == null) {
+        throw Exception('Password required for encrypted backup');
+      }
+      final decrypted = EncryptionService.decryptPayload(input, password);
+      data = jsonDecode(decrypted) as Map<String, dynamic>;
+    } else if (input is Map<String, dynamic>) {
+      data = input;
+    } else {
+      throw Exception('Invalid backup format');
+    }
 
     final version = data['version'] as int? ?? 0;
     if (version > currentSchemaVersion) {
@@ -589,6 +635,14 @@ class SobrietyRepository {
       await _userProfileBox.put(UserProfileKeys.profile, profile);
     }
 
+    if (data['habits'] != null) {
+      final List habits = data['habits'] as List;
+      for (final h in habits) {
+        final habit = Habit.fromJson(h as Map<String, dynamic>);
+        await _habitsBox.put(habit.id, habit);
+      }
+    }
+
     if (data['sessions'] != null) {
       final List sessions = data['sessions'] as List;
       for (final s in sessions) {
@@ -609,7 +663,8 @@ class SobrietyRepository {
       final List logs = data['daily_logs'] as List;
       for (final l in logs) {
         final log = DailyLog.fromJson(l as Map<String, dynamic>);
-        await _dailyLogBox.put(log.dateKey, log);
+        // Use composite key to avoid data corruption and enable lookup
+        await _dailyLogBox.put('${log.habitId}_${log.dateKey}', log);
       }
     }
 
@@ -621,7 +676,7 @@ class SobrietyRepository {
 /// Throws if accessed without proper initialization/override.
 /// In production, override with initialized instance in main().
 /// In tests, override with mock or call init() explicitly.
-final sobrietyRepositoryProvider = Provider<SobrietyRepository>((ref) {
+final sobrietyRepositoryProvider = Provider<ISobrietyRepository>((ref) {
   throw StateError(
     'sobrietyRepositoryProvider must be overridden with an initialized '
     'SobrietyRepository instance. See main.dart for production usage.',

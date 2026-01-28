@@ -5,15 +5,31 @@ part 'daily_log.g.dart';
 @HiveType(typeId: 3)
 class DailyLog extends HiveObject {
   @HiveField(0)
-  DateTime date;
+  final DateTime date;
 
   @HiveField(1)
-  bool isSober;
+  final String habitId;
 
   @HiveField(2)
-  int? drinksConsumed; // null if sober
+  final int moodScore; // 1-5
 
-  DailyLog({required this.date, required this.isSober, this.drinksConsumed});
+  @HiveField(3)
+  final List<String> symptoms;
+
+  @HiveField(4)
+  final bool isSlip; // Lapse
+
+  @HiveField(5)
+  final bool isRelapse;
+
+  DailyLog({
+    required this.date,
+    required this.habitId,
+    required this.moodScore,
+    required this.symptoms,
+    required this.isSlip,
+    required this.isRelapse,
+  });
 
   // Get date as YYYY-MM-DD string for heatmap key
   String get dateKey {
@@ -24,16 +40,22 @@ class DailyLog extends HiveObject {
   Map<String, dynamic> toJson() {
     return {
       'date': date.toIso8601String(),
-      'isSober': isSober,
-      'drinksConsumed': drinksConsumed,
+      'habitId': habitId,
+      'moodScore': moodScore,
+      'symptoms': symptoms,
+      'isSlip': isSlip,
+      'isRelapse': isRelapse,
     };
   }
 
   factory DailyLog.fromJson(Map<String, dynamic> json) {
     return DailyLog(
       date: DateTime.parse(json['date'] as String),
-      isSober: json['isSober'] as bool,
-      drinksConsumed: json['drinksConsumed'] as int?,
+      habitId: json['habitId'] as String,
+      moodScore: json['moodScore'] as int,
+      symptoms: (json['symptoms'] as List).cast<String>(),
+      isSlip: json['isSlip'] as bool,
+      isRelapse: json['isRelapse'] as bool,
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:pointycastle/export.dart';
 import '../../data/repositories/sobriety_repository.dart';
+import '../../data/repositories/i_sobriety_repository.dart';
 import 'encryption_service.dart';
 
 class BackupService {
@@ -16,7 +17,7 @@ class BackupService {
   static const _ivLength = 12;
   static const _tagBits = 128;
 
-  final SobrietyRepository _repository;
+  final ISobrietyRepository _repository;
 
   BackupService(this._repository);
 

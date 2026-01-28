@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/widget_config.dart';
 import '../../data/repositories/sobriety_repository.dart';
+import '../../data/repositories/i_sobriety_repository.dart';
 import '../constants/bio_states.dart';
 import '../constants/milestones.dart';
 import '../constants/stoic_quotes.dart';
@@ -14,9 +15,9 @@ import '../theme/theme_provider.dart';
 /// access bio-state metrics, and get milestone information based on the
 /// user's current sobriety data.
 class WidgetDataService {
-  final SobrietyRepository _repository;
+  final ISobrietyRepository _repository;
 
-  /// Creates a [WidgetDataService] with the given [SobrietyRepository].
+  /// Creates a [WidgetDataService] with the given [ISobrietyRepository].
   const WidgetDataService(this._repository);
 
   /// Returns the current accent color for widgets.
@@ -54,7 +55,11 @@ class WidgetDataService {
   ///
   /// Returns 0.0 at midnight of sobriety start, approaching 1.0 at end of day.
   double _calculateDailyProgress() {
-    final session = _repository.getActiveSession();
+    final profile = _repository.getUserProfile();
+    final habitId = profile?.selectedHabitIds.isNotEmpty == true
+        ? profile!.selectedHabitIds.first
+        : 'default';
+    final session = _repository.getActiveSession(habitId);
     if (session == null) return 0.0;
 
     final now = DateTime.now();
@@ -119,8 +124,13 @@ class WidgetDataService {
   ///
   /// Returns 0 if there is no active session.
   int getCurrentStreak() {
-    final session = _repository.getActiveSession();
-    return session?.totalDays ?? 0;
+    final profile = _repository.getUserProfile();
+    final habitId = profile?.selectedHabitIds.isNotEmpty == true
+        ? profile!.selectedHabitIds.first
+        : 'default';
+    final session = _repository.getActiveSession(habitId);
+    if (session == null) return 0;
+    return DateTime.now().difference(session.startDate).inDays;
   }
 
   /// Returns the next recovery milestone the user is working toward.

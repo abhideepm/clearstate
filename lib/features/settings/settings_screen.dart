@@ -7,7 +7,7 @@ import '../../core/services/haptic_service.dart';
 import '../../core/services/backup_service.dart';
 import '../../shared/widgets/noise_background.dart';
 import '../security/security_provider.dart';
-import '../widgets/widget_settings_screen.dart';
+import '../home_widgets/widget_settings_screen.dart';
 import 'widgets/settings_toggle.dart';
 import 'widgets/wipe_confirmation_dialog.dart';
 import 'widgets/restore_confirmation_dialog.dart';

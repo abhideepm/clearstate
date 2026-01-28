@@ -84,7 +84,11 @@ class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
 
       // Schedule notifications for active session
       final repo = _ref.read(sobrietyRepositoryProvider);
-      final session = repo.getActiveSession();
+      final profile = repo.getUserProfile();
+      final habitId = profile?.selectedHabitIds.isNotEmpty == true
+          ? profile!.selectedHabitIds.first
+          : null;
+      final session = habitId != null ? repo.getActiveSession(habitId) : null;
       if (session != null) {
         await NotificationService.instance.scheduleMilestoneNotifications(
           session.startDate,

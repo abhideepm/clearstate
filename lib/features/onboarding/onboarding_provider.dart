@@ -1,39 +1,43 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/habit_template.dart';
 
 class OnboardingState {
   final DateTime? lastDrinkDate;
-  final int drinksPerWeek;
   final String drinkType;
-  final double costPerDrink;
-  final String currency;
+  final String motivation;
   final int currentStep;
+  final List<HabitTemplate> selectedHabits;
 
   const OnboardingState({
     this.lastDrinkDate,
-    this.drinksPerWeek = 10,
-    this.drinkType = 'Beer',
-    this.costPerDrink = 8.0,
-    this.currency = 'USD',
+    this.drinkType = '',
+    this.motivation = '',
     this.currentStep = 0,
+    this.selectedHabits = const [],
   });
 
   OnboardingState copyWith({
     DateTime? lastDrinkDate,
-    int? drinksPerWeek,
     String? drinkType,
-    double? costPerDrink,
-    String? currency,
+    String? motivation,
     int? currentStep,
+    List<HabitTemplate>? selectedHabits,
   }) {
     return OnboardingState(
       lastDrinkDate: lastDrinkDate ?? this.lastDrinkDate,
-      drinksPerWeek: drinksPerWeek ?? this.drinksPerWeek,
       drinkType: drinkType ?? this.drinkType,
-      costPerDrink: costPerDrink ?? this.costPerDrink,
-      currency: currency ?? this.currency,
+      motivation: motivation ?? this.motivation,
       currentStep: currentStep ?? this.currentStep,
+      selectedHabits: selectedHabits ?? this.selectedHabits,
     );
   }
+
+  /// Whether at least one habit is selected.
+  bool get hasSelectedHabits => selectedHabits.isNotEmpty;
+
+  /// Get selected habit IDs for repository operations.
+  List<String> get selectedHabitIds =>
+      selectedHabits.map((h) => h.id).toList();
 }
 
 class OnboardingNotifier extends StateNotifier<OnboardingState> {
@@ -43,20 +47,34 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
     state = state.copyWith(lastDrinkDate: date);
   }
 
-  void setDrinksPerWeek(int count) {
-    state = state.copyWith(drinksPerWeek: count);
-  }
-
   void setDrinkType(String type) {
     state = state.copyWith(drinkType: type);
   }
 
-  void setCostPerDrink(double cost) {
-    state = state.copyWith(costPerDrink: cost);
+  void setMotivation(String motivation) {
+    state = state.copyWith(motivation: motivation);
   }
 
-  void setCurrency(String currency) {
-    state = state.copyWith(currency: currency);
+  /// Toggle a habit in the selected habits list.
+  /// Adds if not present, removes if present.
+  void toggleHabit(HabitTemplate habit) {
+    final current = List<HabitTemplate>.from(state.selectedHabits);
+    if (current.any((h) => h.id == habit.id)) {
+      current.removeWhere((h) => h.id == habit.id);
+    } else {
+      current.add(habit);
+    }
+    state = state.copyWith(selectedHabits: current);
+  }
+
+  /// Select a single habit (replacing any existing selection).
+  void selectSingleHabit(HabitTemplate habit) {
+    state = state.copyWith(selectedHabits: [habit]);
+  }
+
+  /// Clear all selected habits.
+  void clearSelectedHabits() {
+    state = state.copyWith(selectedHabits: const []);
   }
 
   void nextStep() {

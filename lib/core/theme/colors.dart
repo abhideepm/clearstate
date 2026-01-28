@@ -2,22 +2,25 @@ import 'package:flutter/material.dart';
 
 class ClearStateColors {
   // Backgrounds
-  static const Color void_ = Color(0xFF050505); // Primary background
-  static const Color charcoal = Color(0xFF0F0F0F); // Card/surface
-  static const Color graphite = Color(0xFF1C1C1C); // Elevated surfaces
+  static const Color oledBlack = Color(0xFF000000);
+  static const Color charcoal = Color(0xFF0F0F0F);
+  static const Color graphite = Color(0xFF1C1C1C);
+
+  // Neobrutalist Accents
+  static const Color acidGreen = Color(0xFFB0FF00);
+  static const Color hyperViolet = Color(0xFF8A2BE2);
+  static const Color signalOrange = Color(0xFFFF4500);
 
   // Text
-  static const Color bone = Color(0xFFE8E8E8); // Primary text
-  static const Color smoke = Color(0xFF5C5C5C); // Secondary text
-  static const Color ash = Color(0xFF2A2A2A); // Borders, dividers
+  static const Color bone = Color(0xFFE8E8E8);
+  static const Color smoke = Color(0xFF5C5C5C);
+  static const Color ash = Color(0xFF2A2A2A);
 
-  // Accent
-  static const Color signal = Color(
-    0xFFFF6B35,
-  ); // Primary accent (Signal Orange)
-  static const Color signalLight = Color(0xFFFF8F66); // Accent hover
+  // Semantic (Legacy mappings)
+  static const Color sober = acidGreen;
+  static const Color relapse = signalOrange;
 
-  // Semantic
-  static const Color sober = Color(0xFF00D26A); // Sober days (green)
-  static const Color relapse = Color(0xFFFF3B30); // Destructive/warning
+  // Back-compat aliases used across UI
+  static const Color signal = signalOrange;
+  static const Color void_ = oledBlack;
 }

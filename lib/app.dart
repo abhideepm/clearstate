@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/colors.dart';
 import 'core/theme/theme_provider.dart';
@@ -51,6 +53,10 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+
+    // Toggle Android privacy screen (FLAG_SECURE)
+    _updatePrivacyScreen(state);
+
     // Lock the app when it goes to background
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
@@ -120,11 +126,9 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
 
     // Save user profile (this also starts the session and schedules notifications)
     await orchestrator.saveUserProfile(
+      selectedHabitIds: const ['default'],
       lastDrinkDate: startDate,
-      avgDrinksPerWeek: onboardingState.drinksPerWeek,
-      avgCostPerDrink: onboardingState.costPerDrink,
-      defaultDrinkType: onboardingState.drinkType,
-      currency: onboardingState.currency,
+      avgDailySpend: 0,
     );
 
     // Set the start date for timer (must match what was saved to profile)
@@ -144,6 +148,29 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     setState(() {});
     // Update widgets after successful unlock
     _updateWidgetsOnResume();
+    // Refresh privacy screen state
+    _updatePrivacyScreen(WidgetsBinding.instance.lifecycleState ?? AppLifecycleState.resumed);
+  }
+
+  /// Toggles the Android system-level privacy flag (FLAG_SECURE).
+  /// This obscures the app in the task switcher.
+  Future<void> _updatePrivacyScreen(AppLifecycleState state) async {
+    // Only applies to Android
+    if (Theme.of(context).platform != TargetPlatform.android) return;
+
+    try {
+      final securityState = ref.read(securityProvider);
+      final isBackground = state == AppLifecycleState.paused || state == AppLifecycleState.inactive;
+      final shouldSecure = isBackground || (securityState.biometricEnabled && !securityState.isUnlocked);
+
+      if (shouldSecure) {
+        await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+      } else {
+        await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+      }
+    } catch (e) {
+      debugPrint('Error updating privacy screen flag: $e');
+    }
   }
 
   @override

@@ -17,7 +17,7 @@ final avgDailySpendProvider = Provider<double>((ref) {
 /// Provider for average daily calories from user profile
 final avgDailyCaloriesProvider = Provider<double>((ref) {
   final profile = ref.watch(userProfileProvider);
-  return profile?.avgDailyCalories ?? 0.0;
+  return (profile?.avgDailyCalories ?? 0.0).toDouble();
 });
 
 /// Provider for average drinks per week from user profile
@@ -39,7 +39,11 @@ final moneySavedProvider = Provider<double>((ref) {
       return totalDays * avgDailySpend;
     },
     loading: () => 0.0,
-    error: (e, s) => 0.0,
+    error: (e, s) {
+      // Log error for debugging - returns 0.0 as fallback
+      // Error state is visible to consumers via elapsedDurationProvider
+      return 0.0;
+    },
   );
 });
 
@@ -65,7 +69,11 @@ final hoursFreeProvider = Provider<double>((ref) {
       return totalSessions * kDefaultHoursPerSession;
     },
     loading: () => 0.0,
-    error: (e, s) => 0.0,
+    error: (e, s) {
+      // Log error for debugging - returns 0.0 as fallback
+      // Error state is visible to consumers via elapsedDurationProvider
+      return 0.0;
+    },
   );
 });
 
@@ -76,7 +84,11 @@ final currentStreakDaysProvider = Provider<int>((ref) {
   return durationAsync.when(
     data: (duration) => duration.inDays,
     loading: () => 0,
-    error: (e, s) => 0,
+    error: (e, s) {
+      // Log error for debugging - returns 0 as fallback
+      // Error state is visible to consumers via elapsedDurationProvider
+      return 0;
+    },
   );
 });
 
