@@ -10,6 +10,7 @@ import 'onboarding_provider.dart';
 import 'widgets/habit_stack_step.dart';
 import 'widgets/last_drink_step.dart' show StartDateStep;
 import 'widgets/motivation_step.dart';
+import 'widgets/celebration_step.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   final VoidCallback onComplete;
@@ -22,6 +23,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   late PageController _pageController;
+  bool _showCelebration = false;
 
   @override
   void initState() {
@@ -45,8 +47,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       );
       ref.read(onboardingProvider.notifier).nextStep();
     } else {
-      HapticService.success();
-      widget.onComplete();
+      // Show celebration screen instead of completing immediately
+      setState(() {
+        _showCelebration = true;
+      });
     }
   }
 
@@ -63,9 +67,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Don't watch onboardingProvider here to avoid rebuilding PageView during animation
     final themeState = ref.watch(themeProvider);
     final accentColor = themeState.accent.value;
+
+    // Show celebration screen
+    if (_showCelebration) {
+      return Scaffold(
+        backgroundColor: themeState.background.value,
+        body: NoiseBackground(
+          opacity: 0.025,
+          child: CelebrationStep(onComplete: widget.onComplete),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: themeState.background.value,

@@ -22,7 +22,7 @@ class HabitStackStep extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Spacer(),
+          const SizedBox(height: 24),
           Text(
             'WHAT ARE YOU\nQUITTING?',
             style: ClearStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
@@ -34,50 +34,71 @@ class HabitStackStep extends ConsumerWidget {
             style: ClearStateTypography.bodySecondary,
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 32),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            alignment: WrapAlignment.center,
-            children: HabitTemplate.all.map((habit) {
-              final isSelected = selectedHabits.any((h) => h.id == habit.id);
-              return AnimatedChip(
-                isSelected: isSelected,
-                onTap: () {
-                  HapticService.selection();
-                  ref.read(onboardingProvider.notifier).toggleHabit(habit);
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      habit.icon,
-                      size: 18,
-                      color: isSelected ? Colors.black : Colors.white,
-                    ),
-                    const SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(habit.name.toUpperCase()),
-                        Text(
-                          habit.description,
-                          style: ClearStateTypography.caption.copyWith(
-                            fontSize: 10,
-                            color: isSelected
-                                ? Colors.black.withValues(alpha: 0.7)
-                                : Colors.white.withValues(alpha: 0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
+          const SizedBox(height: 12),
+          Text(
+            'Join 10,000+ people on their journey',
+            style: ClearStateTypography.caption.copyWith(
+              color: Colors.white.withValues(alpha: 0.5),
+              fontSize: 11,
+            ),
+            textAlign: TextAlign.center,
           ),
-          const Spacer(),
+          const SizedBox(height: 24),
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: HabitTemplate.all.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final habit = HabitTemplate.all[index];
+                final isSelected = selectedHabits.any((h) => h.id == habit.id);
+                return AnimatedChip(
+                  isSelected: isSelected,
+                  onTap: () {
+                    HapticService.selection();
+                    ref.read(onboardingProvider.notifier).toggleHabit(habit);
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        habit.icon,
+                        size: 20,
+                        color: isSelected ? Colors.black : Colors.white,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              habit.name.toUpperCase(),
+                              style: ClearStateTypography.button.copyWith(
+                                color: isSelected ? Colors.black : Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              habit.description,
+                              style: ClearStateTypography.caption.copyWith(
+                                fontSize: 11,
+                                color: isSelected
+                                    ? Colors.black.withValues(alpha: 0.7)
+                                    : Colors.white.withValues(alpha: 0.7),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
           BrutalistButton(
             label: 'CONTINUE',
             onPressed: onNext,

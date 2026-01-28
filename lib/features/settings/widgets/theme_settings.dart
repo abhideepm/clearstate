@@ -106,9 +106,43 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
 
   @override
   Widget build(BuildContext context) {
+    final themeState = ref.watch(themeProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          'Vibe',
+          style: ClearStateTypography.caption.copyWith(
+            color: ClearStateColors.smoke,
+            letterSpacing: 1,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            _VibeOption(
+              label: 'CYBER',
+              isSelected: themeState.vibe == ThemeVibe.cyber,
+              onTap: () {
+                HapticService.light();
+                ref.read(themeProvider.notifier).setThemeVibe(ThemeVibe.cyber);
+              },
+              color: ClearStateColors.acidGreen,
+            ),
+            const SizedBox(width: 12),
+            _VibeOption(
+              label: 'COZY',
+              isSelected: themeState.vibe == ThemeVibe.cozy,
+              onTap: () {
+                HapticService.light();
+                ref.read(themeProvider.notifier).setThemeVibe(ThemeVibe.cozy);
+              },
+              color: ClearStateColors.sageGreen,
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
         Text(
           'Accent Color',
           style: ClearStateTypography.caption.copyWith(
@@ -220,6 +254,51 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _VibeOption extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final Color color;
+
+  const _VibeOption({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? color.withValues(alpha: 0.1) : Colors.transparent,
+            border: Border.all(
+              color: isSelected ? color : ClearStateColors.ash,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(2),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: ClearStateTypography.timerLabel.copyWith(
+                fontSize: 12,
+                color: isSelected ? color : ClearStateColors.smoke,
+                letterSpacing: 2,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

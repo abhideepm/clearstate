@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/services/haptic_service.dart';
 import '../../core/services/sobriety_orchestrator.dart';
+import '../../core/utils/pro_feature_gate.dart';
 import '../../domain/usecases/sobriety_statistics.dart';
 import '../timer/timer_provider.dart';
 import 'widgets/bento_card.dart';
 import 'widgets/daily_log_input_sheet.dart';
+import 'widgets/symptom_prediction_card.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -196,6 +198,11 @@ class DashboardScreen extends ConsumerWidget {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  const ProFeatureGate(
+                    featureName: 'AI SYMPTOM PREDICTIONS',
+                    child: SymptomPredictionCard(),
                   ),
                   const SizedBox(height: 16),
                   // Quick Log Card (Full width / 2x1)

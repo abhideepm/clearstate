@@ -8,6 +8,7 @@ import '../../core/services/backup_service.dart';
 import '../../shared/widgets/noise_background.dart';
 import '../security/security_provider.dart';
 import '../home_widgets/widget_settings_screen.dart';
+import '../../core/utils/pro_feature_gate.dart';
 import 'widgets/settings_toggle.dart';
 import 'widgets/wipe_confirmation_dialog.dart';
 import 'widgets/restore_confirmation_dialog.dart';
@@ -58,26 +59,29 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     _SectionHeader(title: 'APPEARANCE'),
                     const SizedBox(height: 12),
-                    ThemeSettings(
-                      onThemeChanged: (accent, background) {
-                        HapticService.light();
-                        final accentColor = AccentColor.values.firstWhere(
-                          (e) => e.value == accent,
-                          orElse: () => AccentColor.signalOrange,
-                        );
-                        final bgTheme = BackgroundTheme.values.firstWhere(
-                          (e) => e.value == background,
-                          orElse: () => BackgroundTheme.void_,
-                        );
-                        ref
-                            .read(themeProvider.notifier)
-                            .setAccentColor(accentColor);
-                        ref
-                            .read(themeProvider.notifier)
-                            .setBackgroundTheme(bgTheme);
-                      },
-                      currentAccentColor: themeState.accent.value,
-                      currentBackgroundColor: themeState.background.value,
+                    ProFeatureGate(
+                      featureName: 'CUSTOM THEMES',
+                      child: ThemeSettings(
+                        onThemeChanged: (accent, background) {
+                          HapticService.light();
+                          final accentColor = AccentColor.values.firstWhere(
+                            (e) => e.value == accent,
+                            orElse: () => AccentColor.signalOrange,
+                          );
+                          final bgTheme = BackgroundTheme.values.firstWhere(
+                            (e) => e.value == background,
+                            orElse: () => BackgroundTheme.void_,
+                          );
+                          ref
+                              .read(themeProvider.notifier)
+                              .setAccentColor(accentColor);
+                          ref
+                              .read(themeProvider.notifier)
+                              .setBackgroundTheme(bgTheme);
+                        },
+                        currentAccentColor: themeState.accent.value,
+                        currentBackgroundColor: themeState.background.value,
+                      ),
                     ),
                     const SizedBox(height: 32),
                     _SectionHeader(title: 'PRIVACY'),
@@ -110,20 +114,22 @@ class SettingsScreen extends ConsumerWidget {
                     // Widgets Section
                     _SectionHeader(title: 'WIDGETS'),
                     const SizedBox(height: 12),
-                    _SettingsItem(
-                      label: 'Stealth Widgets',
-                      subtitle: 'Discreet home screen widgets',
-                      icon: Icons.widgets_outlined,
-                      onTap: () {
-                        HapticService.light();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const WidgetSettingsScreen(),
-                          ),
-                        );
-                      },
+                    ProFeatureGate(
+                      featureName: 'STEALTH WIDGETS',
+                      child: _SettingsItem(
+                        label: 'Stealth Widgets',
+                        subtitle: 'Discreet home screen widgets',
+                        icon: Icons.widgets_outlined,
+                        onTap: () {
+                          HapticService.light();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const WidgetSettingsScreen(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-
                     const SizedBox(height: 32),
 
                     // Notifications Section

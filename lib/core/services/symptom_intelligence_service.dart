@@ -1,4 +1,7 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../constants/symptom_milestones.dart';
+
+final symptomIntelligenceServiceProvider = Provider((ref) => SymptomIntelligenceService());
 
 class PredictedSymptom {
   final String symptomId;

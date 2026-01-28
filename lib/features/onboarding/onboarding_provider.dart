@@ -2,14 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/habit_template.dart';
 
 class OnboardingState {
-  final DateTime? lastDrinkDate;
+  final Map<String, DateTime> habitStartDates;
   final String drinkType;
   final String motivation;
   final int currentStep;
   final List<HabitTemplate> selectedHabits;
 
   const OnboardingState({
-    this.lastDrinkDate,
+    this.habitStartDates = const {},
     this.drinkType = '',
     this.motivation = '',
     this.currentStep = 0,
@@ -17,20 +17,27 @@ class OnboardingState {
   });
 
   OnboardingState copyWith({
-    DateTime? lastDrinkDate,
+    Map<String, DateTime>? habitStartDates,
     String? drinkType,
     String? motivation,
     int? currentStep,
     List<HabitTemplate>? selectedHabits,
   }) {
     return OnboardingState(
-      lastDrinkDate: lastDrinkDate ?? this.lastDrinkDate,
+      habitStartDates: habitStartDates ?? this.habitStartDates,
       drinkType: drinkType ?? this.drinkType,
       motivation: motivation ?? this.motivation,
       currentStep: currentStep ?? this.currentStep,
       selectedHabits: selectedHabits ?? this.selectedHabits,
     );
   }
+
+  /// Get the start date for a specific habit, or null if not set.
+  DateTime? getStartDateForHabit(String habitId) => habitStartDates[habitId];
+
+  /// Check if all selected habits have start dates set.
+  bool get allHabitsHaveStartDates =>
+      selectedHabits.every((h) => habitStartDates.containsKey(h.id));
 
   /// Whether at least one habit is selected.
   bool get hasSelectedHabits => selectedHabits.isNotEmpty;
@@ -54,8 +61,10 @@ class OnboardingState {
 class OnboardingNotifier extends StateNotifier<OnboardingState> {
   OnboardingNotifier() : super(const OnboardingState());
 
-  void setLastDrinkDate(DateTime date) {
-    state = state.copyWith(lastDrinkDate: date);
+  void setHabitStartDate(String habitId, DateTime date) {
+    final updatedDates = Map<String, DateTime>.from(state.habitStartDates);
+    updatedDates[habitId] = date;
+    state = state.copyWith(habitStartDates: updatedDates);
   }
 
   void setDrinkType(String type) {
@@ -70,22 +79,29 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
   /// Adds if not present, removes if present.
   void toggleHabit(HabitTemplate habit) {
     final current = List<HabitTemplate>.from(state.selectedHabits);
+    final updatedDates = Map<String, DateTime>.from(state.habitStartDates);
     if (current.any((h) => h.id == habit.id)) {
       current.removeWhere((h) => h.id == habit.id);
+      updatedDates.remove(habit.id);
     } else {
       current.add(habit);
+      // Initialize with today's date
+      updatedDates[habit.id] = DateTime.now();
     }
-    state = state.copyWith(selectedHabits: current);
+    state = state.copyWith(selectedHabits: current, habitStartDates: updatedDates);
   }
 
   /// Select a single habit (replacing any existing selection).
   void selectSingleHabit(HabitTemplate habit) {
-    state = state.copyWith(selectedHabits: [habit]);
+    state = state.copyWith(
+      selectedHabits: [habit],
+      habitStartDates: {habit.id: DateTime.now()},
+    );
   }
 
   /// Clear all selected habits.
   void clearSelectedHabits() {
-    state = state.copyWith(selectedHabits: const []);
+    state = state.copyWith(selectedHabits: const [], habitStartDates: const {});
   }
 
   void nextStep() {

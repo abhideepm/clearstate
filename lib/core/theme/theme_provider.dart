@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'colors.dart';
 
 enum AccentColor {
   signalOrange(Color(0xFFFF6B35)),
@@ -35,13 +36,23 @@ enum BackgroundTheme {
 class ThemeState {
   final AccentColor accent;
   final BackgroundTheme background;
+  final ThemeVibe vibe;
 
-  ThemeState({required this.accent, required this.background});
+  ThemeState({
+    required this.accent,
+    required this.background,
+    this.vibe = ThemeVibe.cyber,
+  });
 
-  ThemeState copyWith({AccentColor? accent, BackgroundTheme? background}) {
+  ThemeState copyWith({
+    AccentColor? accent,
+    BackgroundTheme? background,
+    ThemeVibe? vibe,
+  }) {
     return ThemeState(
       accent: accent ?? this.accent,
       background: background ?? this.background,
+      vibe: vibe ?? this.vibe,
     );
   }
 }
@@ -54,14 +65,16 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
   static const String _boxName = 'theme_settings';
   static const String _accentKey = 'accent_color';
   static const String _backgroundKey = 'background_theme';
+  static const String _vibeKey = 'theme_vibe';
 
   ThemeNotifier()
-    : super(
-        ThemeState(
-          accent: AccentColor.signalOrange,
-          background: BackgroundTheme.void_,
-        ),
-      ) {
+      : super(
+          ThemeState(
+            accent: AccentColor.signalOrange,
+            background: BackgroundTheme.void_,
+            vibe: ThemeVibe.cyber,
+          ),
+        ) {
     _loadTheme();
   }
 
@@ -70,14 +83,17 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       final box = Hive.box(_boxName);
       final accentIndex = box.get(_accentKey, defaultValue: 0) as int;
       final backgroundIndex = box.get(_backgroundKey, defaultValue: 0) as int;
+      final vibeIndex = box.get(_vibeKey, defaultValue: 0) as int;
       state = ThemeState(
         accent: AccentColor.values[accentIndex],
         background: BackgroundTheme.values[backgroundIndex],
+        vibe: ThemeVibe.values[vibeIndex],
       );
     } catch (e) {
       state = ThemeState(
         accent: AccentColor.signalOrange,
         background: BackgroundTheme.void_,
+        vibe: ThemeVibe.cyber,
       );
     }
   }
@@ -92,11 +108,17 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     _saveTheme();
   }
 
+  void setThemeVibe(ThemeVibe vibe) {
+    state = state.copyWith(vibe: vibe);
+    _saveTheme();
+  }
+
   void _saveTheme() {
     try {
       final box = Hive.box(_boxName);
       box.put(_accentKey, state.accent.index);
       box.put(_backgroundKey, state.background.index);
+      box.put(_vibeKey, state.vibe.index);
     } catch (e) {
       // Silent fail for persistence errors
     }

@@ -121,12 +121,18 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     // Request notification permissions during onboarding completion
     await NotificationService.instance.requestPermissions();
 
-    // Use the same start date for both profile and timer provider
-    final startDate = onboardingState.lastDrinkDate ?? DateTime.now();
+    // Get selected habit IDs and their start dates
+    final selectedHabitIds = onboardingState.selectedHabitIds;
+    final habitStartDates = onboardingState.habitStartDates;
+
+    // Use the earliest start date for the main timer, or today if none set
+    final startDate = habitStartDates.isNotEmpty
+        ? habitStartDates.values.reduce((a, b) => a.isBefore(b) ? a : b)
+        : DateTime.now();
 
     // Save user profile (this also starts the session and schedules notifications)
     await orchestrator.saveUserProfile(
-      selectedHabitIds: const ['default'],
+      selectedHabitIds: selectedHabitIds.isNotEmpty ? selectedHabitIds : const ['default'],
       lastDrinkDate: startDate,
       avgDailySpend: 0,
     );
