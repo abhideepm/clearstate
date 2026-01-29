@@ -5,6 +5,7 @@ import 'package:clearstate/core/theme/theme_provider.dart';
 import 'package:clearstate/data/models/habit.dart';
 import 'package:clearstate/data/models/habit_template.dart';
 import 'package:clearstate/data/repositories/sobriety_repository.dart';
+import 'package:clearstate/data/repositories/i_sobriety_repository.dart';
 import 'package:clearstate/core/services/sobriety_orchestrator.dart';
 import 'package:clearstate/features/timer/habit_provider.dart';
 
@@ -88,6 +89,7 @@ class HabitDropdown extends ConsumerWidget {
     // Pre-capture all data BEFORE showing the modal to avoid lag
     final themeState = ref.read(themeProvider);
     final habitSwitcher = ref.read(habitSwitcherProvider);
+    final repository = ref.read(sobrietyRepositoryProvider);
 
     showModalBottomSheet(
       context: context,
@@ -105,6 +107,10 @@ class HabitDropdown extends ConsumerWidget {
         onAddHabit: () {
           Navigator.pop(sheetContext);
           _showAddHabitDialog(context, themeState);
+        },
+        onDeleteHabit: (habit) async {
+          Navigator.pop(sheetContext);
+          await _showDeleteConfirmation(context, ref, habit, themeState, repository);
         },
       ),
     );
@@ -161,6 +167,74 @@ class HabitDropdown extends ConsumerWidget {
       context: context,
       builder: (dialogContext) => _AddHabitDialog(themeState: themeState),
     );
+  }
+
+  Future<void> _showDeleteConfirmation(
+    BuildContext context,
+    WidgetRef ref,
+    Habit habit,
+    ThemeState themeState,
+    ISobrietyRepository repository,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: themeState.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          'Delete Habit',
+          style: TextStyle(
+            color: themeState.textPrimary,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to delete "${habit.name}"? This will permanently remove all progress and data for this habit.',
+          style: TextStyle(
+            color: themeState.textSecondary,
+            fontSize: 14,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: themeState.textSecondary),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final habits = ref.read(activeHabitsProvider);
+      final selectedHabit = ref.read(selectedHabitProvider);
+      
+      // Delete the habit
+      await repository.deleteHabit(habit.id);
+      
+      // Invalidate provider to refresh the list
+      ref.invalidate(activeHabitsProvider);
+      
+      // If deleted habit was selected, switch to another
+      if (selectedHabit?.id == habit.id) {
+        final remainingHabits = habits.where((h) => h.id != habit.id).toList();
+        if (remainingHabits.isNotEmpty) {
+          ref.read(habitSwitcherProvider).selectHabit(remainingHabits.first.id);
+        } else {
+          ref.read(selectedHabitIdProvider.notifier).state = null;
+        }
+      }
+    }
   }
 
   Widget _buildHabitOption(
@@ -456,6 +530,9 @@ class _AddHabitDialogState extends ConsumerState<_AddHabitDialog> {
       scheduleNotifications: false,
     );
 
+    // Invalidate the habits provider so it re-reads from repository
+    ref.invalidate(activeHabitsProvider);
+
     // Select the newly added habit
     ref.read(habitSwitcherProvider).selectHabit(habit.id);
 
@@ -473,6 +550,7 @@ class _HabitPickerContent extends StatelessWidget {
   final ThemeState themeState;
   final HabitSwitcher habitSwitcher;
   final VoidCallback onAddHabit;
+  final void Function(Habit) onDeleteHabit;
 
   const _HabitPickerContent({
     required this.habits,
@@ -480,6 +558,7 @@ class _HabitPickerContent extends StatelessWidget {
     required this.themeState,
     required this.habitSwitcher,
     required this.onAddHabit,
+    required this.onDeleteHabit,
   });
 
   @override
@@ -560,6 +639,19 @@ class _HabitPickerContent extends StatelessWidget {
                 color: habitColor,
                 size: 20,
               ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => onDeleteHabit(habit),
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(
+                  Icons.delete_outline_rounded,
+                  color: themeState.textMuted,
+                  size: 20,
+                ),
+              ),
+            ),
           ],
         ),
       ),

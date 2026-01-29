@@ -29,6 +29,7 @@ abstract class ISobrietyRepository {
   Habit? getHabit(String id);
   List<Habit> getAllHabits();
   Future<void> saveHabit(Habit habit);
+  Future<void> deleteHabit(String id);
 
   // Relapses
   Future<void> logRelapse(String habitId);

@@ -20,6 +20,7 @@ import 'features/security/biometric_lock_screen.dart';
 import 'data/repositories/sobriety_repository.dart';
 import 'features/timer/timer_provider.dart';
 import 'data/models/habit_template.dart';
+import 'core/providers/navigation_provider.dart';
 
 class ClearStateApp extends ConsumerStatefulWidget {
   const ClearStateApp({super.key});
@@ -31,7 +32,6 @@ class ClearStateApp extends ConsumerStatefulWidget {
 class _ClearStateAppState extends ConsumerState<ClearStateApp>
     with WidgetsBindingObserver {
   bool _showOnboarding = true;
-  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -164,9 +164,9 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
   }
 
   void _handleDataWiped() {
+    ref.read(currentTabIndexProvider.notifier).state = 0;
     setState(() {
       _showOnboarding = true;
-      _currentIndex = 0;
     });
   }
 
@@ -225,29 +225,22 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
     }
 
     return _MainShell(
-      currentIndex: _currentIndex,
-      onIndexChanged: (index) {
-        setState(() => _currentIndex = index);
-      },
       onDataWiped: _handleDataWiped,
     );
   }
 }
 
 class _MainShell extends ConsumerWidget {
-  final int currentIndex;
-  final ValueChanged<int> onIndexChanged;
   final VoidCallback onDataWiped;
 
   const _MainShell({
-    required this.currentIndex,
-    required this.onIndexChanged,
     required this.onDataWiped,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeState = ref.watch(themeProvider);
+    final currentIndex = ref.watch(currentTabIndexProvider);
 
     return Scaffold(
       backgroundColor: themeState.background,
@@ -257,13 +250,14 @@ class _MainShell extends ConsumerWidget {
       ),
       bottomNavigationBar: _BottomNavBar(
         currentIndex: currentIndex,
-        onIndexChanged: onIndexChanged,
+        onIndexChanged: (index) => ref.read(currentTabIndexProvider.notifier).state = index,
         accentColor: themeState.accent.value,
         backgroundColor: themeState.background,
       ),
     );
   }
 }
+
 
 /// Animated content switcher that fades between tabs.
 class _AnimatedTabContent extends StatelessWidget {

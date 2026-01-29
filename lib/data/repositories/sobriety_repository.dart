@@ -153,6 +153,42 @@ class SobrietyRepository implements ISobrietyRepository {
     await _habitsBox.put(habit.id, habit);
   }
 
+  Future<void> deleteHabit(String id) async {
+    _assertInitialized();
+    
+    // Remove habit
+    await _habitsBox.delete(id);
+    
+    // Remove associated sessions
+    final sessionsToDelete = _sessionsBox.values
+        .where((s) => s.habitId == id)
+        .map((s) => s.id)
+        .toList();
+    for (final sessionId in sessionsToDelete) {
+      await _sessionsBox.delete(sessionId);
+    }
+    
+    // Remove associated relapses
+    final relapsesToDelete = _relapseBox.values
+        .where((r) => r.habitId == id)
+        .map((r) => r.id)
+        .toList();
+    for (final relapseId in relapsesToDelete) {
+      await _relapseBox.delete(relapseId);
+    }
+    
+    // Remove associated daily logs
+    final logsToDelete = _dailyLogBox.keys
+        .where((k) => k.toString().startsWith('${id}_'))
+        .toList();
+    for (final logKey in logsToDelete) {
+      await _dailyLogBox.delete(logKey);
+    }
+    
+    // Clear session cache for this habit
+    _activeSessionCache.remove(id);
+  }
+
   // Relapses (habit-aware)
   Future<void> logRelapse(String habitId) async {
     _assertInitialized();
