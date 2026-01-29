@@ -5,14 +5,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final sobrietyStartDateProvider = StateProvider<DateTime?>((ref) => null);
 
 // Provider that streams elapsed duration, updating every second
-final elapsedDurationProvider = StreamProvider<Duration>((ref) {
+final elapsedDurationProvider = StreamProvider<Duration>((ref) async* {
   final startDate = ref.watch(sobrietyStartDateProvider);
 
   if (startDate == null) {
-    return Stream.value(Duration.zero);
+    yield Duration.zero;
+    return;
   }
 
-  return Stream.periodic(const Duration(seconds: 1), (_) {
+  // Yield initial value immediately
+  yield DateTime.now().difference(startDate);
+
+  // Then yield update every second
+  yield* Stream.periodic(const Duration(seconds: 1), (_) {
     return DateTime.now().difference(startDate);
   });
 });
@@ -59,9 +64,15 @@ class TimerComponents {
 // Provider for timer components
 final timerComponentsProvider = Provider<TimerComponents>((ref) {
   final durationAsync = ref.watch(elapsedDurationProvider);
+  
   return durationAsync.when(
     data: (duration) => TimerComponents.fromDuration(duration),
-    loading: () => TimerComponents.fromDuration(Duration.zero),
+    loading: () {
+      // Calculate synchronously from start date to avoid flickering "000"
+      final startDate = ref.read(sobrietyStartDateProvider);
+      if (startDate == null) return TimerComponents.fromDuration(Duration.zero);
+      return TimerComponents.fromDuration(DateTime.now().difference(startDate));
+    },
     error: (_, _) => TimerComponents.fromDuration(Duration.zero),
   );
 });

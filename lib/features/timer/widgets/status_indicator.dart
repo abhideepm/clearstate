@@ -21,54 +21,57 @@ class StatusIndicator extends ConsumerWidget {
       selectedHabit?.id ?? 'alcohol',
     );
 
-    return durationAsync.when(
-      data: (duration) {
-        final currentMilestone = RecoveryMilestones.getCurrentMilestoneFromList(
-          duration.inDays,
-          milestones,
-        );
-
-        return GestureDetector(
-          onTap: () {
-            HapticService.light();
-            ref.read(currentTabIndexProvider.notifier).state = 1;
-            ref.read(scrollToCurrentMilestoneProvider.notifier).state++;
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: ClearStateColors.darkSurface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: ClearStateColors.borderDark, width: 1),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: ClearStateColors.success,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Flexible(
-                  child: Text(
-                    currentMilestone.status,
-                    style: ClearStateTypography.caption.copyWith(
-                      color: ClearStateColors.textPrimaryDark,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+    final duration = durationAsync.maybeWhen(
+      data: (d) => d,
+      orElse: () {
+        final startDate = ref.read(sobrietyStartDateProvider);
+        if (startDate == null) return Duration.zero;
+        return DateTime.now().difference(startDate);
       },
-      loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+    );
+
+    final currentMilestone = RecoveryMilestones.getCurrentMilestoneFromList(
+      duration.inDays,
+      milestones,
+    );
+
+    return GestureDetector(
+      onTap: () {
+        HapticService.light();
+        ref.read(currentTabIndexProvider.notifier).state = 1;
+        ref.read(scrollToCurrentMilestoneProvider.notifier).state++;
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: ClearStateColors.darkSurface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: const BoxDecoration(
+                color: ClearStateColors.success,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Flexible(
+              child: Text(
+                currentMilestone.status,
+                style: ClearStateTypography.caption.copyWith(
+                  color: ClearStateColors.textPrimaryDark,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -50,54 +50,6 @@ class AnalyticsScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 32),
 
-                // Progress Overview Cards
-                _buildProgressCard(
-                  themeState: themeState,
-                  title: 'Current Streak',
-                  value: '${stats.currentStreak}',
-                  unit: 'days',
-                  icon: Icons.local_fire_department_rounded,
-                  iconColor: themeState.accent.value,
-                  isHighlighted: true,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildMiniCard(
-                        themeState: themeState,
-                        title: 'Longest',
-                        value: '${stats.longestStreak}',
-                        unit: 'days',
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildMiniCard(
-                        themeState: themeState,
-                        title: 'Total Sober',
-                        value: '${stats.totalSoberDays}',
-                        unit: 'days',
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildMiniCard(
-                        themeState: themeState,
-                        title: 'Relapses',
-                        value: '${stats.relapseCount}',
-                        unit: '',
-                        isNegative: stats.relapseCount > 0,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-
-                // Success Rate
-                _buildSuccessRateCard(themeState, stats),
-                const SizedBox(height: 32),
-
                 // Consistency Heatmap
                 Text(
                   'Consistency',
@@ -140,6 +92,11 @@ class AnalyticsScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 32),
+
+                // Success Rate
+                _buildSuccessRateCard(themeState, stats),
+                const SizedBox(height: 32),
                 const SizedBox(height: 100),
               ],
             ),
@@ -149,140 +106,16 @@ class AnalyticsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildProgressCard({
-    required ThemeState themeState,
-    required String title,
-    required String value,
-    required String unit,
-    required IconData icon,
-    required Color iconColor,
-    bool isHighlighted = false,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: themeState.card,
-        borderRadius: BorderRadius.circular(20),
-        border: isHighlighted 
-            ? Border.all(color: iconColor.withValues(alpha: 0.3), width: 1)
-            : null,
-        boxShadow: themeState.isDarkMode 
-            ? ClearStateColors.cardShadowDark 
-            : ClearStateColors.cardShadowLight,
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: iconColor, size: 28),
-          ),
-          const SizedBox(width: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: ClearStateTypography.caption.copyWith(
-                  color: themeState.textMuted,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    value,
-                    style: TextStyle(
-                      color: isHighlighted ? iconColor : themeState.textPrimary,
-                      fontSize: 36,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    unit,
-                    style: ClearStateTypography.body.copyWith(
-                      color: themeState.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMiniCard({
-    required ThemeState themeState,
-    required String title,
-    required String value,
-    required String unit,
-    bool isNegative = false,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: themeState.card,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: themeState.isDarkMode 
-            ? ClearStateColors.cardShadowDark 
-            : ClearStateColors.cardShadowLight,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: ClearStateTypography.caption.copyWith(
-              color: themeState.textMuted,
-              fontSize: 10,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                value,
-                style: TextStyle(
-                  color: isNegative ? ClearStateColors.error : themeState.textPrimary,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              if (unit.isNotEmpty) ...[
-                const SizedBox(width: 4),
-                Text(
-                  unit,
-                  style: TextStyle(
-                    color: themeState.textMuted,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildSuccessRateCard(ThemeState themeState, HabitStats stats) {
     final totalDays = stats.totalSoberDays + stats.relapseCount;
     final successRate = totalDays > 0 
         ? (stats.totalSoberDays / totalDays * 100).round() 
         : 100;
+    final accentColor = themeState.accent.value;
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: themeState.card,
         borderRadius: BorderRadius.circular(20),
@@ -298,52 +131,92 @@ class AnalyticsScreen extends ConsumerWidget {
             children: [
               Text(
                 'Success Rate',
-                style: ClearStateTypography.body.copyWith(
+                style: ClearStateTypography.h3.copyWith(
                   color: themeState.textPrimary,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 20,
                 ),
               ),
               Text(
                 '$successRate%',
                 style: TextStyle(
-                  color: ClearStateColors.success,
-                  fontSize: 20,
+                  color: accentColor,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
+                  fontFamily: 'JetBrains Mono',
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: successRate / 100,
-              backgroundColor: themeState.border,
-              valueColor: AlwaysStoppedAnimation<Color>(ClearStateColors.success),
-              minHeight: 8,
-            ),
+          const SizedBox(height: 20),
+          Stack(
+            children: [
+              Container(
+                height: 10,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: themeState.border.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Container(
+                    height: 10,
+                    width: constraints.maxWidth * (successRate / 100),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          accentColor,
+                          accentColor.withValues(alpha: 0.7),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: accentColor.withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              _buildSuccessDetail(
                 '${stats.totalSoberDays} sober days',
-                style: TextStyle(
-                  color: themeState.textMuted,
-                  fontSize: 12,
-                ),
+                themeState,
               ),
-              Text(
+              _buildSuccessDetail(
                 '${stats.relapseCount} relapses',
-                style: TextStyle(
-                  color: themeState.textMuted,
-                  fontSize: 12,
-                ),
+                themeState,
               ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSuccessDetail(String text, ThemeState themeState) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: themeState.background,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text.toUpperCase(),
+        style: ClearStateTypography.caption.copyWith(
+          color: themeState.textMuted,
+          fontSize: 9,
+          letterSpacing: 0.5,
+        ),
       ),
     );
   }
