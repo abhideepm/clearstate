@@ -23,10 +23,18 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
 
   static const List<Map<String, dynamic>> _motivationChips = [
     {'label': 'For my health', 'icon': Icons.favorite_outline, 'emoji': '❤️'},
-    {'label': 'For my family', 'icon': Icons.people_outline, 'emoji': '👨‍👩‍👧‍👦'},
+    {
+      'label': 'For my family',
+      'icon': Icons.people_outline,
+      'emoji': '👨‍👩‍👧‍👦',
+    },
     {'label': 'To save money', 'icon': Icons.savings_outlined, 'emoji': '💰'},
     {'label': 'For my future', 'icon': Icons.trending_up, 'emoji': '🚀'},
-    {'label': 'To feel better', 'icon': Icons.sentiment_satisfied_alt, 'emoji': '😊'},
+    {
+      'label': 'To feel better',
+      'icon': Icons.sentiment_satisfied_alt,
+      'emoji': '😊',
+    },
     {'label': 'Other', 'icon': Icons.edit_outlined, 'emoji': '✏️'},
   ];
 
@@ -77,7 +85,7 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
   @override
   Widget build(BuildContext context) {
     final themeState = ref.watch(themeProvider);
-    
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
@@ -179,7 +187,10 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
                 GestureDetector(
                   onTap: _handleSkip,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
                     child: Text(
                       'Skip',
                       style: TrueStateTypography.button.copyWith(
@@ -216,7 +227,7 @@ class _MotivationChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accentColor = themeState.accent.value;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -245,8 +256,8 @@ class _MotivationChip extends StatelessWidget {
             Text(
               label,
               style: TrueStateTypography.body.copyWith(
-                color: isSelected 
-                    ? TrueStateColors.textPrimaryLight 
+                color: isSelected
+                    ? TrueStateColors.textPrimaryLight
                     : themeState.textPrimary,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 fontSize: 14,

@@ -550,7 +550,9 @@ class _ModeOption extends StatelessWidget {
             ? TrueStateColors.dawnCoral.withAlpha((0.1 * 255).round())
             : TrueStateColors.darkBackground,
         border: Border.all(
-          color: isSelected ? TrueStateColors.dawnCoral : TrueStateColors.borderDark,
+          color: isSelected
+              ? TrueStateColors.dawnCoral
+              : TrueStateColors.borderDark,
           width: isSelected ? 2 : 1,
         ),
         borderRadius: BorderRadius.circular(12),
@@ -651,7 +653,9 @@ class _GoalDaysSlider extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: TrueStateColors.dawnCoral.withAlpha((0.15 * 255).round()),
+                color: TrueStateColors.dawnCoral.withAlpha(
+                  (0.15 * 255).round(),
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -1034,7 +1038,9 @@ class _MetricOption extends StatelessWidget {
             ? TrueStateColors.dawnCoral.withAlpha((0.1 * 255).round())
             : TrueStateColors.darkBackground,
         border: Border.all(
-          color: isSelected ? TrueStateColors.dawnCoral : TrueStateColors.borderDark,
+          color: isSelected
+              ? TrueStateColors.dawnCoral
+              : TrueStateColors.borderDark,
           width: isSelected ? 2 : 1,
         ),
         borderRadius: BorderRadius.circular(12),

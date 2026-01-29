@@ -30,23 +30,14 @@ class TrueStateMotion {
   static const Curve gentle = Curves.easeInOutQuad;
 
   // Spring configurations for natural feel
-  static SpringDescription get gentleSpring => const SpringDescription(
-    mass: 1.0,
-    stiffness: 200.0,
-    damping: 20.0,
-  );
+  static SpringDescription get gentleSpring =>
+      const SpringDescription(mass: 1.0, stiffness: 200.0, damping: 20.0);
 
-  static SpringDescription get bouncySpring => const SpringDescription(
-    mass: 1.0,
-    stiffness: 300.0,
-    damping: 15.0,
-  );
+  static SpringDescription get bouncySpring =>
+      const SpringDescription(mass: 1.0, stiffness: 300.0, damping: 15.0);
 
-  static SpringDescription get softSpring => const SpringDescription(
-    mass: 1.0,
-    stiffness: 100.0,
-    damping: 12.0,
-  );
+  static SpringDescription get softSpring =>
+      const SpringDescription(mass: 1.0, stiffness: 100.0, damping: 12.0);
 
   // Breathing animation scale values
   static const double breathMinScale = 0.97;
@@ -81,11 +72,6 @@ class TrueStateMotion {
     double end = 1.0,
     double velocity = 0.0,
   }) {
-    return SpringSimulation(
-      spring ?? gentleSpring,
-      start,
-      end,
-      velocity,
-    );
+    return SpringSimulation(spring ?? gentleSpring, start, end, velocity);
   }
 }

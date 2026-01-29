@@ -54,7 +54,9 @@ class ThemeState {
       accent: accent ?? this.accent,
       themeMode: themeMode ?? this.themeMode,
       isDarkMode: isDarkMode ?? this.isDarkMode,
-      customAccentColor: clearCustomAccent ? null : (customAccentColor ?? this.customAccentColor),
+      customAccentColor: clearCustomAccent
+          ? null
+          : (customAccentColor ?? this.customAccentColor),
       customBackground: customBackground ?? this.customBackground,
     );
   }
@@ -62,22 +64,27 @@ class ThemeState {
   // Convenience getters for current theme colors
   Color get background =>
       customBackground?.value ??
-      (isDarkMode ? TrueStateColors.darkBackground : TrueStateColors.lightBackground);
+      (isDarkMode
+          ? TrueStateColors.darkBackground
+          : TrueStateColors.lightBackground);
   Color get surface =>
       isDarkMode ? TrueStateColors.darkSurface : TrueStateColors.lightSurface;
   Color get card =>
       isDarkMode ? TrueStateColors.darkCard : TrueStateColors.lightCard;
   Color get elevated =>
       isDarkMode ? TrueStateColors.darkElevated : TrueStateColors.lightElevated;
-  Color get textPrimary =>
-      isDarkMode ? TrueStateColors.textPrimaryDark : TrueStateColors.textPrimaryLight;
-  Color get textSecondary =>
-      isDarkMode ? TrueStateColors.textSecondaryDark : TrueStateColors.textSecondaryLight;
-  Color get textMuted =>
-      isDarkMode ? TrueStateColors.textMutedDark : TrueStateColors.textMutedLight;
+  Color get textPrimary => isDarkMode
+      ? TrueStateColors.textPrimaryDark
+      : TrueStateColors.textPrimaryLight;
+  Color get textSecondary => isDarkMode
+      ? TrueStateColors.textSecondaryDark
+      : TrueStateColors.textSecondaryLight;
+  Color get textMuted => isDarkMode
+      ? TrueStateColors.textMutedDark
+      : TrueStateColors.textMutedLight;
   Color get border =>
       isDarkMode ? TrueStateColors.borderDark : TrueStateColors.borderLight;
-  
+
   /// Returns the effective accent color (custom if set, otherwise from enum)
   Color get accentValue => customAccentColor ?? accent.value;
 }
@@ -93,13 +100,13 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
   static const String _backgroundKey = 'background_theme';
 
   ThemeNotifier()
-      : super(
-          ThemeState(
-            accent: AccentColor.teal,
-            themeMode: AppThemeMode.dark,
-            isDarkMode: true,
-          ),
-        ) {
+    : super(
+        ThemeState(
+          accent: AccentColor.teal,
+          themeMode: AppThemeMode.dark,
+          isDarkMode: true,
+        ),
+      ) {
     _loadTheme();
   }
 
@@ -107,17 +114,23 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
     try {
       final box = Hive.box(_boxName);
       final accentIndex = box.get(_accentKey, defaultValue: 0) as int;
-      final themeModeIndex = box.get(_themeModeKey, defaultValue: 2) as int; // Default to dark
+      final themeModeIndex =
+          box.get(_themeModeKey, defaultValue: 2) as int; // Default to dark
       final backgroundIndex = box.get(_backgroundKey, defaultValue: 0) as int;
 
       final themeMode = AppThemeMode.values[themeModeIndex.clamp(0, 2)];
       final isDarkMode = _resolveIsDarkMode(themeMode);
 
       state = ThemeState(
-        accent: AccentColor.values[accentIndex.clamp(0, AccentColor.values.length - 1)],
+        accent: AccentColor
+            .values[accentIndex.clamp(0, AccentColor.values.length - 1)],
         themeMode: themeMode,
         isDarkMode: isDarkMode,
-        customBackground: BackgroundTheme.values[backgroundIndex.clamp(0, BackgroundTheme.values.length - 1)],
+        customBackground:
+            BackgroundTheme.values[backgroundIndex.clamp(
+              0,
+              BackgroundTheme.values.length - 1,
+            )],
       );
     } catch (e) {
       // Use defaults on error
@@ -127,7 +140,8 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
   bool _resolveIsDarkMode(AppThemeMode mode) {
     switch (mode) {
       case AppThemeMode.system:
-        final brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+        final brightness =
+            SchedulerBinding.instance.platformDispatcher.platformBrightness;
         return brightness == Brightness.dark;
       case AppThemeMode.light:
         return false;
@@ -149,17 +163,17 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
   /// Sets accent color from a hex color string (for habit theme colors)
   void setAccentColorFromHex(String? hexColor) {
     if (hexColor == null || hexColor.isEmpty) return;
-    
+
     try {
       final hex = hexColor.replaceFirst('#', '');
       final color = Color(int.parse('FF$hex', radix: 16));
-      
+
       // Find matching AccentColor or use the custom color directly
       final matchingAccent = AccentColor.values.firstWhere(
         (a) => a.value.value == color.value,
         orElse: () => AccentColor.teal,
       );
-      
+
       if (matchingAccent.value.value == color.value) {
         state = state.copyWith(accent: matchingAccent, clearCustomAccent: true);
       } else {

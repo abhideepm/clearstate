@@ -11,7 +11,8 @@ class SymptomPredictionCard extends ConsumerStatefulWidget {
   const SymptomPredictionCard({super.key});
 
   @override
-  ConsumerState<SymptomPredictionCard> createState() => _SymptomPredictionCardState();
+  ConsumerState<SymptomPredictionCard> createState() =>
+      _SymptomPredictionCardState();
 }
 
 class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
@@ -34,7 +35,10 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
     if (habitId == null) return const SizedBox.shrink();
 
     final intelligenceService = ref.watch(symptomIntelligenceServiceProvider);
-    final milestone = intelligenceService.getActiveMilestone(habitId, hoursElapsed);
+    final milestone = intelligenceService.getActiveMilestone(
+      habitId,
+      hoursElapsed,
+    );
 
     if (milestone == null) return const SizedBox.shrink();
 
@@ -105,11 +109,7 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
             onTap: () => setState(() => _showScience = !_showScience),
             child: Row(
               children: [
-                Icon(
-                  Icons.science_outlined,
-                  size: 16,
-                  color: accentColor,
-                ),
+                Icon(Icons.science_outlined, size: 16, color: accentColor),
                 const SizedBox(width: 8),
                 Text(
                   _showScience ? 'HIDE INSIGHT' : 'SCIENCE INSIGHT',
@@ -122,7 +122,9 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
                 ),
                 const Spacer(),
                 Icon(
-                  _showScience ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  _showScience
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
                   size: 16,
                   color: accentColor,
                 ),

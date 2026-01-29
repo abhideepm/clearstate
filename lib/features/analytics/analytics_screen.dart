@@ -63,8 +63,8 @@ class AnalyticsScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: themeState.card,
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: themeState.isDarkMode 
-                        ? TrueStateColors.cardShadowDark 
+                    boxShadow: themeState.isDarkMode
+                        ? TrueStateColors.cardShadowDark
                         : TrueStateColors.cardShadowLight,
                   ),
                   child: const HeatmapCalendar(),
@@ -106,11 +106,10 @@ class AnalyticsScreen extends ConsumerWidget {
     );
   }
 
-
   Widget _buildSuccessRateCard(ThemeState themeState, HabitStats stats) {
     final totalDays = stats.totalSoberDays + stats.relapseCount;
-    final successRate = totalDays > 0 
-        ? (stats.totalSoberDays / totalDays * 100).round() 
+    final successRate = totalDays > 0
+        ? (stats.totalSoberDays / totalDays * 100).round()
         : 100;
     final accentColor = themeState.accent.value;
 
@@ -119,8 +118,8 @@ class AnalyticsScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: themeState.card,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: themeState.isDarkMode 
-            ? TrueStateColors.cardShadowDark 
+        boxShadow: themeState.isDarkMode
+            ? TrueStateColors.cardShadowDark
             : TrueStateColors.cardShadowLight,
       ),
       child: Column(
@@ -192,10 +191,7 @@ class AnalyticsScreen extends ConsumerWidget {
                 '${stats.totalSoberDays} sober days',
                 themeState,
               ),
-              _buildSuccessDetail(
-                '${stats.relapseCount} relapses',
-                themeState,
-              ),
+              _buildSuccessDetail('${stats.relapseCount} relapses', themeState),
             ],
           ),
         ],
@@ -249,10 +245,7 @@ class _LegendItem extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           label,
-          style: TextStyle(
-            color: themeState.textMuted,
-            fontSize: 11,
-          ),
+          style: TextStyle(color: themeState.textMuted, fontSize: 11),
         ),
       ],
     );

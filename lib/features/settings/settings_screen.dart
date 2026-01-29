@@ -11,7 +11,6 @@ import '../../data/models/subscription_status.dart';
 import '../security/security_provider.dart';
 import '../home_widgets/widget_settings_screen.dart';
 import '../../core/utils/pro_feature_gate.dart';
-import '../subscription/paywall_screen.dart';
 import 'subscription_provider.dart';
 import 'widgets/settings_toggle.dart';
 import 'widgets/wipe_confirmation_dialog.dart';
@@ -67,20 +66,21 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 12),
                     _SubscriptionCard(
                       status: subscriptionStatus,
-                      onUpgrade: () {
+                      onUpgrade: () async {
                         HapticService.light();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (_) => const PaywallScreen(),
-                          ),
-                        );
+                        await ref
+                            .read(subscriptionStatusProvider.notifier)
+                            .presentNativePaywall();
                       },
                       onRestore: () async {
                         HapticService.light();
-                        await ref.read(subscriptionStatusProvider.notifier).restorePurchases();
+                        await ref
+                            .read(subscriptionStatusProvider.notifier)
+                            .restorePurchases();
                         if (context.mounted) {
-                          final newStatus = ref.read(subscriptionStatusProvider);
+                          final newStatus = ref.read(
+                            subscriptionStatusProvider,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -92,6 +92,14 @@ class SettingsScreen extends ConsumerWidget {
                           );
                         }
                       },
+                      onManageSubscription: subscriptionStatus.isPro
+                          ? () async {
+                              HapticService.light();
+                              await ref
+                                  .read(subscriptionStatusProvider.notifier)
+                                  .presentCustomerCenter();
+                            }
+                          : null,
                     ),
                     const SizedBox(height: 32),
 
@@ -124,27 +132,30 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
                     _SectionHeader(title: 'Privacy'),
                     const SizedBox(height: 12),
-                    SettingsToggle(
-                      label: 'App Lock',
-                      subtitle: canUseBiometrics.when(
-                        data: (available) => available
-                            ? 'Require biometric or device passcode to open app'
-                            : 'Biometrics not available on this device',
-                        loading: () => 'Checking biometric availability...',
-                        error: (_, _) => 'Biometrics not available',
+                    ProFeatureGate(
+                      featureName: 'Biometric Security',
+                      child: SettingsToggle(
+                        label: 'App Lock',
+                        subtitle: canUseBiometrics.when(
+                          data: (available) => available
+                              ? 'Require biometric or device passcode to open app'
+                              : 'Biometrics not available on this device',
+                          loading: () => 'Checking biometric availability...',
+                          error: (_, _) => 'Biometrics not available',
+                        ),
+                        value: securityState.biometricEnabled,
+                        enabled: canUseBiometrics.when(
+                          data: (available) => available,
+                          loading: () => false,
+                          error: (_, _) => false,
+                        ),
+                        onChanged: (value) async {
+                          HapticService.light();
+                          await ref
+                              .read(securityProvider.notifier)
+                              .toggleBiometric();
+                        },
                       ),
-                      value: securityState.biometricEnabled,
-                      enabled: canUseBiometrics.when(
-                        data: (available) => available,
-                        loading: () => false,
-                        error: (_, _) => false,
-                      ),
-                      onChanged: (value) async {
-                        HapticService.light();
-                        await ref
-                            .read(securityProvider.notifier)
-                            .toggleBiometric();
-                      },
                     ),
 
                     const SizedBox(height: 32),
@@ -162,7 +173,8 @@ class SettingsScreen extends ConsumerWidget {
                           HapticService.light();
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const WidgetSettingsScreen(),
+                              builder: (context) =>
+                                  const WidgetSettingsScreen(),
                             ),
                           );
                         },
@@ -196,12 +208,18 @@ class SettingsScreen extends ConsumerWidget {
                       icon: Icons.unarchive_outlined,
                       onTap: () async {
                         HapticService.light();
+                        if (!subscriptionStatus.isPro) {
+                          await ref
+                              .read(subscriptionStatusProvider.notifier)
+                              .presentNativePaywall();
+                          return;
+                        }
                         try {
                           await backupService.createBackup();
                         } catch (e) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Export failed: $e')),
+                              SnackBar(content: Text('Export failed: \$e')),
                             );
                           }
                         }
@@ -212,7 +230,16 @@ class SettingsScreen extends ConsumerWidget {
                       label: 'Restore Backup',
                       subtitle: 'Import data from a backup file',
                       icon: Icons.archive_outlined,
-                      onTap: () => _showRestoreDialog(context, ref),
+                      onTap: () async {
+                        HapticService.light();
+                        if (!subscriptionStatus.isPro) {
+                          await ref
+                              .read(subscriptionStatusProvider.notifier)
+                              .presentNativePaywall();
+                          return;
+                        }
+                        _showRestoreDialog(context, ref);
+                      },
                     ),
                     const SizedBox(height: 12),
                     _DestructiveSettingsItem(
@@ -501,11 +528,13 @@ class _SubscriptionCard extends ConsumerWidget {
   final SubscriptionStatus status;
   final VoidCallback onUpgrade;
   final VoidCallback onRestore;
+  final VoidCallback? onManageSubscription;
 
   const _SubscriptionCard({
     required this.status,
     required this.onUpgrade,
     required this.onRestore,
+    this.onManageSubscription,
   });
 
   @override
@@ -532,9 +561,7 @@ class _SubscriptionCard extends ConsumerWidget {
                 ),
                 child: Icon(
                   isPro ? Icons.star : Icons.star_border,
-                  color: isPro
-                      ? themeState.accentValue
-                      : themeState.textMuted,
+                  color: isPro ? themeState.accentValue : themeState.textMuted,
                   size: 20,
                 ),
               ),
@@ -544,9 +571,7 @@ class _SubscriptionCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isPro
-                          ? (isTrialing ? 'Pro Trial' : 'Pro')
-                          : 'Free',
+                      isPro ? (isTrialing ? 'Pro Trial' : 'Pro') : 'Free',
                       style: TrueStateTypography.bodySemiBold.copyWith(
                         color: isPro
                             ? themeState.accentValue
@@ -556,8 +581,8 @@ class _SubscriptionCard extends ConsumerWidget {
                     Text(
                       isPro
                           ? (isTrialing
-                              ? 'Full features during trial'
-                              : 'All features unlocked')
+                                ? 'Full features during trial'
+                                : 'All features unlocked')
                           : 'Limited to 2 habits',
                       style: TrueStateTypography.caption,
                     ),
@@ -599,6 +624,25 @@ class _SubscriptionCard extends ConsumerWidget {
               ),
             ),
           ),
+          if (onManageSubscription != null) ...[
+            const SizedBox(height: 4),
+            Center(
+              child: TextButton.icon(
+                onPressed: onManageSubscription,
+                icon: Icon(
+                  Icons.settings_outlined,
+                  size: 16,
+                  color: TrueStateColors.textTertiaryDark,
+                ),
+                label: Text(
+                  'Manage Subscription',
+                  style: TrueStateTypography.caption.copyWith(
+                    color: TrueStateColors.textTertiaryDark,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

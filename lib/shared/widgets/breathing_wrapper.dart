@@ -31,24 +31,22 @@ class _BreathingWrapperState extends State<BreathingWrapper>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: widget.minScale, end: widget.maxScale)
-            .chain(CurveTween(curve: TrueStateMotion.breathInCurve)),
+        tween: Tween(
+          begin: widget.minScale,
+          end: widget.maxScale,
+        ).chain(CurveTween(curve: TrueStateMotion.breathInCurve)),
         weight: 45,
       ),
+      TweenSequenceItem(tween: ConstantTween(widget.maxScale), weight: 10),
       TweenSequenceItem(
-        tween: ConstantTween(widget.maxScale),
-        weight: 10,
-      ),
-      TweenSequenceItem(
-        tween: Tween(begin: widget.maxScale, end: widget.minScale)
-            .chain(CurveTween(curve: TrueStateMotion.breathOutCurve)),
+        tween: Tween(
+          begin: widget.maxScale,
+          end: widget.minScale,
+        ).chain(CurveTween(curve: TrueStateMotion.breathOutCurve)),
         weight: 45,
       ),
     ]).animate(_controller);
@@ -90,10 +88,7 @@ class _BreathingWrapperState extends State<BreathingWrapper>
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {
-        return Transform.scale(
-          scale: _scaleAnimation.value,
-          child: child,
-        );
+        return Transform.scale(scale: _scaleAnimation.value, child: child);
       },
       child: widget.child,
     );
@@ -127,18 +122,15 @@ class _GlowPulseWrapperState extends State<GlowPulseWrapper>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
 
-    _opacityAnimation = Tween<double>(
-      begin: TrueStateMotion.glowMinOpacity,
-      end: TrueStateMotion.glowMaxOpacity,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: TrueStateMotion.organic,
-    ));
+    _opacityAnimation =
+        Tween<double>(
+          begin: TrueStateMotion.glowMinOpacity,
+          end: TrueStateMotion.glowMaxOpacity,
+        ).animate(
+          CurvedAnimation(parent: _controller, curve: TrueStateMotion.organic),
+        );
 
     if (widget.enabled && !TrueStateMotion.reduceMotion) {
       _controller.repeat(reverse: true);
@@ -164,7 +156,9 @@ class _GlowPulseWrapperState extends State<GlowPulseWrapper>
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: widget.glowColor.withValues(alpha: _opacityAnimation.value),
+                color: widget.glowColor.withValues(
+                  alpha: _opacityAnimation.value,
+                ),
                 blurRadius: 20,
                 spreadRadius: 2,
               ),

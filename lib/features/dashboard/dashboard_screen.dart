@@ -35,7 +35,9 @@ class DashboardScreen extends ConsumerWidget {
         ? profile!.selectedHabitIds.first
         : null;
 
-    final totalDays = habitId != null ? statistics.getTotalSoberDays(habitId) : 0;
+    final totalDays = habitId != null
+        ? statistics.getTotalSoberDays(habitId)
+        : 0;
     final totalSlips = habitId != null ? repo.getTotalSlips(habitId) : 0;
     final totalLogs = totalDays + totalSlips;
     final successRate = totalLogs > 0 ? (totalDays / totalLogs) * 100 : 100.0;
@@ -79,7 +81,8 @@ class DashboardScreen extends ConsumerWidget {
                           Text(
                             'Current Streak',
                             style: TrueStateTypography.caption.copyWith(
-                              color: TrueStateColors.textPrimaryLight.withValues(alpha: 0.7),
+                              color: TrueStateColors.textPrimaryLight
+                                  .withValues(alpha: 0.7),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -100,7 +103,8 @@ class DashboardScreen extends ConsumerWidget {
                               Text(
                                 'days',
                                 style: TrueStateTypography.h3.copyWith(
-                                  color: TrueStateColors.textPrimaryLight.withValues(alpha: 0.8),
+                                  color: TrueStateColors.textPrimaryLight
+                                      .withValues(alpha: 0.8),
                                 ),
                               ),
                             ],
@@ -109,7 +113,8 @@ class DashboardScreen extends ConsumerWidget {
                           Text(
                             '${timer.hours}h ${timer.minutes}m ${timer.seconds}s',
                             style: TrueStateTypography.body.copyWith(
-                              color: TrueStateColors.textPrimaryLight.withValues(alpha: 0.7),
+                              color: TrueStateColors.textPrimaryLight
+                                  .withValues(alpha: 0.7),
                             ),
                           ),
                         ],
@@ -176,8 +181,8 @@ class DashboardScreen extends ConsumerWidget {
                     const SizedBox(height: 16),
                     // Quick Log Card
                     BentoCard(
-                      backgroundColor: themeState.isDarkMode 
-                          ? TrueStateColors.darkCard 
+                      backgroundColor: themeState.isDarkMode
+                          ? TrueStateColors.darkCard
                           : TrueStateColors.lightCard,
                       onTap: habitId == null
                           ? null
@@ -187,7 +192,8 @@ class DashboardScreen extends ConsumerWidget {
                                 context: context,
                                 isScrollControlled: true,
                                 backgroundColor: Colors.transparent,
-                                builder: (context) => const DailyLogInputSheet(),
+                                builder: (context) =>
+                                    const DailyLogInputSheet(),
                               );
                             },
                       onLongPress: habitId == null
@@ -204,7 +210,9 @@ class DashboardScreen extends ConsumerWidget {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('Quick log: Sober day saved!'),
+                                    content: Text(
+                                      'Quick log: Sober day saved!',
+                                    ),
                                     backgroundColor: themeState.surface,
                                   ),
                                 );
@@ -213,10 +221,7 @@ class DashboardScreen extends ConsumerWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.add_circle_outline,
-                            color: accentColor,
-                          ),
+                          Icon(Icons.add_circle_outline, color: accentColor),
                           const SizedBox(width: 12),
                           Text(
                             'Log Sober Day',

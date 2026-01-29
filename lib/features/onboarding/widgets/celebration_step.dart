@@ -149,10 +149,7 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            TrueStateColors.deepForest,
-            TrueStateColors.darkSurface,
-          ],
+          colors: [TrueStateColors.deepForest, TrueStateColors.darkSurface],
         ),
       ),
       child: Stack(
@@ -179,13 +176,16 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
               child: FadeTransition(
                 opacity: _contentController,
                 child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0, 0.08),
-                    end: Offset.zero,
-                  ).animate(CurvedAnimation(
-                    parent: _contentController,
-                    curve: TrueStateMotion.organic,
-                  )),
+                  position:
+                      Tween<Offset>(
+                        begin: const Offset(0, 0.08),
+                        end: Offset.zero,
+                      ).animate(
+                        CurvedAnimation(
+                          parent: _contentController,
+                          curve: TrueStateMotion.organic,
+                        ),
+                      ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -222,10 +222,11 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
                               const SizedBox(height: 12),
                               Text(
                                 _formatTime(_elapsedDuration),
-                                style: TrueStateTypography.timerDisplay.copyWith(
-                                  fontSize: 52,
-                                  color: TrueStateColors.warmIvory,
-                                ),
+                                style: TrueStateTypography.timerDisplay
+                                    .copyWith(
+                                      fontSize: 52,
+                                      color: TrueStateColors.warmIvory,
+                                    ),
                               ),
                               const SizedBox(height: 8),
                               Text(
@@ -314,19 +315,19 @@ class _OrganicParticlePainter extends CustomPainter {
 
     for (final particle in particles) {
       final adjustedAnim = (animation + particle.delay) % 1.0;
-      
+
       // Gentle floating motion
       final floatY = math.sin(adjustedAnim * math.pi * 2) * 30;
       final floatX = math.cos(adjustedAnim * math.pi * 3) * 15;
-      
+
       final x = size.width * particle.startX + floatX;
       final y = size.height * particle.startY + floatY;
-      
+
       // Pulsing opacity
       final opacity = 0.3 + math.sin(adjustedAnim * math.pi * 2) * 0.3;
-      
+
       paint.color = particle.color.withValues(alpha: opacity.clamp(0.1, 0.6));
-      
+
       if (particle.type == ParticleType.glow) {
         // Soft glow circles
         paint.maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
@@ -337,12 +338,12 @@ class _OrganicParticlePainter extends CustomPainter {
         canvas.save();
         canvas.translate(x, y);
         canvas.rotate(adjustedAnim * math.pi);
-        
+
         final path = Path()
           ..moveTo(0, -particle.size)
           ..quadraticBezierTo(particle.size * 0.6, 0, 0, particle.size)
           ..quadraticBezierTo(-particle.size * 0.6, 0, 0, -particle.size);
-        
+
         canvas.drawPath(path, paint);
         canvas.restore();
       }

@@ -140,7 +140,10 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                     color: color,
                     borderRadius: BorderRadius.circular(24),
                     border: isSelected
-                        ? Border.all(color: TrueStateColors.textPrimaryDark, width: 2)
+                        ? Border.all(
+                            color: TrueStateColors.textPrimaryDark,
+                            width: 2,
+                          )
                         : null,
                     boxShadow: isSelected
                         ? [
@@ -202,7 +205,10 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                     borderRadius: BorderRadius.circular(12),
                     border: isSelected
                         ? Border.all(color: _selectedAccent, width: 1.5)
-                        : Border.all(color: TrueStateColors.borderDark, width: 1),
+                        : Border.all(
+                            color: TrueStateColors.borderDark,
+                            width: 1,
+                          ),
                   ),
                   child: Center(
                     child: Text(
@@ -246,7 +252,9 @@ class _VibeOption extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? color.withValues(alpha: 0.1) : Colors.transparent,
+            color: isSelected
+                ? color.withValues(alpha: 0.1)
+                : Colors.transparent,
             border: Border.all(
               color: isSelected ? color : TrueStateColors.borderDark,
               width: 1,
@@ -323,7 +331,10 @@ class AccentColorPicker extends StatelessWidget {
                 color: color,
                 borderRadius: BorderRadius.circular(24),
                 border: isSelected
-                    ? Border.all(color: TrueStateColors.textPrimaryDark, width: 2)
+                    ? Border.all(
+                        color: TrueStateColors.textPrimaryDark,
+                        width: 2,
+                      )
                     : null,
               ),
               child: isSelected

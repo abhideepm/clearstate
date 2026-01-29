@@ -161,11 +161,7 @@ class AnimatedSunriseLogo extends StatefulWidget {
   final double size;
   final bool showLabel;
 
-  const AnimatedSunriseLogo({
-    super.key,
-    this.size = 80,
-    this.showLabel = true,
-  });
+  const AnimatedSunriseLogo({super.key, this.size = 80, this.showLabel = true});
 
   @override
   State<AnimatedSunriseLogo> createState() => _AnimatedSunriseLogoState();
@@ -185,10 +181,7 @@ class _AnimatedSunriseLogoState extends State<AnimatedSunriseLogo>
     );
 
     _glowAnimation = Tween<double>(begin: 0.2, end: 0.5).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: TrueStateMotion.organic,
-      ),
+      CurvedAnimation(parent: _controller, curve: TrueStateMotion.organic),
     );
 
     if (!TrueStateMotion.reduceMotion) {
@@ -211,7 +204,9 @@ class _AnimatedSunriseLogoState extends State<AnimatedSunriseLogo>
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: TrueStateColors.dawnCoral.withValues(alpha: _glowAnimation.value),
+                color: TrueStateColors.dawnCoral.withValues(
+                  alpha: _glowAnimation.value,
+                ),
                 blurRadius: 30,
                 spreadRadius: 5,
               ),

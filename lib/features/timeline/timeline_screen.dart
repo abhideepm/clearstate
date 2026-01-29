@@ -21,12 +21,12 @@ class TimelineScreen extends ConsumerStatefulWidget {
 
 class _TimelineScreenState extends ConsumerState<TimelineScreen> {
   final ScrollController _scrollController = ScrollController();
-  
+
   // Approximate height of each milestone card including padding
   static const double _milestoneCardHeight = 140.0;
   // Height of the header section
   static const double _headerHeight = 150.0;
-  
+
   // Track the last scroll version we handled to avoid duplicate scrolls
   int _lastHandledScrollVersion = 0;
   bool _initialScrollDone = false;
@@ -36,7 +36,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
     _scrollController.dispose();
     super.dispose();
   }
-  
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -44,25 +44,31 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
     if (!_initialScrollDone) {
       _initialScrollDone = true;
       final currentScrollVersion = ref.read(scrollToCurrentMilestoneProvider);
-      if (currentScrollVersion > 0 && currentScrollVersion != _lastHandledScrollVersion) {
+      if (currentScrollVersion > 0 &&
+          currentScrollVersion != _lastHandledScrollVersion) {
         _lastHandledScrollVersion = currentScrollVersion;
         _performScrollToCurrentMilestone();
       }
     }
   }
-  
+
   void _performScrollToCurrentMilestone() {
     final durationAsync = ref.read(elapsedDurationProvider);
     final selectedHabit = ref.read(selectedHabitProvider);
     final milestones = RecoveryMilestones.getMilestonesForHabit(
       selectedHabit?.id ?? 'alcohol',
     );
-    
+
     final duration = durationAsync.valueOrNull;
     if (duration != null) {
       final currentDays = duration.inDays;
       final currentMilestoneIndex = milestones.indexWhere(
-        (m) => m == RecoveryMilestones.getCurrentMilestoneFromList(currentDays, milestones),
+        (m) =>
+            m ==
+            RecoveryMilestones.getCurrentMilestoneFromList(
+              currentDays,
+              milestones,
+            ),
       );
       if (currentMilestoneIndex != -1) {
         _scrollToCurrentMilestone(currentMilestoneIndex);
@@ -72,28 +78,30 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
 
   void _scrollToCurrentMilestone(int currentMilestoneIndex) {
     // Calculate the scroll offset to bring the current milestone into view
-    final targetOffset = _headerHeight + (currentMilestoneIndex * _milestoneCardHeight);
-    
+    final targetOffset =
+        _headerHeight + (currentMilestoneIndex * _milestoneCardHeight);
+
     // Add a small delay to allow the tab switch animation to complete
     Future.delayed(const Duration(milliseconds: 100), () {
       if (!_scrollController.hasClients) {
         return;
       }
-      
+
       final currentScroll = _scrollController.offset;
       final viewportHeight = _scrollController.position.viewportDimension;
-      
+
       // Calculate the visible range
       final visibleTop = currentScroll;
       final visibleBottom = currentScroll + viewportHeight;
-      
+
       // Calculate the milestone's position (top and bottom of the card)
       final milestoneTop = targetOffset;
       final milestoneBottom = targetOffset + _milestoneCardHeight;
-      
+
       // Only scroll if the milestone is not fully visible
-      final isVisible = milestoneTop >= visibleTop && milestoneBottom <= visibleBottom;
-      
+      final isVisible =
+          milestoneTop >= visibleTop && milestoneBottom <= visibleBottom;
+
       if (!isVisible) {
         _scrollController.animateTo(
           targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
@@ -177,9 +185,12 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                         final milestone = milestones[index];
                         final isUnlocked =
                             currentDays >= milestone.dayThreshold;
-                        final isCurrent = milestone ==
+                        final isCurrent =
+                            milestone ==
                             RecoveryMilestones.getCurrentMilestoneFromList(
-                                currentDays, milestones);
+                              currentDays,
+                              milestones,
+                            );
                         final isLast = index == milestones.length - 1;
 
                         return ScrollRevealItem(

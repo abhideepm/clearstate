@@ -32,9 +32,7 @@ class StatCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: TrueStateTypography.caption.copyWith(
-                    letterSpacing: 1,
-                  ),
+                  style: TrueStateTypography.caption.copyWith(letterSpacing: 1),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

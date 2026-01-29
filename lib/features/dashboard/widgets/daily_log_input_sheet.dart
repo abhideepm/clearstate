@@ -64,9 +64,7 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
             const SizedBox(height: 24),
             Text(
               'DAILY CHECK-IN',
-              style: TrueStateTypography.h2.copyWith(
-                color: accentColor,
-              ),
+              style: TrueStateTypography.h2.copyWith(color: accentColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
@@ -131,12 +129,16 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
                   selectedColor: accentColor.withValues(alpha: 0.2),
                   checkmarkColor: accentColor,
                   labelStyle: TrueStateTypography.caption.copyWith(
-                    color: isSelected ? accentColor : TrueStateColors.textSecondaryDark,
+                    color: isSelected
+                        ? accentColor
+                        : TrueStateColors.textSecondaryDark,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
-                      color: isSelected ? accentColor : TrueStateColors.borderDark,
+                      color: isSelected
+                          ? accentColor
+                          : TrueStateColors.borderDark,
                     ),
                   ),
                 );
@@ -181,9 +183,7 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
             // Submit Button
             ElevatedButton(
               onPressed: _isLogging ? null : () => _handleConfirm(habitId),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: accentColor,
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: accentColor),
               child: _isLogging
                   ? const SizedBox(
                       width: 20,

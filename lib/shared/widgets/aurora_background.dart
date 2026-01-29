@@ -27,10 +27,7 @@ class AuroraBackground extends StatelessWidget {
 class StaticAuroraOverlay extends StatelessWidget {
   final double opacity;
 
-  const StaticAuroraOverlay({
-    super.key,
-    this.opacity = 0.3,
-  });
+  const StaticAuroraOverlay({super.key, this.opacity = 0.3});
 
   @override
   Widget build(BuildContext context) {

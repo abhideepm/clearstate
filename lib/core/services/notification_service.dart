@@ -11,7 +11,8 @@ class NotificationService implements INotificationService {
 
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
 
   @override
@@ -19,14 +20,19 @@ class NotificationService implements INotificationService {
     if (_isInitialized) return;
     tz_data.initializeTimeZones();
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
     );
 
-    const initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
     await _plugin.initialize(
       initSettings,
       onDidReceiveNotificationResponse: _onNotificationTap,
@@ -41,15 +47,25 @@ class NotificationService implements INotificationService {
   @override
   Future<bool> requestPermissions() async {
     try {
-      final androidPlugin = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       if (androidPlugin != null) {
         final granted = await androidPlugin.requestNotificationsPermission();
         if (granted != true) return false;
         await androidPlugin.requestExactAlarmsPermission();
       }
-      final iosPlugin = _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+      final iosPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
       if (iosPlugin != null) {
-        final granted = await iosPlugin.requestPermissions(alert: true, badge: true, sound: false);
+        final granted = await iosPlugin.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: false,
+        );
         return granted ?? false;
       }
       return true;
@@ -61,8 +77,12 @@ class NotificationService implements INotificationService {
   @override
   Future<bool> hasPermissions() async {
     try {
-      final androidPlugin = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
-      if (androidPlugin != null) return await androidPlugin.areNotificationsEnabled() ?? false;
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      if (androidPlugin != null)
+        return await androidPlugin.areNotificationsEnabled() ?? false;
       return true;
     } catch (e) {
       return false;
@@ -77,7 +97,9 @@ class NotificationService implements INotificationService {
       final daysSober = now.difference(sessionStartDate).inDays;
       for (final milestone in NotificationConstants.milestoneNotifications) {
         if (daysSober >= milestone.dayThreshold) continue;
-        final scheduledTime = sessionStartDate.add(Duration(days: milestone.dayThreshold));
+        final scheduledTime = sessionStartDate.add(
+          Duration(days: milestone.dayThreshold),
+        );
         if (scheduledTime.isBefore(now)) continue;
         await _scheduleNotification(
           id: milestone.notificationId,
@@ -104,7 +126,10 @@ class NotificationService implements INotificationService {
         priority: Priority.high,
         category: AndroidNotificationCategory.reminder,
       ),
-      iOS: const DarwinNotificationDetails(presentAlert: true, presentBadge: true),
+      iOS: const DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+      ),
     );
 
     await _plugin.zonedSchedule(
@@ -114,14 +139,22 @@ class NotificationService implements INotificationService {
       _nextInstanceOfTime(hour, minute),
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
   tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
-    var scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
@@ -141,7 +174,10 @@ class NotificationService implements INotificationService {
         importance: Importance.high,
         priority: Priority.high,
       ),
-      iOS: const DarwinNotificationDetails(presentAlert: true, presentBadge: true),
+      iOS: const DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+      ),
     );
 
     await _plugin.zonedSchedule(
@@ -151,7 +187,8 @@ class NotificationService implements INotificationService {
       tz.TZDateTime.from(scheduledTime, tz.local),
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 

@@ -13,14 +13,20 @@ void main() {
       final alcohol = SymptomMilestones.habitMappings['alcohol'];
       expect(alcohol, isNotNull);
       expect(alcohol!.any((m) => m.hourThreshold == 24), true);
-      expect(alcohol.firstWhere((m) => m.hourThreshold == 24).status, 'GABA/Glutamate Storm');
+      expect(
+        alcohol.firstWhere((m) => m.hourThreshold == 24).status,
+        'GABA/Glutamate Storm',
+      );
     });
 
     test('NoFap milestones include the Flatline', () {
       final nofap = SymptomMilestones.habitMappings['nofap'];
       expect(nofap, isNotNull);
       expect(nofap!.any((m) => m.id == 'nf_336'), true);
-      expect(nofap.firstWhere((m) => m.id == 'nf_336').sensation, contains('Flatline'));
+      expect(
+        nofap.firstWhere((m) => m.id == 'nf_336').sensation,
+        contains('Flatline'),
+      );
     });
   });
 }

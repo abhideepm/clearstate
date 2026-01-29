@@ -42,9 +42,7 @@ class TrialBanner extends ConsumerWidget {
             ],
           ),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: accentColor.withValues(alpha: 0.3),
-          ),
+          border: Border.all(color: accentColor.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
@@ -54,11 +52,7 @@ class TrialBanner extends ConsumerWidget {
                 color: accentColor.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                Icons.star,
-                color: accentColor,
-                size: 16,
-              ),
+              child: Icon(Icons.star, color: accentColor, size: 16),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -80,10 +74,7 @@ class TrialBanner extends ConsumerWidget {
                 ],
               ),
             ),
-            Icon(
-              Icons.chevron_right,
-              color: accentColor,
-            ),
+            Icon(Icons.chevron_right, color: accentColor),
           ],
         ),
       ),

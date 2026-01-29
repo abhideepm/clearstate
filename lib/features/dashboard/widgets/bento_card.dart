@@ -32,30 +32,37 @@ class BentoCard extends ConsumerWidget {
     final themeState = ref.watch(themeProvider);
     final isDark = themeState.isDarkMode;
 
-    final bgColor = backgroundColor ?? 
+    final bgColor =
+        backgroundColor ??
         (isDark ? TrueStateColors.darkCard : TrueStateColors.lightCard);
-    
-    final shadows = elevated 
-        ? (isDark ? TrueStateColors.cardShadowDark : TrueStateColors.cardShadowLight)
+
+    final shadows = elevated
+        ? (isDark
+              ? TrueStateColors.cardShadowDark
+              : TrueStateColors.cardShadowLight)
         : null;
 
     final card = Container(
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(TrueStateTheme.borderRadiusLarge),
-        border: borderColor != null 
+        border: borderColor != null
             ? Border.all(color: borderColor!, width: borderWidth)
             : null,
         boxShadow: shadows,
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(TrueStateTheme.borderRadiusLarge - 1),
+        borderRadius: BorderRadius.circular(
+          TrueStateTheme.borderRadiusLarge - 1,
+        ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
             onLongPress: onLongPress,
-            borderRadius: BorderRadius.circular(TrueStateTheme.borderRadiusLarge - 1),
+            borderRadius: BorderRadius.circular(
+              TrueStateTheme.borderRadiusLarge - 1,
+            ),
             child: Padding(padding: padding, child: child),
           ),
         ),

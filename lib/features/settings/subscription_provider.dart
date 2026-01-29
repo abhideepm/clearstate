@@ -11,10 +11,10 @@ final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
 
 final subscriptionStatusProvider =
     StateNotifierProvider<SubscriptionNotifier, SubscriptionStatus>((ref) {
-  final service = ref.watch(subscriptionServiceProvider);
-  final repository = ref.watch(sobrietyRepositoryProvider);
-  return SubscriptionNotifier(service, repository);
-});
+      final service = ref.watch(subscriptionServiceProvider);
+      final repository = ref.watch(sobrietyRepositoryProvider);
+      return SubscriptionNotifier(service, repository);
+    });
 
 /// Computed provider for checking if user has premium access (trial OR subscription)
 final hasPremiumAccessProvider = Provider<bool>((ref) {
@@ -41,7 +41,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionStatus> {
   final ISobrietyRepository _repository;
 
   SubscriptionNotifier(this._service, this._repository)
-      : super(SubscriptionStatus.free()) {
+    : super(SubscriptionStatus.free()) {
     _init();
   }
 
@@ -57,8 +57,7 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionStatus> {
     if (!remoteStatus.isPro) {
       final profile = _repository.getUserProfile();
       if (profile != null && profile.isInTrial) {
-        final trialEnd =
-            profile.trialStartDate!.add(const Duration(days: 7));
+        final trialEnd = profile.trialStartDate!.add(const Duration(days: 7));
         state = SubscriptionStatus.trial(trialEndDate: trialEnd);
         return;
       }
@@ -73,14 +72,8 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionStatus> {
     return success;
   }
 
-  Future<bool> purchaseQuarterly() async {
-    final success = await _service.purchaseQuarterly();
-    if (success) await refreshStatus();
-    return success;
-  }
-
-  Future<bool> purchaseAnnual() async {
-    final success = await _service.purchaseAnnual();
+  Future<bool> purchaseYearly() async {
+    final success = await _service.purchaseYearly();
     if (success) await refreshStatus();
     return success;
   }
@@ -94,5 +87,23 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionStatus> {
   Future<void> restorePurchases() async {
     final status = await _service.restorePurchases();
     state = status;
+  }
+
+  /// Present RevenueCat native paywall and refresh status after
+  Future<void> presentNativePaywall() async {
+    await _service.presentPaywall();
+    await refreshStatus();
+  }
+
+  /// Present paywall only if user doesn't have the entitlement
+  Future<void> presentPaywallIfNeeded() async {
+    await _service.presentPaywallIfNeeded();
+    await refreshStatus();
+  }
+
+  /// Present Customer Center for subscription management
+  Future<void> presentCustomerCenter() async {
+    await _service.presentCustomerCenter();
+    await refreshStatus();
   }
 }

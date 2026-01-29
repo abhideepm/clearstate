@@ -102,7 +102,10 @@ class TrueStateTheme {
         ),
         labelStyle: TrueStateTypography.caption,
         hintStyle: TrueStateTypography.bodySecondary,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
       ),
       dropdownMenuTheme: DropdownMenuThemeData(
         inputDecorationTheme: InputDecorationTheme(
@@ -117,7 +120,9 @@ class TrueStateTheme {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: TrueStateColors.darkSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadiusXLarge)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(borderRadiusXLarge),
+          ),
         ),
       ),
       dialogTheme: DialogThemeData(
@@ -216,12 +221,17 @@ class TrueStateTheme {
         hintStyle: TrueStateTypography.bodySecondary.copyWith(
           color: TrueStateColors.textMutedLight,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: TrueStateColors.lightSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadiusXLarge)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(borderRadiusXLarge),
+          ),
         ),
       ),
       dialogTheme: DialogThemeData(

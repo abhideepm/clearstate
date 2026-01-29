@@ -108,7 +108,7 @@ class _HabitChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accentColor = themeState.accent.value;
-    
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -118,9 +118,7 @@ class _HabitChip extends StatelessWidget {
           color: isSelected ? accentColor : themeState.card,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected 
-                ? accentColor 
-                : themeState.border,
+            color: isSelected ? accentColor : themeState.border,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
@@ -131,17 +129,17 @@ class _HabitChip extends StatelessWidget {
                     blurRadius: 12,
                   ),
                 ]
-              : themeState.isDarkMode 
-                  ? TrueStateColors.cardShadowDark 
-                  : TrueStateColors.cardShadowLight,
+              : themeState.isDarkMode
+              ? TrueStateColors.cardShadowDark
+              : TrueStateColors.cardShadowLight,
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected 
-                    ? Colors.white.withValues(alpha: 0.2) 
+                color: isSelected
+                    ? Colors.white.withValues(alpha: 0.2)
                     : themeState.surface.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -184,12 +182,10 @@ class _HabitChip extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: isSelected 
-                    ? Colors.white 
-                    : Colors.transparent,
+                color: isSelected ? Colors.white : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
-                border: isSelected 
-                    ? null 
+                border: isSelected
+                    ? null
                     : Border.all(color: themeState.border, width: 2),
               ),
               child: isSelected

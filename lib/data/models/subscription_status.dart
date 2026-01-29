@@ -1,15 +1,6 @@
-enum SubscriptionTier {
-  free,
-  pro,
-}
+enum SubscriptionTier { free, pro }
 
-enum PlanType {
-  none,
-  monthly,
-  quarterly,
-  annual,
-  lifetime,
-}
+enum PlanType { none, monthly, yearly, lifetime }
 
 class SubscriptionStatus {
   final SubscriptionTier tier;
@@ -32,10 +23,8 @@ class SubscriptionStatus {
   bool get hasAccess => isPro || isTrialing;
   bool get isLifetime => planType == PlanType.lifetime;
 
-  factory SubscriptionStatus.free() => const SubscriptionStatus(
-        tier: SubscriptionTier.free,
-        isActive: true,
-      );
+  factory SubscriptionStatus.free() =>
+      const SubscriptionStatus(tier: SubscriptionTier.free, isActive: true);
 
   factory SubscriptionStatus.trial({required DateTime trialEndDate}) =>
       SubscriptionStatus(

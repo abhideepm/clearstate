@@ -117,7 +117,8 @@ class SobrietyRepository implements ISobrietyRepository {
     final profile = UserProfile(
       selectedHabitIds: selectedHabitIds,
       onboardingComplete: onboardingComplete,
-      trialStartDate: DateTime.now(), // Start 7-day trial on first profile creation
+      trialStartDate:
+          DateTime.now(), // Start 7-day trial on first profile creation
     );
     await updateUserProfile(profile);
   }
@@ -156,10 +157,10 @@ class SobrietyRepository implements ISobrietyRepository {
 
   Future<void> deleteHabit(String id) async {
     _assertInitialized();
-    
+
     // Remove habit
     await _habitsBox.delete(id);
-    
+
     // Remove associated sessions
     final sessionsToDelete = _sessionsBox.values
         .where((s) => s.habitId == id)
@@ -168,7 +169,7 @@ class SobrietyRepository implements ISobrietyRepository {
     for (final sessionId in sessionsToDelete) {
       await _sessionsBox.delete(sessionId);
     }
-    
+
     // Remove associated relapses
     final relapsesToDelete = _relapseBox.values
         .where((r) => r.habitId == id)
@@ -177,7 +178,7 @@ class SobrietyRepository implements ISobrietyRepository {
     for (final relapseId in relapsesToDelete) {
       await _relapseBox.delete(relapseId);
     }
-    
+
     // Remove associated daily logs
     final logsToDelete = _dailyLogBox.keys
         .where((k) => k.toString().startsWith('${id}_'))
@@ -185,7 +186,7 @@ class SobrietyRepository implements ISobrietyRepository {
     for (final logKey in logsToDelete) {
       await _dailyLogBox.delete(logKey);
     }
-    
+
     // Clear session cache for this habit
     _activeSessionCache.remove(id);
   }
@@ -272,7 +273,11 @@ class SobrietyRepository implements ISobrietyRepository {
   // Daily logs (habit-aware)
   DailyLog? getDailyLog(String habitId, DateTime date) {
     _assertInitialized();
-    final dateKey = DateTime(date.year, date.month, date.day).toIso8601String().split('T')[0];
+    final dateKey = DateTime(
+      date.year,
+      date.month,
+      date.day,
+    ).toIso8601String().split('T')[0];
     return _dailyLogBox.get('${habitId}_$dateKey');
   }
 

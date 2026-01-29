@@ -31,7 +31,7 @@ class UserProfile extends HiveObject {
   bool get isInTrial {
     if (isPremium) return false;
     if (trialStartDate == null) return false;
-    
+
     final trialEnd = trialStartDate!.add(const Duration(days: 7));
     return DateTime.now().isBefore(trialEnd);
   }
@@ -40,7 +40,7 @@ class UserProfile extends HiveObject {
   bool get isTrialExpired {
     if (isPremium) return false;
     if (trialStartDate == null) return false;
-    
+
     final trialEnd = trialStartDate!.add(const Duration(days: 7));
     return DateTime.now().isAfter(trialEnd);
   }
@@ -48,7 +48,7 @@ class UserProfile extends HiveObject {
   /// Days remaining in trial
   int get trialDaysRemaining {
     if (isPremium || trialStartDate == null) return 0;
-    
+
     final trialEnd = trialStartDate!.add(const Duration(days: 7));
     final remaining = trialEnd.difference(DateTime.now()).inDays;
     return remaining.clamp(0, 7);

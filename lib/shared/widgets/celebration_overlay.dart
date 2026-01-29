@@ -141,7 +141,10 @@ class _CelebrationOverlayState extends ConsumerState<CelebrationOverlay>
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
               color: ref.watch(themeProvider).surface,
-              border: Border.all(color: ref.watch(themeProvider).border, width: 1),
+              border: Border.all(
+                color: ref.watch(themeProvider).border,
+                width: 1,
+              ),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(

@@ -201,7 +201,11 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
     );
   }
 
-  Widget _buildCalendarGrid(List<DateTime> days, DateTime today, Color accentColor) {
+  Widget _buildCalendarGrid(
+    List<DateTime> days,
+    DateTime today,
+    Color accentColor,
+  ) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (Widget child, Animation<double> animation) {
@@ -289,21 +293,21 @@ class _CalendarCell extends StatelessWidget {
             fontWeight: FontWeight.w600,
           )
         : isCurrentMonth
-            ? TrueStateTypography.body.copyWith(
-                color: isDisabled
-                    ? TrueStateColors.textSecondaryDark.withValues(alpha: 0.5)
-                    : TrueStateColors.textPrimaryDark,
-              )
-            : TrueStateTypography.body.copyWith(
-                color: TrueStateColors.textSecondaryDark.withValues(alpha: 0.5),
-              );
+        ? TrueStateTypography.body.copyWith(
+            color: isDisabled
+                ? TrueStateColors.textSecondaryDark.withValues(alpha: 0.5)
+                : TrueStateColors.textPrimaryDark,
+          )
+        : TrueStateTypography.body.copyWith(
+            color: TrueStateColors.textSecondaryDark.withValues(alpha: 0.5),
+          );
 
     final decoration = BoxDecoration(
       color: isSelected
           ? accentColor
           : isToday
-              ? Colors.transparent
-              : TrueStateColors.darkSurface,
+          ? Colors.transparent
+          : TrueStateColors.darkSurface,
       borderRadius: BorderRadius.circular(12),
       border: isToday && !isSelected
           ? Border.all(color: accentColor, width: 1.5)
@@ -320,10 +324,7 @@ class _CalendarCell extends StatelessWidget {
         duration: const Duration(milliseconds: 150),
         curve: Curves.easeOutCubic,
         builder: (context, scale, child) {
-          return Transform.scale(
-            scale: scale,
-            child: child,
-          );
+          return Transform.scale(scale: scale, child: child);
         },
         child: _buildCellContent(decoration, textStyle),
       );
@@ -340,9 +341,7 @@ class _CalendarCell extends StatelessWidget {
         child: InkWell(
           onTap: isDisabled ? null : onTap,
           borderRadius: BorderRadius.circular(12),
-          child: Center(
-            child: Text(date.day.toString(), style: textStyle),
-          ),
+          child: Center(child: Text(date.day.toString(), style: textStyle)),
         ),
       ),
     );

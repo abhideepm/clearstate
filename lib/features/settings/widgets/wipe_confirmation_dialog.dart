@@ -128,9 +128,7 @@ class _WipeConfirmationDialogState
               decoration: BoxDecoration(
                 color: TrueStateColors.error.withAlpha((0.08 * 255).round()),
                 border: Border.all(
-                  color: TrueStateColors.error.withAlpha(
-                    (0.3 * 255).round(),
-                  ),
+                  color: TrueStateColors.error.withAlpha((0.3 * 255).round()),
                   width: 1,
                 ),
                 borderRadius: BorderRadius.circular(12),
@@ -302,7 +300,9 @@ class _DialogButton extends StatelessWidget {
         child: Text(
           label,
           style: TrueStateTypography.button.copyWith(
-            color: enabled ? TrueStateColors.textPrimaryDark : TrueStateColors.textSecondaryDark,
+            color: enabled
+                ? TrueStateColors.textPrimaryDark
+                : TrueStateColors.textSecondaryDark,
             letterSpacing: 1,
           ),
           textAlign: TextAlign.center,

@@ -194,7 +194,9 @@ class _MetricOption extends StatelessWidget {
             ? TrueStateColors.dawnCoral.withAlpha((0.1 * 255).round())
             : TrueStateColors.darkBackground,
         border: Border.all(
-          color: isSelected ? TrueStateColors.dawnCoral : TrueStateColors.borderDark,
+          color: isSelected
+              ? TrueStateColors.dawnCoral
+              : TrueStateColors.borderDark,
           width: isSelected ? 2 : 1,
         ),
         borderRadius: BorderRadius.circular(12),

@@ -7,12 +7,12 @@ class TrueStateColors {
   // Primary accent colors - vibrant teal
   static const Color accent = Color(0xFF20D5C2);
   static const Color accentLight = Color(0xFF5EEAD4);
-  
+
   // Background colors - deep charcoal tones
   static const Color charcoal = Color(0xFF1A1D23);
   static const Color deepCharcoal = Color(0xFF13151A);
   static const Color midCharcoal = Color(0xFF252830);
-  
+
   // Semantic colors
   static const Color success = Color(0xFF20D5C2);
   static const Color error = Color(0xFFF87171);
@@ -32,7 +32,7 @@ class TrueStateColors {
   static const Color darkSurface = Color(0xFF1A1D23);
   static const Color darkCard = Color(0xFF252830);
   static const Color darkElevated = Color(0xFF2E323C);
-  
+
   static const Color lightBackground = Color(0xFFF8FAFC);
   static const Color lightSurface = Color(0xFFF1F5F9);
   static const Color lightCard = Color(0xFFFFFFFF);
@@ -60,19 +60,13 @@ class TrueStateColors {
   static const LinearGradient darkBackgroundGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [
-      Color(0xFF13151A),
-      Color(0xFF13151A),
-    ],
+    colors: [Color(0xFF13151A), Color(0xFF13151A)],
   );
 
   static const LinearGradient lightBackgroundGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [
-      Color(0xFFF8FAFC),
-      Color(0xFFF1F5F9),
-    ],
+    colors: [Color(0xFFF8FAFC), Color(0xFFF1F5F9)],
   );
 
   // Accent gradient
@@ -93,24 +87,16 @@ class TrueStateColors {
 
   // Card shadows
   static const List<BoxShadow> cardShadowDark = [
-    BoxShadow(
-      color: Color(0x40000000),
-      offset: Offset(0, 4),
-      blurRadius: 16,
-    ),
+    BoxShadow(color: Color(0x40000000), offset: Offset(0, 4), blurRadius: 16),
   ];
 
   static const List<BoxShadow> cardShadowLight = [
-    BoxShadow(
-      color: Color(0x12000000),
-      offset: Offset(0, 4),
-      blurRadius: 16,
-    ),
+    BoxShadow(color: Color(0x12000000), offset: Offset(0, 4), blurRadius: 16),
   ];
 
   // Pro feature accent
   static const Color acidGreen = Color(0xFFB0FF00);
-  
+
   // Legacy/alias mappings for compatibility
   static const Color mint = accent;
   static const Color seafoam = accentLight;

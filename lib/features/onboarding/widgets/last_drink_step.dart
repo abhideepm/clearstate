@@ -28,7 +28,10 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
     }
   }
 
-  Future<void> _selectDateForHabit(HabitTemplate habit, DateTime currentDate) async {
+  Future<void> _selectDateForHabit(
+    HabitTemplate habit,
+    DateTime currentDate,
+  ) async {
     HapticService.light();
     DateTime selectedDate = currentDate;
 
@@ -50,7 +53,11 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    Icon(habit.icon, size: 20, color: TrueStateColors.textPrimaryDark),
+                    Icon(
+                      habit.icon,
+                      size: 20,
+                      color: TrueStateColors.textPrimaryDark,
+                    ),
                     const SizedBox(width: 12),
                     Text(
                       habit.name.toUpperCase(),
@@ -100,8 +107,18 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
 
   String _monthName(int month) {
     const months = [
-      'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-      'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
     ];
     return months[month - 1];
   }
@@ -138,7 +155,10 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
             GestureDetector(
               onTap: _setTodayForAll,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   border: Border.all(color: TrueStateColors.borderDark),
                   borderRadius: BorderRadius.circular(12),

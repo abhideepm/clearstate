@@ -1,21 +1,19 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 import '../../data/models/subscription_status.dart';
 
 /// Product identifiers configured in App Store Connect / Google Play Console
 class ProductIds {
-  static const monthly = 'truestate_pro_monthly';
-  static const quarterly = 'truestate_pro_quarterly';
-  static const annual = 'truestate_pro_annual';
-  static const lifetime = 'truestate_pro_lifetime';
+  static const monthly = 'monthly';
+  static const yearly = 'yearly';
+  static const lifetime = 'lifetime';
 }
 
 /// RevenueCat subscription service
 class SubscriptionService {
-  static const _apiKeyAndroid = 'goog_placeholder_api_key';
-  static const _apiKeyIos = 'appl_placeholder_api_key';
-  static const _entitlementId = 'pro';
+  static const _apiKey = 'test_vrFuaaVwnGePwdtgQujHRacWWeE';
+  static const _entitlementId = 'truestate_pro';
 
   bool _initialized = false;
 
@@ -26,8 +24,7 @@ class SubscriptionService {
       await Purchases.setLogLevel(LogLevel.debug);
     }
 
-    final apiKey = Platform.isAndroid ? _apiKeyAndroid : _apiKeyIos;
-    await Purchases.configure(PurchasesConfiguration(apiKey));
+    await Purchases.configure(PurchasesConfiguration(_apiKey));
     _initialized = true;
   }
 
@@ -55,7 +52,9 @@ class SubscriptionService {
   /// Purchase a specific package
   Future<bool> purchasePackage(Package package) async {
     try {
-      final customerInfo = await Purchases.purchasePackage(package);
+      final params = PurchaseParams.package(package);
+      final purchaseResult = await Purchases.purchase(params);
+      final customerInfo = purchaseResult.customerInfo;
       return customerInfo.entitlements.all[_entitlementId]?.isActive ?? false;
     } catch (e) {
       debugPrint('Error performing purchase: $e');
@@ -71,27 +70,8 @@ class SubscriptionService {
     return purchasePackage(package);
   }
 
-  /// Purchase quarterly subscription (custom package)
-  Future<bool> purchaseQuarterly() async {
-    final offerings = await getOfferings();
-    final packages = offerings?.current?.availablePackages;
-    
-    if (packages == null) return false;
-
-    try {
-      final package = packages.firstWhere(
-        (p) => p.identifier == '\$rc_three_month' || 
-               p.storeProduct.identifier == ProductIds.quarterly,
-      );
-      return purchasePackage(package);
-    } catch (e) {
-      debugPrint('Quarterly package not found: $e');
-      return false;
-    }
-  }
-
-  /// Purchase annual subscription
-  Future<bool> purchaseAnnual() async {
+  /// Purchase yearly subscription
+  Future<bool> purchaseYearly() async {
     final offerings = await getOfferings();
     final package = offerings?.current?.annual;
     if (package == null) return false;
@@ -141,9 +121,42 @@ class SubscriptionService {
 
   PlanType _getPlanTypeFromProductId(String productId) {
     if (productId.contains('monthly')) return PlanType.monthly;
-    if (productId.contains('quarterly')) return PlanType.quarterly;
-    if (productId.contains('annual')) return PlanType.annual;
+    if (productId.contains('yearly') || productId.contains('annual')) {
+      return PlanType.yearly;
+    }
     if (productId.contains('lifetime')) return PlanType.lifetime;
     return PlanType.none;
   }
+
+  /// Present RevenueCat native paywall
+  Future<PaywallResult> presentPaywall() async {
+    try {
+      return await RevenueCatUI.presentPaywall();
+    } catch (e) {
+      debugPrint('Error presenting paywall: $e');
+      return PaywallResult.error;
+    }
+  }
+
+  /// Present paywall only if user doesn't have the entitlement
+  Future<PaywallResult> presentPaywallIfNeeded() async {
+    try {
+      return await RevenueCatUI.presentPaywallIfNeeded(_entitlementId);
+    } catch (e) {
+      debugPrint('Error presenting paywall: $e');
+      return PaywallResult.error;
+    }
+  }
+
+  /// Present RevenueCat Customer Center for subscription management
+  Future<void> presentCustomerCenter() async {
+    try {
+      await RevenueCatUI.presentCustomerCenter();
+    } catch (e) {
+      debugPrint('Error presenting customer center: $e');
+    }
+  }
+
+  /// Get entitlement ID for external use
+  String get entitlementId => _entitlementId;
 }

@@ -46,13 +46,15 @@ class MilestoneCard extends ConsumerWidget {
                     border: isCurrent
                         ? Border.all(color: accentValue, width: 3)
                         : null,
-                    boxShadow: isCurrent ? [
-                      BoxShadow(
-                        color: accentValue.withValues(alpha: 0.4),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ] : null,
+                    boxShadow: isCurrent
+                        ? [
+                            BoxShadow(
+                              color: accentValue.withValues(alpha: 0.4),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                            ),
+                          ]
+                        : null,
                   ),
                 ),
                 // Line
@@ -66,8 +68,12 @@ class MilestoneCard extends ConsumerWidget {
                           end: Alignment.bottomCenter,
                           colors: isUnlocked
                               ? [
-                                  TrueStateColors.success.withValues(alpha: 0.5),
-                                  TrueStateColors.success.withValues(alpha: 0.2),
+                                  TrueStateColors.success.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                  TrueStateColors.success.withValues(
+                                    alpha: 0.2,
+                                  ),
                                 ]
                               : [
                                   themeState.border,
@@ -100,13 +106,15 @@ class MilestoneCard extends ConsumerWidget {
                     width: isCurrent ? 1.5 : 1,
                   ),
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: isCurrent ? [
-                    BoxShadow(
-                      color: accentValue.withValues(alpha: 0.1),
-                      blurRadius: 12,
-                      spreadRadius: 0,
-                    ),
-                  ] : null,
+                  boxShadow: isCurrent
+                      ? [
+                          BoxShadow(
+                            color: accentValue.withValues(alpha: 0.1),
+                            blurRadius: 12,
+                            spreadRadius: 0,
+                          ),
+                        ]
+                      : null,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +138,9 @@ class MilestoneCard extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: TrueStateColors.success.withValues(alpha: 0.15),
+                              color: TrueStateColors.success.withValues(
+                                alpha: 0.15,
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
@@ -152,12 +162,12 @@ class MilestoneCard extends ConsumerWidget {
                             child: Text(
                               'NOW',
                               style: TrueStateTypography.caption.copyWith(
-                              color: themeState.background,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
+                                color: themeState.background,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 12),

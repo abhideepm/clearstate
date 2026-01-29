@@ -137,7 +137,7 @@ class _TrueStateAppState extends ConsumerState<TrueStateApp>
         motivation: motivation,
       );
       await repository.saveHabit(habit);
-      
+
       // Start a session for each habit
       await orchestrator.startNewSession(
         habit.id,
@@ -175,7 +175,9 @@ class _TrueStateAppState extends ConsumerState<TrueStateApp>
     // Update widgets after successful unlock
     _updateWidgetsOnResume();
     // Refresh privacy screen state
-    _updatePrivacyScreen(WidgetsBinding.instance.lifecycleState ?? AppLifecycleState.resumed);
+    _updatePrivacyScreen(
+      WidgetsBinding.instance.lifecycleState ?? AppLifecycleState.resumed,
+    );
   }
 
   /// Toggles the Android system-level privacy flag (FLAG_SECURE).
@@ -186,8 +188,12 @@ class _TrueStateAppState extends ConsumerState<TrueStateApp>
 
     try {
       final securityState = ref.read(securityProvider);
-      final isBackground = state == AppLifecycleState.paused || state == AppLifecycleState.inactive;
-      final shouldSecure = isBackground || (securityState.biometricEnabled && !securityState.isUnlocked);
+      final isBackground =
+          state == AppLifecycleState.paused ||
+          state == AppLifecycleState.inactive;
+      final shouldSecure =
+          isBackground ||
+          (securityState.biometricEnabled && !securityState.isUnlocked);
 
       if (shouldSecure) {
         await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
@@ -224,18 +230,14 @@ class _TrueStateAppState extends ConsumerState<TrueStateApp>
       return OnboardingScreen(onComplete: _completeOnboarding);
     }
 
-    return _MainShell(
-      onDataWiped: _handleDataWiped,
-    );
+    return _MainShell(onDataWiped: _handleDataWiped);
   }
 }
 
 class _MainShell extends ConsumerWidget {
   final VoidCallback onDataWiped;
 
-  const _MainShell({
-    required this.onDataWiped,
-  });
+  const _MainShell({required this.onDataWiped});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -250,14 +252,14 @@ class _MainShell extends ConsumerWidget {
       ),
       bottomNavigationBar: _BottomNavBar(
         currentIndex: currentIndex,
-        onIndexChanged: (index) => ref.read(currentTabIndexProvider.notifier).state = index,
+        onIndexChanged: (index) =>
+            ref.read(currentTabIndexProvider.notifier).state = index,
         accentColor: themeState.accent.value,
         backgroundColor: themeState.background,
       ),
     );
   }
 }
-
 
 /// Animated content switcher that fades between tabs.
 class _AnimatedTabContent extends StatelessWidget {

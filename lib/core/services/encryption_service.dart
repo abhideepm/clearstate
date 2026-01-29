@@ -31,7 +31,10 @@ class EncryptionService {
     final iv = _generateRandomBytes(_ivLength);
 
     final cipher = GCMBlockCipher(AESEngine())
-      ..init(true, AEADParameters(KeyParameter(key), _tagLength * 8, iv, Uint8List(0)));
+      ..init(
+        true,
+        AEADParameters(KeyParameter(key), _tagLength * 8, iv, Uint8List(0)),
+      );
 
     final input = utf8.encode(json);
     final ciphertext = cipher.process(input);
@@ -59,7 +62,10 @@ class EncryptionService {
       final key = _deriveKey(password, salt);
 
       final cipher = GCMBlockCipher(AESEngine())
-        ..init(false, AEADParameters(KeyParameter(key), _tagLength * 8, iv, Uint8List(0)));
+        ..init(
+          false,
+          AEADParameters(KeyParameter(key), _tagLength * 8, iv, Uint8List(0)),
+        );
 
       final decrypted = cipher.process(ciphertext);
       return utf8.decode(decrypted);
@@ -70,7 +76,9 @@ class EncryptionService {
 
   static Uint8List _generateRandomBytes(int length) {
     final random = Random.secure();
-    return Uint8List.fromList(List<int>.generate(length, (_) => random.nextInt(256)));
+    return Uint8List.fromList(
+      List<int>.generate(length, (_) => random.nextInt(256)),
+    );
   }
 
   static Uint8List _deriveKey(String password, Uint8List salt) {

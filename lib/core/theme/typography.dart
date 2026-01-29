@@ -7,8 +7,9 @@ class TrueStateTypography {
   TrueStateTypography._();
 
   // Display font - elegant serif
-  static String get displayFontFamily => GoogleFonts.dmSerifDisplay().fontFamily!;
-  
+  static String get displayFontFamily =>
+      GoogleFonts.dmSerifDisplay().fontFamily!;
+
   // Body font - modern warmth
   static String get bodyFontFamily => GoogleFonts.plusJakartaSans().fontFamily!;
 

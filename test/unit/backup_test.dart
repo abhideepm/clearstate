@@ -113,18 +113,19 @@ void main() {
       const habitId = 'key-test-habit';
       final date = DateTime(2023, 5, 20);
 
-      await repository.logDay(
-        date: date,
-        habitId: habitId,
-        isSober: true,
-      );
+      await repository.logDay(date: date, habitId: habitId, isSober: true);
 
       final data = repository.exportData();
       await repository.nukeAllData();
       await repository.importData(data);
 
       final restoredLog = repository.getDailyLog(habitId, date);
-      expect(restoredLog, isNotNull, reason: 'DailyLog should be accessible via composite key after restoration');
+      expect(
+        restoredLog,
+        isNotNull,
+        reason:
+            'DailyLog should be accessible via composite key after restoration',
+      );
     });
 
     test('importData restores state correctly', () async {

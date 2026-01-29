@@ -123,7 +123,9 @@ class _CustomSwitch extends ConsumerWidget {
             height: 22,
             margin: const EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: enabled ? themeState.textPrimary : themeState.textSecondary,
+              color: enabled
+                  ? themeState.textPrimary
+                  : themeState.textSecondary,
               borderRadius: BorderRadius.circular(12),
             ),
           ),

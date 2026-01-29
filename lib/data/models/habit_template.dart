@@ -23,10 +23,7 @@ class HabitTemplate {
   /// Creates a Habit instance from this template.
   /// [startDate] - when the user started tracking this habit
   /// [motivation] - user's personal motivation for this habit
-  Habit toHabit({
-    required DateTime startDate,
-    String motivation = '',
-  }) {
+  Habit toHabit({required DateTime startDate, String motivation = ''}) {
     return Habit(
       id: id,
       name: name,

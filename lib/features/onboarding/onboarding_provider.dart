@@ -43,19 +43,16 @@ class OnboardingState {
   bool get hasSelectedHabits => selectedHabits.isNotEmpty;
 
   /// Get selected habit IDs for repository operations.
-  List<String> get selectedHabitIds =>
-      selectedHabits.map((h) => h.id).toList();
+  List<String> get selectedHabitIds => selectedHabits.map((h) => h.id).toList();
 
   /// Whether alcohol is among the selected habits.
-  bool get hasAlcoholSelected =>
-      selectedHabits.any((h) => h.id == 'alcohol');
+  bool get hasAlcoholSelected => selectedHabits.any((h) => h.id == 'alcohol');
 
   /// Total onboarding steps: 4 if alcohol selected (Stack -> Date -> DrinkType -> Motivation), 3 otherwise.
   int get totalSteps => hasAlcoholSelected ? 4 : 3;
 
   /// Comma-separated display names of selected habits (e.g., "Alcohol, Weed").
-  String get habitNamesDisplay =>
-      selectedHabits.map((h) => h.name).join(', ');
+  String get habitNamesDisplay => selectedHabits.map((h) => h.name).join(', ');
 }
 
 class OnboardingNotifier extends StateNotifier<OnboardingState> {
@@ -88,7 +85,10 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
       // Initialize with today's date
       updatedDates[habit.id] = DateTime.now();
     }
-    state = state.copyWith(selectedHabits: current, habitStartDates: updatedDates);
+    state = state.copyWith(
+      selectedHabits: current,
+      habitStartDates: updatedDates,
+    );
   }
 
   /// Select a single habit (replacing any existing selection).

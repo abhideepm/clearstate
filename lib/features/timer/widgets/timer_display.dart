@@ -148,12 +148,12 @@ class _TimerUnit extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeState = ref.watch(themeProvider);
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         AnimatedCounter(
-          value: value, 
+          value: value,
           style: TrueStateTypography.timerDisplay.copyWith(
             color: themeState.textPrimary,
           ),
@@ -179,12 +179,12 @@ class _SmallTimerUnit extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeState = ref.watch(themeProvider);
-    
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         AnimatedCounter(
-          value: value, 
+          value: value,
           style: TrueStateTypography.statNumber.copyWith(
             color: themeState.textPrimary,
           ),

@@ -64,7 +64,7 @@ class TimerComponents {
 // Provider for timer components
 final timerComponentsProvider = Provider<TimerComponents>((ref) {
   final durationAsync = ref.watch(elapsedDurationProvider);
-  
+
   return durationAsync.when(
     data: (duration) => TimerComponents.fromDuration(duration),
     loading: () {

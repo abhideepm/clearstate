@@ -70,24 +70,26 @@ class _ModernButtonState extends ConsumerState<ModernButton> {
       case ModernButtonType.primary:
         backgroundColor = accentColor;
         foregroundColor = TrueStateColors.textPrimaryLight;
-        shadows = _isPressed ? null : [
-          BoxShadow(
-            color: TrueStateColors.dawnCoral.withValues(alpha: 0.35),
-            offset: const Offset(0, 6),
-            blurRadius: 16,
-          ),
-        ];
+        shadows = _isPressed
+            ? null
+            : [
+                BoxShadow(
+                  color: TrueStateColors.dawnCoral.withValues(alpha: 0.35),
+                  offset: const Offset(0, 6),
+                  blurRadius: 16,
+                ),
+              ];
         break;
       case ModernButtonType.secondary:
-        backgroundColor = isDark 
-            ? TrueStateColors.darkCard 
+        backgroundColor = isDark
+            ? TrueStateColors.darkCard
             : TrueStateColors.lightCard;
-        foregroundColor = isDark 
-            ? TrueStateColors.textPrimaryDark 
+        foregroundColor = isDark
+            ? TrueStateColors.textPrimaryDark
             : TrueStateColors.textPrimaryLight;
         border = Border.all(
-          color: isDark 
-              ? TrueStateColors.borderDark 
+          color: isDark
+              ? TrueStateColors.borderDark
               : TrueStateColors.borderLight,
           width: 1,
         );
@@ -201,11 +203,11 @@ class _ModernIconButtonState extends ConsumerState<ModernIconButton> {
         iconColor = TrueStateColors.textPrimaryLight;
         break;
       case ModernButtonType.secondary:
-        backgroundColor = isDark 
-            ? TrueStateColors.darkCard 
+        backgroundColor = isDark
+            ? TrueStateColors.darkCard
             : TrueStateColors.lightElevated;
-        iconColor = isDark 
-            ? TrueStateColors.textPrimaryDark 
+        iconColor = isDark
+            ? TrueStateColors.textPrimaryDark
             : TrueStateColors.textPrimaryLight;
         break;
       case ModernButtonType.text:
@@ -273,11 +275,7 @@ class _ModernIconButtonState extends ConsumerState<ModernIconButton> {
                       color: iconColor,
                     ),
                   )
-                : Icon(
-                    widget.icon,
-                    color: iconColor,
-                    size: 22,
-                  ),
+                : Icon(widget.icon, color: iconColor, size: 22),
           ),
         ),
       ),

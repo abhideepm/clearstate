@@ -61,7 +61,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   alignment: Alignment.topRight,
                   child: IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close, color: TrueStateColors.textSecondaryDark),
+                    icon: const Icon(
+                      Icons.close,
+                      color: TrueStateColors.textSecondaryDark,
+                    ),
                   ),
                 ),
 
@@ -73,7 +76,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                         const SizedBox(height: 16),
 
                         // Value proposition
-                        Text('Unlock Your Full\nRecovery Journey',
+                        Text(
+                          'Unlock Your Full\nRecovery Journey',
                           style: TrueStateTypography.h1,
                           textAlign: TextAlign.center,
                         ),
@@ -96,12 +100,15 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                           data: (offerings) => _PricingGrid(
                             offerings: offerings,
                             accentColor: accentColor,
-                            onPurchaseMonthly: () => _purchase(notifier.purchaseMonthly),
-                            onPurchaseQuarterly: () => _purchase(notifier.purchaseQuarterly),
-                            onPurchaseAnnual: () => _purchase(notifier.purchaseAnnual),
-                            onPurchaseLifetime: () => _purchase(notifier.purchaseLifetime),
+                            onPurchaseMonthly: () =>
+                                _purchase(notifier.purchaseMonthly),
+                            onPurchaseYearly: () =>
+                                _purchase(notifier.purchaseYearly),
+                            onPurchaseLifetime: () =>
+                                _purchase(notifier.purchaseLifetime),
                           ),
-                          loading: () => const Center(child: CircularProgressIndicator()),
+                          loading: () =>
+                              const Center(child: CircularProgressIndicator()),
                           error: (_, __) => const _FallbackPricing(),
                         ),
 
@@ -161,30 +168,35 @@ class _FeatureList extends ConsumerWidget {
     final accentColor = themeState.accentValue;
     const features = [
       ('Unlimited habits', Icons.all_inclusive),
-      ('AI Sponsor (24/7 support)', Icons.psychology),
+      ('Biometric Security', Icons.fingerprint),
+      ('Encrypted Backups', Icons.enhanced_encryption),
       ('Deep analytics & trends', Icons.insights),
       ('Premium themes', Icons.palette),
-      ('Cloud backup', Icons.cloud_done),
+      ('AI Sponsor (24/7 support)', Icons.psychology),
     ];
 
     return Column(
-      children: features.map((f) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
+      children: features
+          .map(
+            (f) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: accentColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(f.$2, color: accentColor, size: 20),
+                  ),
+                  const SizedBox(width: 16),
+                  Text(f.$1, style: TrueStateTypography.body),
+                ],
               ),
-              child: Icon(f.$2, color: accentColor, size: 20),
             ),
-            const SizedBox(width: 16),
-            Text(f.$1, style: TrueStateTypography.body),
-          ],
-        ),
-      )).toList(),
+          )
+          .toList(),
     );
   }
 }
@@ -192,16 +204,14 @@ class _FeatureList extends ConsumerWidget {
 class _PricingGrid extends StatelessWidget {
   final Offerings? offerings;
   final VoidCallback onPurchaseMonthly;
-  final VoidCallback onPurchaseQuarterly;
-  final VoidCallback onPurchaseAnnual;
+  final VoidCallback onPurchaseYearly;
   final VoidCallback onPurchaseLifetime;
   final Color accentColor;
 
   const _PricingGrid({
     required this.offerings,
     required this.onPurchaseMonthly,
-    required this.onPurchaseQuarterly,
-    required this.onPurchaseAnnual,
+    required this.onPurchaseYearly,
     required this.onPurchaseLifetime,
     required this.accentColor,
   });
@@ -210,7 +220,7 @@ class _PricingGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final current = offerings?.current;
     final monthlyPrice = current?.monthly?.storeProduct.priceString ?? '\$4.99';
-    final annualPrice = current?.annual?.storeProduct.priceString ?? '\$39.99';
+    final yearlyPrice = current?.annual?.storeProduct.priceString ?? '\$39.99';
     final lifetimePrice = current?.lifetime?.storeProduct.priceString ?? '\$79';
 
     return Column(
@@ -226,25 +236,15 @@ class _PricingGrid extends StatelessWidget {
         ),
         const SizedBox(height: 12),
 
-        // Annual - Target (best value)
+        // Yearly - Target (best value)
         _PricingCard(
-          title: 'Annual',
-          price: annualPrice,
+          title: 'Yearly',
+          price: yearlyPrice,
           subtitle: '\$3.33/month • Save 33%',
           badge: 'BEST VALUE',
           isHighlighted: true,
           accentColor: accentColor,
-          onTap: onPurchaseAnnual,
-        ),
-        const SizedBox(height: 12),
-
-        // Quarterly
-        _PricingCard(
-          title: 'Quarterly',
-          price: '\$14.99',
-          subtitle: '\$5.00/month',
-          accentColor: accentColor,
-          onTap: onPurchaseQuarterly,
+          onTap: onPurchaseYearly,
         ),
         const SizedBox(height: 12),
 
@@ -292,9 +292,7 @@ class _PricingCard extends StatelessWidget {
               : TrueStateColors.darkCard,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isHighlighted
-                ? accentColor
-                : TrueStateColors.borderDark,
+            color: isHighlighted ? accentColor : TrueStateColors.borderDark,
             width: isHighlighted ? 2 : 1,
           ),
         ),
@@ -310,7 +308,10 @@ class _PricingCard extends StatelessWidget {
                       if (badge != null) ...[
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: accentColor,
                             borderRadius: BorderRadius.circular(4),
@@ -328,10 +329,7 @@ class _PricingCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TrueStateTypography.caption,
-                  ),
+                  Text(subtitle, style: TrueStateTypography.caption),
                 ],
               ),
             ),
@@ -357,7 +355,11 @@ class _FallbackPricing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Icon(Icons.cloud_off, color: TrueStateColors.textTertiaryDark, size: 48),
+        const Icon(
+          Icons.cloud_off,
+          color: TrueStateColors.textTertiaryDark,
+          size: 48,
+        ),
         const SizedBox(height: 16),
         Text(
           'Unable to load pricing.\nPlease check your connection.',

@@ -20,7 +20,8 @@ class HabitDropdown extends ConsumerWidget {
     final themeState = ref.watch(themeProvider);
 
     // Always show dropdown, even with 0 or 1 habit (allows adding new habits)
-    final displayHabit = selectedHabit ?? (habits.isNotEmpty ? habits.first : null);
+    final displayHabit =
+        selectedHabit ?? (habits.isNotEmpty ? habits.first : null);
 
     return GestureDetector(
       onTap: () => _showHabitPicker(context, ref, habits, selectedHabit),
@@ -110,7 +111,13 @@ class HabitDropdown extends ConsumerWidget {
         },
         onDeleteHabit: (habit) async {
           Navigator.pop(sheetContext);
-          await _showDeleteConfirmation(context, ref, habit, themeState, repository);
+          await _showDeleteConfirmation(
+            context,
+            ref,
+            habit,
+            themeState,
+            repository,
+          );
         },
       ),
     );
@@ -136,16 +143,9 @@ class HabitDropdown extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: themeState.accent.value.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: themeState.accent.value,
-                  width: 2,
-                ),
+                border: Border.all(color: themeState.accent.value, width: 2),
               ),
-              child: Icon(
-                Icons.add,
-                size: 8,
-                color: themeState.accent.value,
-              ),
+              child: Icon(Icons.add, size: 8, color: themeState.accent.value),
             ),
             const SizedBox(width: 16),
             Text(
@@ -191,10 +191,7 @@ class HabitDropdown extends ConsumerWidget {
         ),
         content: Text(
           'Are you sure you want to delete "${habit.name}"? This will permanently remove all progress and data for this habit.',
-          style: TextStyle(
-            color: themeState.textSecondary,
-            fontSize: 14,
-          ),
+          style: TextStyle(color: themeState.textSecondary, fontSize: 14),
         ),
         actions: [
           TextButton(
@@ -206,10 +203,7 @@ class HabitDropdown extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
-            ),
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -218,13 +212,13 @@ class HabitDropdown extends ConsumerWidget {
     if (confirmed == true) {
       final habits = ref.read(activeHabitsProvider);
       final selectedHabit = ref.read(selectedHabitProvider);
-      
+
       // Delete the habit
       await repository.deleteHabit(habit.id);
-      
+
       // Invalidate provider to refresh the list
       ref.invalidate(activeHabitsProvider);
-      
+
       // If deleted habit was selected, switch to another
       if (selectedHabit?.id == habit.id) {
         final remainingHabits = habits.where((h) => h.id != habit.id).toList();
@@ -274,25 +268,20 @@ class HabitDropdown extends ConsumerWidget {
                     style: TextStyle(
                       color: themeState.textPrimary,
                       fontSize: 16,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                   ),
                   Text(
                     '${habit.totalDays} days',
-                    style: TextStyle(
-                      color: themeState.textMuted,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: themeState.textMuted, fontSize: 14),
                   ),
                 ],
               ),
             ),
             if (isSelected)
-              Icon(
-                Icons.check_rounded,
-                color: habitColor,
-                size: 20,
-              ),
+              Icon(Icons.check_rounded, color: habitColor, size: 20),
           ],
         ),
       ),
@@ -331,7 +320,7 @@ class _AddHabitDialogState extends ConsumerState<_AddHabitDialog> {
     final themeState = widget.themeState;
     final existingHabits = ref.watch(activeHabitsProvider);
     final existingIds = existingHabits.map((h) => h.id).toSet();
-    
+
     // Filter out already added habits
     final availableTemplates = HabitTemplate.all
         .where((t) => !existingIds.contains(t.id))
@@ -367,7 +356,9 @@ class _AddHabitDialogState extends ConsumerState<_AddHabitDialog> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  ...availableTemplates.map((template) => _buildTemplateOption(template, themeState)),
+                  ...availableTemplates.map(
+                    (template) => _buildTemplateOption(template, themeState),
+                  ),
                   const SizedBox(height: 16),
                   if (_selectedTemplate != null) ...[
                     Text(
@@ -381,7 +372,10 @@ class _AddHabitDialogState extends ConsumerState<_AddHabitDialog> {
                     GestureDetector(
                       onTap: () => _selectDate(context),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
                           color: themeState.card,
                           borderRadius: BorderRadius.circular(12),
@@ -450,11 +444,7 @@ class _AddHabitDialogState extends ConsumerState<_AddHabitDialog> {
         ),
         child: Row(
           children: [
-            Icon(
-              template.icon,
-              color: template.defaultThemeColor,
-              size: 24,
-            ),
+            Icon(template.icon, color: template.defaultThemeColor, size: 24),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -465,15 +455,14 @@ class _AddHabitDialogState extends ConsumerState<_AddHabitDialog> {
                     style: TextStyle(
                       color: themeState.textPrimary,
                       fontSize: 16,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                   ),
                   Text(
                     template.description,
-                    style: TextStyle(
-                      color: themeState.textMuted,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: themeState.textMuted, fontSize: 12),
                   ),
                 ],
               ),
@@ -620,25 +609,20 @@ class _HabitPickerContent extends StatelessWidget {
                     style: TextStyle(
                       color: themeState.textPrimary,
                       fontSize: 16,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w400,
                     ),
                   ),
                   Text(
                     '${habit.totalDays} days',
-                    style: TextStyle(
-                      color: themeState.textMuted,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: themeState.textMuted, fontSize: 14),
                   ),
                 ],
               ),
             ),
             if (isSelected)
-              Icon(
-                Icons.check_rounded,
-                color: habitColor,
-                size: 20,
-              ),
+              Icon(Icons.check_rounded, color: habitColor, size: 20),
             const SizedBox(width: 8),
             GestureDetector(
               onTap: () => onDeleteHabit(habit),
@@ -671,16 +655,9 @@ class _HabitPickerContent extends StatelessWidget {
               decoration: BoxDecoration(
                 color: themeState.accent.value.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: themeState.accent.value,
-                  width: 2,
-                ),
+                border: Border.all(color: themeState.accent.value, width: 2),
               ),
-              child: Icon(
-                Icons.add,
-                size: 8,
-                color: themeState.accent.value,
-              ),
+              child: Icon(Icons.add, size: 8, color: themeState.accent.value),
             ),
             const SizedBox(width: 16),
             Text(

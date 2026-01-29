@@ -44,7 +44,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
       vsync: this,
     );
     _statsRevealAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _statsRevealController, curve: Curves.easeOutCubic),
+      CurvedAnimation(
+        parent: _statsRevealController,
+        curve: Curves.easeOutCubic,
+      ),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -96,10 +99,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SunriseLogoSmall(
-                        size: 28,
-                        accentColor: accentColor,
-                      ),
+                      SunriseLogoSmall(size: 28, accentColor: accentColor),
                       const HabitDropdown(),
                     ],
                   ),
@@ -164,11 +164,11 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                     },
                   ),
                 ),
-                const SizedBox(height: 72), // Increased spacing for reset button
+                const SizedBox(
+                  height: 72,
+                ), // Increased spacing for reset button
                 // Action Buttons
-                ResetButton(
-                  onReset: () => _showSlipVsRelapseSheet(context),
-                ),
+                ResetButton(onReset: () => _showSlipVsRelapseSheet(context)),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {

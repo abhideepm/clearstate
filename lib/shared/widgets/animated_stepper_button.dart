@@ -97,7 +97,9 @@ class _AnimatedStepperButtonState extends ConsumerState<AnimatedStepperButton>
                     widget.icon,
                     color: widget.enabled
                         ? TrueStateColors.textPrimaryDark
-                        : TrueStateColors.textSecondaryDark.withValues(alpha: 0.5),
+                        : TrueStateColors.textSecondaryDark.withValues(
+                            alpha: 0.5,
+                          ),
                     size: 20,
                   ),
                 ),

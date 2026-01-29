@@ -46,10 +46,7 @@ class LockedPlaceholder extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: themeState.surface,
-        border: Border.all(
-          color: accentValue.withValues(alpha: 0.4),
-          width: 1,
-        ),
+        border: Border.all(color: accentValue.withValues(alpha: 0.4), width: 1),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -91,7 +88,9 @@ class LockedPlaceholder extends ConsumerWidget {
             child: ElevatedButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Purchase Pro to unlock this feature')),
+                  const SnackBar(
+                    content: Text('Purchase Pro to unlock this feature'),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -100,7 +99,10 @@ class LockedPlaceholder extends ConsumerWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 14,
+                ),
                 elevation: 0,
               ),
               child: Text(

@@ -37,8 +37,6 @@ final remainingFreeHabitsProvider = Provider<int>((ref) {
   return (_freeHabitLimit - habits.length).clamp(0, _freeHabitLimit);
 });
 
-
-
 /// Currently selected habit (full object)
 /// Returns the selected habit, or the first habit if none is selected.
 final selectedHabitProvider = Provider<Habit?>((ref) {
@@ -115,14 +113,14 @@ class HabitSwitcher {
   void selectHabit(String habitId) {
     final habits = _ref.read(activeHabitsProvider);
     final habit = habits.where((h) => h.id == habitId).firstOrNull;
-    
+
     // Update the selected habit ID
     _ref.read(selectedHabitIdProvider.notifier).state = habitId;
-    
+
     if (habit != null) {
       // Update the global start date to match the selected habit
       _ref.read(sobrietyStartDateProvider.notifier).state = habit.startDate;
-      
+
       // Update theme color based on habit's theme color
       _ref.read(themeProvider.notifier).setAccentColorFromHex(habit.themeColor);
     }
