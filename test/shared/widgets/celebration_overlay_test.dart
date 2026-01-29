@@ -237,8 +237,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 4500));
 
       final textWidget = tester.widget<Text>(find.text('STYLED'));
-      expect(textWidget.style?.color, ClearStateColors.warmIvory);
-      expect(textWidget.style?.fontSize, ClearStateTypography.h2.fontSize);
+      // Default textPrimary is warmIvory
+      expect(textWidget.style?.color, TrueStateColors.textPrimaryDark);
+      expect(textWidget.style?.fontSize, TrueStateTypography.h2.fontSize);
     });
 
     testWidgets('container has correct styling', (tester) async {
@@ -268,7 +269,8 @@ void main() {
       );
 
       final decoration = container.decoration as BoxDecoration;
-      expect(decoration.color, ClearStateColors.charcoal);
+      // Default surface is darkSurface
+      expect(decoration.color, TrueStateColors.darkSurface);
       expect(decoration.border, isNotNull);
     });
   });
@@ -276,12 +278,14 @@ void main() {
   group('CelebrationOverlayWrapper', () {
     testWidgets('renders child when no pending milestone', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: CelebrationOverlayWrapper(
-              pendingMilestone: null,
-              onMilestoneDismissed: () {},
-              child: const Text('CHILD CONTENT'),
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: CelebrationOverlayWrapper(
+                pendingMilestone: null,
+                onMilestoneDismissed: () {},
+                child: const Text('CHILD CONTENT'),
+              ),
             ),
           ),
         ),
@@ -293,12 +297,14 @@ void main() {
 
     testWidgets('shows overlay when pending milestone exists', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: CelebrationOverlayWrapper(
-              pendingMilestone: '5 DAYS',
-              onMilestoneDismissed: () {},
-              child: const Text('CHILD'),
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: CelebrationOverlayWrapper(
+                pendingMilestone: '5 DAYS',
+                onMilestoneDismissed: () {},
+                child: const Text('CHILD'),
+              ),
             ),
           ),
         ),
@@ -314,12 +320,14 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: CelebrationOverlayWrapper(
-              pendingMilestone: '',
-              onMilestoneDismissed: () {},
-              child: const Text('CHILD'),
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: CelebrationOverlayWrapper(
+                pendingMilestone: '',
+                onMilestoneDismissed: () {},
+                child: const Text('CHILD'),
+              ),
             ),
           ),
         ),
@@ -335,12 +343,14 @@ void main() {
       bool dismissed = false;
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: CelebrationOverlayWrapper(
-              pendingMilestone: 'MILESTONE',
-              onMilestoneDismissed: () => dismissed = true,
-              child: const Text('CHILD'),
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: CelebrationOverlayWrapper(
+                pendingMilestone: 'MILESTONE',
+                onMilestoneDismissed: () => dismissed = true,
+                child: const Text('CHILD'),
+              ),
             ),
           ),
         ),

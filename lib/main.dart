@@ -54,7 +54,7 @@ void main() async {
         sobrietyRepositoryProvider.overrideWithValue(repository),
         widgetUpdateServiceProvider.overrideWithValue(widgetService),
       ],
-      child: const ClearStateApp(),
+      child: const TrueStateApp(),
     ),
   );
 }

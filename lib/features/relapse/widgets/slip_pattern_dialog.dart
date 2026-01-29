@@ -18,10 +18,10 @@ class SlipPatternDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: ClearStateColors.darkSurface,
+      backgroundColor: TrueStateColors.darkSurface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: ClearStateColors.borderDark),
+        side: const BorderSide(color: TrueStateColors.borderDark),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -34,12 +34,12 @@ class SlipPatternDialog extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: ClearStateColors.dawnCoral.withValues(alpha: 0.15),
+                color: TrueStateColors.dawnCoral.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.insights,
-                color: ClearStateColors.dawnCoral,
+                color: TrueStateColors.dawnCoral,
                 size: 28,
               ),
             ),
@@ -47,23 +47,23 @@ class SlipPatternDialog extends StatelessWidget {
 
             Text(
               'A GENTLE OBSERVATION',
-              style: ClearStateTypography.h3.copyWith(
-                color: ClearStateColors.dawnCoral,
+              style: TrueStateTypography.h3.copyWith(
+                color: TrueStateColors.dawnCoral,
               ),
             ),
             const SizedBox(height: 12),
 
             Text(
               "You've had a few slips recently. This isn't judgment—just a moment to reflect.",
-              style: ClearStateTypography.body.copyWith(
-                color: ClearStateColors.textPrimaryDark,
+              style: TrueStateTypography.body.copyWith(
+                color: TrueStateColors.textPrimaryDark,
                 height: 1.5,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               'Some people find it helpful to reset and start fresh. Others prefer to continue tracking slips separately. There is no wrong choice.',
-              style: ClearStateTypography.bodySecondary.copyWith(height: 1.5),
+              style: TrueStateTypography.bodySecondary.copyWith(height: 1.5),
             ),
             const SizedBox(height: 28),
 
@@ -74,7 +74,7 @@ class SlipPatternDialog extends StatelessWidget {
                 onKeepAsSlips();
               },
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: ClearStateColors.borderDark),
+                side: const BorderSide(color: TrueStateColors.borderDark),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -82,8 +82,8 @@ class SlipPatternDialog extends StatelessWidget {
               ),
               child: Text(
                 'KEEP AS SLIPS',
-                style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.textPrimaryDark,
+                style: TrueStateTypography.button.copyWith(
+                  color: TrueStateColors.textPrimaryDark,
                 ),
               ),
             ),
@@ -96,7 +96,7 @@ class SlipPatternDialog extends StatelessWidget {
                 await onConvertToRelapse();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ClearStateColors.dawnCoral,
+                backgroundColor: TrueStateColors.dawnCoral,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Text('RESET AND START FRESH'),

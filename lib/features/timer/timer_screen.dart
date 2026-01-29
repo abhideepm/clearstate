@@ -181,7 +181,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
                   },
                   child: Text(
                     "I'M STRUGGLING",
-                    style: ClearStateTypography.caption.copyWith(
+                    style: TrueStateTypography.caption.copyWith(
                       color: themeState.textMuted,
                       letterSpacing: 2,
                     ),

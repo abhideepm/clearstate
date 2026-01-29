@@ -37,7 +37,7 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 200)),
+      duration: TrueStateMotion.duration(const Duration(milliseconds: 200)),
       vsync: this,
     );
 
@@ -83,7 +83,7 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
         theme.colorScheme.primary;
     final inactiveColor =
         theme.bottomNavigationBarTheme.unselectedItemColor ??
-        ClearStateColors.textSecondaryDark;
+        TrueStateColors.textSecondaryDark;
 
     final effectiveIcon = (widget.isActive && widget.activeIcon != null)
         ? widget.activeIcon!
@@ -99,7 +99,7 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
           const SizedBox(height: 4),
           Text(
             widget.label!,
-            style: ClearStateTypography.caption.copyWith(
+            style: TrueStateTypography.caption.copyWith(
               color: widget.isActive ? activeColor : inactiveColor,
               fontSize: 10,
               fontStyle: FontStyle.normal,
@@ -113,7 +113,7 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
   }
 
   Widget _buildIcon(IconData iconData, Color activeColor, Color inactiveColor) {
-    if (ClearStateMotion.reduceMotion) {
+    if (TrueStateMotion.reduceMotion) {
       return Icon(
         iconData,
         color: widget.isActive ? activeColor : inactiveColor,
@@ -165,7 +165,7 @@ class _AnimatedNavIconCustomState extends State<AnimatedNavIconCustom>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 200)),
+      duration: TrueStateMotion.duration(const Duration(milliseconds: 200)),
       vsync: this,
     );
 
@@ -206,7 +206,7 @@ class _AnimatedNavIconCustomState extends State<AnimatedNavIconCustom>
 
   @override
   Widget build(BuildContext context) {
-    if (ClearStateMotion.reduceMotion) {
+    if (TrueStateMotion.reduceMotion) {
       return GestureDetector(onTap: widget.onTap, child: widget.icon);
     }
 
@@ -253,10 +253,10 @@ class NavBarItem extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               label,
-              style: ClearStateTypography.caption.copyWith(
+              style: TrueStateTypography.caption.copyWith(
                 color: isSelected
-                    ? ClearStateColors.dawnCoral
-                    : ClearStateColors.textSecondaryDark,
+                    ? TrueStateColors.dawnCoral
+                    : TrueStateColors.textSecondaryDark,
                 fontSize: 10,
               ),
             ),

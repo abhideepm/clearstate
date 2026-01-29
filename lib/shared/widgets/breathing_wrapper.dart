@@ -13,9 +13,9 @@ class BreathingWrapper extends StatefulWidget {
   const BreathingWrapper({
     super.key,
     required this.child,
-    this.minScale = ClearStateMotion.breathMinScale,
-    this.maxScale = ClearStateMotion.breathMaxScale,
-    this.duration = ClearStateMotion.breathCycle,
+    this.minScale = TrueStateMotion.breathMinScale,
+    this.maxScale = TrueStateMotion.breathMaxScale,
+    this.duration = TrueStateMotion.breathCycle,
     this.enabled = true,
   });
 
@@ -39,7 +39,7 @@ class _BreathingWrapperState extends State<BreathingWrapper>
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(
         tween: Tween(begin: widget.minScale, end: widget.maxScale)
-            .chain(CurveTween(curve: ClearStateMotion.breathInCurve)),
+            .chain(CurveTween(curve: TrueStateMotion.breathInCurve)),
         weight: 45,
       ),
       TweenSequenceItem(
@@ -48,7 +48,7 @@ class _BreathingWrapperState extends State<BreathingWrapper>
       ),
       TweenSequenceItem(
         tween: Tween(begin: widget.maxScale, end: widget.minScale)
-            .chain(CurveTween(curve: ClearStateMotion.breathOutCurve)),
+            .chain(CurveTween(curve: TrueStateMotion.breathOutCurve)),
         weight: 45,
       ),
     ]).animate(_controller);
@@ -57,7 +57,7 @@ class _BreathingWrapperState extends State<BreathingWrapper>
   }
 
   void _startAnimation() {
-    if (widget.enabled && !ClearStateMotion.reduceMotion) {
+    if (widget.enabled && !TrueStateMotion.reduceMotion) {
       _controller.repeat();
     }
   }
@@ -66,7 +66,7 @@ class _BreathingWrapperState extends State<BreathingWrapper>
   void didUpdateWidget(BreathingWrapper oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.enabled != oldWidget.enabled) {
-      if (widget.enabled && !ClearStateMotion.reduceMotion) {
+      if (widget.enabled && !TrueStateMotion.reduceMotion) {
         _controller.repeat();
       } else {
         _controller.stop();
@@ -83,7 +83,7 @@ class _BreathingWrapperState extends State<BreathingWrapper>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.enabled || ClearStateMotion.reduceMotion) {
+    if (!widget.enabled || TrueStateMotion.reduceMotion) {
       return widget.child;
     }
 
@@ -133,14 +133,14 @@ class _GlowPulseWrapperState extends State<GlowPulseWrapper>
     );
 
     _opacityAnimation = Tween<double>(
-      begin: ClearStateMotion.glowMinOpacity,
-      end: ClearStateMotion.glowMaxOpacity,
+      begin: TrueStateMotion.glowMinOpacity,
+      end: TrueStateMotion.glowMaxOpacity,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: ClearStateMotion.organic,
+      curve: TrueStateMotion.organic,
     ));
 
-    if (widget.enabled && !ClearStateMotion.reduceMotion) {
+    if (widget.enabled && !TrueStateMotion.reduceMotion) {
       _controller.repeat(reverse: true);
     }
   }
@@ -153,7 +153,7 @@ class _GlowPulseWrapperState extends State<GlowPulseWrapper>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.enabled || ClearStateMotion.reduceMotion) {
+    if (!widget.enabled || TrueStateMotion.reduceMotion) {
       return widget.child;
     }
 

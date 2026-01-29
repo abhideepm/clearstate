@@ -28,7 +28,7 @@ class MilestoneNotification {
 
 class NotificationConstants {
   /// Channel configuration
-  static const String channelId = 'clearstate_milestones';
+  static const String channelId = 'truestate_milestones';
   static const String channelName = 'Milestone Alerts';
   static const String channelDescription =
       'Notifications for sobriety milestones';

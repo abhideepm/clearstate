@@ -34,9 +34,9 @@ class _AnimatedCounterState extends ConsumerState<AnimatedCounter> {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = widget.style ?? ClearStateTypography.timerDisplay;
+    final textStyle = widget.style ?? TrueStateTypography.timerDisplay;
 
-    if (ClearStateMotion.reduceMotion) {
+    if (TrueStateMotion.reduceMotion) {
       return Text(widget.value.toString(), style: textStyle);
     }
 

@@ -115,7 +115,7 @@ class SecurityNotifier extends StateNotifier<SecurityState> {
   Future<bool> checkBiometric() async {
     try {
       final authenticated = await _localAuth.authenticate(
-        localizedReason: 'Authenticate to access ClearState',
+        localizedReason: 'Authenticate to access TrueState',
         options: const AuthenticationOptions(
           stickyAuth: true,
           biometricOnly: false,

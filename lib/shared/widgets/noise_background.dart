@@ -27,8 +27,8 @@ class DawnBackground extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: isDark
-            ? ClearStateColors.darkBackgroundGradient
-            : ClearStateColors.lightBackgroundGradient,
+            ? TrueStateColors.darkBackgroundGradient
+            : TrueStateColors.lightBackgroundGradient,
       ),
       child: showAurora
           ? Stack(

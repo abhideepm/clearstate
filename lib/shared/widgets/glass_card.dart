@@ -38,18 +38,18 @@ class GlassCard extends StatelessWidget {
           padding: padding ?? const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: isDark
-                ? ClearStateColors.glassOverlayDark
-                : ClearStateColors.glassOverlayLight,
+                ? TrueStateColors.glassOverlayDark
+                : TrueStateColors.glassOverlayLight,
             borderRadius: BorderRadius.circular(borderRadius),
             border: showBorder
                 ? Border.all(
                     color: isDark
-                        ? ClearStateColors.glassBorderDark
-                        : ClearStateColors.glassBorderLight,
+                        ? TrueStateColors.glassBorderDark
+                        : TrueStateColors.glassBorderLight,
                     width: 1,
                   )
                 : null,
-            boxShadow: showGlow ? ClearStateColors.glowShadow : null,
+            boxShadow: showGlow ? TrueStateColors.glowShadow : null,
           ),
           child: child,
         ),
@@ -94,20 +94,20 @@ class GlassContainer extends StatelessWidget {
       padding: padding ?? const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark
-            ? ClearStateColors.darkCard.withValues(alpha: 0.8)
-            : ClearStateColors.lightCard.withValues(alpha: 0.9),
+            ? TrueStateColors.darkCard.withValues(alpha: 0.8)
+            : TrueStateColors.lightCard.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(borderRadius),
         border: showBorder
             ? Border.all(
                 color: isDark
-                    ? ClearStateColors.borderDark
-                    : ClearStateColors.borderLight,
+                    ? TrueStateColors.borderDark
+                    : TrueStateColors.borderLight,
                 width: 1,
               )
             : null,
         boxShadow: isDark
-            ? ClearStateColors.cardShadowDark
-            : ClearStateColors.cardShadowLight,
+            ? TrueStateColors.cardShadowDark
+            : TrueStateColors.cardShadowLight,
       ),
       child: child,
     );

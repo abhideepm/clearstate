@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.clearstate.clearstate</string>
+		<string>group.com.truestate.truestate</string>
 	</array>
 </dict>
 </plist>

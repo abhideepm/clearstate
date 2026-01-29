@@ -43,7 +43,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: ClearStateColors.borderDark,
+                  color: TrueStateColors.borderDark,
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
@@ -51,8 +51,8 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
             const SizedBox(height: 24),
             Text(
               widget.isSlip ? 'LOG SLIP' : 'LOG RELAPSE',
-              style: ClearStateTypography.h2.copyWith(
-                color: widget.isSlip ? accentColor : ClearStateColors.error,
+              style: TrueStateTypography.h2.copyWith(
+                color: widget.isSlip ? accentColor : TrueStateColors.error,
               ),
               textAlign: TextAlign.center,
             ),
@@ -61,7 +61,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
               widget.isSlip
                   ? 'A momentary slip won\'t reset your progress.'
                   : 'This will reset your timer and start fresh.',
-              style: ClearStateTypography.bodySecondary.copyWith(
+              style: TrueStateTypography.bodySecondary.copyWith(
                 color: themeState.textMuted,
               ),
               textAlign: TextAlign.center,
@@ -74,7 +74,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.isSlip
                     ? accentColor
-                    : ClearStateColors.error,
+                    : TrueStateColors.error,
               ),
               child: _isLogging
                   ? const SizedBox(
@@ -82,7 +82,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: ClearStateColors.darkBackground,
+                        color: TrueStateColors.darkBackground,
                       ),
                     )
                   : Text(widget.isSlip ? 'LOG SLIP' : 'LOG RELAPSE'),
@@ -97,8 +97,8 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
               },
               child: Text(
                 'CANCEL',
-                style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.textSecondaryDark,
+                style: TrueStateTypography.button.copyWith(
+                  color: TrueStateColors.textSecondaryDark,
                 ),
               ),
             ),

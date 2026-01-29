@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/theme_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/constants/milestones.dart';
 
-class MilestoneCard extends StatelessWidget {
+class MilestoneCard extends ConsumerWidget {
   final RecoveryMilestone milestone;
   final bool isUnlocked;
   final bool isCurrent;
@@ -18,7 +20,9 @@ class MilestoneCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    final accentValue = themeState.accentValue;
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,17 +38,17 @@ class MilestoneCard extends StatelessWidget {
                   height: 16,
                   decoration: BoxDecoration(
                     color: isCurrent
-                        ? ClearStateColors.lavender
+                        ? accentValue
                         : isUnlocked
-                        ? ClearStateColors.success
-                        : ClearStateColors.borderDark,
+                        ? TrueStateColors.success
+                        : themeState.border,
                     shape: BoxShape.circle,
                     border: isCurrent
-                        ? Border.all(color: ClearStateColors.lavender, width: 3)
+                        ? Border.all(color: accentValue, width: 3)
                         : null,
                     boxShadow: isCurrent ? [
                       BoxShadow(
-                        color: ClearStateColors.lavender.withValues(alpha: 0.4),
+                        color: accentValue.withValues(alpha: 0.4),
                         blurRadius: 8,
                         spreadRadius: 2,
                       ),
@@ -62,12 +66,12 @@ class MilestoneCard extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: isUnlocked
                               ? [
-                                  ClearStateColors.success.withValues(alpha: 0.5),
-                                  ClearStateColors.success.withValues(alpha: 0.2),
+                                  TrueStateColors.success.withValues(alpha: 0.5),
+                                  TrueStateColors.success.withValues(alpha: 0.2),
                                 ]
                               : [
-                                  ClearStateColors.borderDark,
-                                  ClearStateColors.borderDark.withValues(alpha: 0.5),
+                                  themeState.border,
+                                  themeState.border.withValues(alpha: 0.5),
                                 ],
                         ),
                       ),
@@ -85,20 +89,20 @@ class MilestoneCard extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: isCurrent
-                      ? ClearStateColors.darkSurface
-                      : ClearStateColors.darkCard.withValues(alpha: 0.3),
+                      ? themeState.surface
+                      : themeState.card.withValues(alpha: 0.3),
                   border: Border.all(
                     color: isCurrent
-                        ? ClearStateColors.lavender.withValues(alpha: 0.5)
+                        ? accentValue.withValues(alpha: 0.5)
                         : isUnlocked
-                        ? ClearStateColors.borderDark.withValues(alpha: 0.5)
-                        : ClearStateColors.borderDark.withValues(alpha: 0.3),
+                        ? themeState.border.withValues(alpha: 0.5)
+                        : themeState.border.withValues(alpha: 0.3),
                     width: isCurrent ? 1.5 : 1,
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: isCurrent ? [
                     BoxShadow(
-                      color: ClearStateColors.lavender.withValues(alpha: 0.1),
+                      color: accentValue.withValues(alpha: 0.1),
                       blurRadius: 12,
                       spreadRadius: 0,
                     ),
@@ -111,12 +115,12 @@ class MilestoneCard extends StatelessWidget {
                       children: [
                         Text(
                           milestone.title.toUpperCase(),
-                          style: ClearStateTypography.caption.copyWith(
+                          style: TrueStateTypography.caption.copyWith(
                             color: isCurrent
-                                ? ClearStateColors.lavender
+                                ? accentValue
                                 : isUnlocked
-                                ? ClearStateColors.textPrimaryDark
-                                : ClearStateColors.textSecondaryDark,
+                                ? themeState.textPrimary
+                                : themeState.textSecondary,
                             letterSpacing: 2,
                             fontWeight: FontWeight.w600,
                           ),
@@ -126,13 +130,13 @@ class MilestoneCard extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: ClearStateColors.success.withValues(alpha: 0.15),
+                              color: TrueStateColors.success.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
                               Icons.check_rounded,
                               size: 14,
-                              color: ClearStateColors.success,
+                              color: TrueStateColors.success,
                             ),
                           ),
                         if (isCurrent)
@@ -142,36 +146,36 @@ class MilestoneCard extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: ClearStateColors.lavender,
+                              color: accentValue,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               'NOW',
-                              style: ClearStateTypography.caption.copyWith(
-                                color: ClearStateColors.darkBackground,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: TrueStateTypography.caption.copyWith(
+                              color: themeState.background,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     Text(
                       milestone.status,
-                      style: ClearStateTypography.h3.copyWith(
+                      style: TrueStateTypography.h3.copyWith(
                         color: isUnlocked
-                            ? ClearStateColors.textPrimaryDark
-                            : ClearStateColors.textSecondaryDark,
+                            ? themeState.textPrimary
+                            : themeState.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       milestone.description,
-                      style: ClearStateTypography.body.copyWith(
+                      style: TrueStateTypography.body.copyWith(
                         color: isUnlocked
-                            ? ClearStateColors.textSecondaryDark
-                            : ClearStateColors.textSecondaryDark.withValues(alpha: 0.5),
+                            ? themeState.textSecondary
+                            : themeState.textSecondary.withValues(alpha: 0.5),
                         fontSize: 14,
                         height: 1.5,
                       ),

@@ -5,7 +5,7 @@ struct SharedData {
     
     // MARK: - App Group Configuration
     
-    private static let appGroupID = "group.com.clearstate.clearstate"
+    private static let appGroupID = "group.com.truestate.truestate"
     
     private static var userDefaults: UserDefaults? {
         UserDefaults(suiteName: appGroupID)

@@ -13,7 +13,7 @@ enum AppThemeMode {
 
 /// Accent color options
 enum AccentColor {
-  teal(ClearStateColors.accent, 'Teal'),
+  teal(TrueStateColors.accent, 'Teal'),
   electricBlue(Color(0xFF3B82F6), 'Electric Blue'),
   emerald(Color(0xFF22C55E), 'Emerald'),
   rose(Color(0xFFF43F5E), 'Rose'),
@@ -32,12 +32,14 @@ class ThemeState {
   final AppThemeMode themeMode;
   final bool isDarkMode;
   final Color? customAccentColor;
+  final BackgroundTheme? customBackground;
 
   const ThemeState({
     required this.accent,
     required this.themeMode,
     required this.isDarkMode,
     this.customAccentColor,
+    this.customBackground,
   });
 
   ThemeState copyWith({
@@ -45,6 +47,7 @@ class ThemeState {
     AppThemeMode? themeMode,
     bool? isDarkMode,
     Color? customAccentColor,
+    BackgroundTheme? customBackground,
     bool clearCustomAccent = false,
   }) {
     return ThemeState(
@@ -52,26 +55,28 @@ class ThemeState {
       themeMode: themeMode ?? this.themeMode,
       isDarkMode: isDarkMode ?? this.isDarkMode,
       customAccentColor: clearCustomAccent ? null : (customAccentColor ?? this.customAccentColor),
+      customBackground: customBackground ?? this.customBackground,
     );
   }
 
   // Convenience getters for current theme colors
   Color get background =>
-      isDarkMode ? ClearStateColors.darkBackground : ClearStateColors.lightBackground;
+      customBackground?.value ??
+      (isDarkMode ? TrueStateColors.darkBackground : TrueStateColors.lightBackground);
   Color get surface =>
-      isDarkMode ? ClearStateColors.darkSurface : ClearStateColors.lightSurface;
+      isDarkMode ? TrueStateColors.darkSurface : TrueStateColors.lightSurface;
   Color get card =>
-      isDarkMode ? ClearStateColors.darkCard : ClearStateColors.lightCard;
+      isDarkMode ? TrueStateColors.darkCard : TrueStateColors.lightCard;
   Color get elevated =>
-      isDarkMode ? ClearStateColors.darkElevated : ClearStateColors.lightElevated;
+      isDarkMode ? TrueStateColors.darkElevated : TrueStateColors.lightElevated;
   Color get textPrimary =>
-      isDarkMode ? ClearStateColors.textPrimaryDark : ClearStateColors.textPrimaryLight;
+      isDarkMode ? TrueStateColors.textPrimaryDark : TrueStateColors.textPrimaryLight;
   Color get textSecondary =>
-      isDarkMode ? ClearStateColors.textSecondaryDark : ClearStateColors.textSecondaryLight;
+      isDarkMode ? TrueStateColors.textSecondaryDark : TrueStateColors.textSecondaryLight;
   Color get textMuted =>
-      isDarkMode ? ClearStateColors.textMutedDark : ClearStateColors.textMutedLight;
+      isDarkMode ? TrueStateColors.textMutedDark : TrueStateColors.textMutedLight;
   Color get border =>
-      isDarkMode ? ClearStateColors.borderDark : ClearStateColors.borderLight;
+      isDarkMode ? TrueStateColors.borderDark : TrueStateColors.borderLight;
   
   /// Returns the effective accent color (custom if set, otherwise from enum)
   Color get accentValue => customAccentColor ?? accent.value;
@@ -85,6 +90,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
   static const String _boxName = 'theme_settings';
   static const String _accentKey = 'accent_color';
   static const String _themeModeKey = 'theme_mode';
+  static const String _backgroundKey = 'background_theme';
 
   ThemeNotifier()
       : super(
@@ -102,6 +108,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       final box = Hive.box(_boxName);
       final accentIndex = box.get(_accentKey, defaultValue: 0) as int;
       final themeModeIndex = box.get(_themeModeKey, defaultValue: 2) as int; // Default to dark
+      final backgroundIndex = box.get(_backgroundKey, defaultValue: 0) as int;
 
       final themeMode = AppThemeMode.values[themeModeIndex.clamp(0, 2)];
       final isDarkMode = _resolveIsDarkMode(themeMode);
@@ -110,6 +117,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
         accent: AccentColor.values[accentIndex.clamp(0, AccentColor.values.length - 1)],
         themeMode: themeMode,
         isDarkMode: isDarkMode,
+        customBackground: BackgroundTheme.values[backgroundIndex.clamp(0, BackgroundTheme.values.length - 1)],
       );
     } catch (e) {
       // Use defaults on error
@@ -130,6 +138,11 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
 
   void setAccentColor(AccentColor accent) {
     state = state.copyWith(accent: accent);
+    _saveTheme();
+  }
+
+  void setBackgroundColor(BackgroundTheme background) {
+    state = state.copyWith(customBackground: background);
     _saveTheme();
   }
 
@@ -173,6 +186,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
       final box = Hive.box(_boxName);
       box.put(_accentKey, state.accent.index);
       box.put(_themeModeKey, state.themeMode.index);
+      box.put(_backgroundKey, state.customBackground?.index ?? 0);
     } catch (e) {
       // Silent fail for persistence errors
     }
@@ -184,11 +198,11 @@ enum ThemeVibe { cyber, cozy }
 
 // Legacy enum for backward compatibility
 enum BackgroundTheme {
-  void_(ClearStateColors.darkBackground),
+  void_(TrueStateColors.darkBackground),
   oledBlack(Color(0xFF000000)),
-  charcoalDark(ClearStateColors.darkSurface),
+  charcoalDark(TrueStateColors.darkSurface),
   deepNavy(Color(0xFF0A1628)),
-  texturedDark(ClearStateColors.darkCard);
+  texturedDark(TrueStateColors.darkCard);
 
   final Color value;
   const BackgroundTheme(this.value);

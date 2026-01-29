@@ -1,6 +1,6 @@
 # JetBrains Mono Fonts
 
-ClearState app uses JetBrains Mono fonts for the timer and UI elements.
+TrueState app uses JetBrains Mono fonts for the timer and UI elements.
 
 ## Required Files
 

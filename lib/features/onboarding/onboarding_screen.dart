@@ -147,7 +147,7 @@ class _OnboardingProgress extends ConsumerWidget {
         const SizedBox(height: 16),
         Text(
           'Step ${state.currentStep + 1} of 3',
-          style: ClearStateTypography.caption.copyWith(
+          style: TrueStateTypography.caption.copyWith(
             color: themeState.textMuted,
           ),
         ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Teal theme - modern, calm, focused
-class ClearStateColors {
-  ClearStateColors._();
+class TrueStateColors {
+  TrueStateColors._();
 
   // Primary accent colors - vibrant teal
   static const Color accent = Color(0xFF20D5C2);

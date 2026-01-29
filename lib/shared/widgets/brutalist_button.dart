@@ -69,10 +69,10 @@ class _ModernButtonState extends ConsumerState<ModernButton> {
     switch (widget.type) {
       case ModernButtonType.primary:
         backgroundColor = accentColor;
-        foregroundColor = ClearStateColors.textPrimaryLight;
+        foregroundColor = TrueStateColors.textPrimaryLight;
         shadows = _isPressed ? null : [
           BoxShadow(
-            color: ClearStateColors.dawnCoral.withValues(alpha: 0.35),
+            color: TrueStateColors.dawnCoral.withValues(alpha: 0.35),
             offset: const Offset(0, 6),
             blurRadius: 16,
           ),
@@ -80,15 +80,15 @@ class _ModernButtonState extends ConsumerState<ModernButton> {
         break;
       case ModernButtonType.secondary:
         backgroundColor = isDark 
-            ? ClearStateColors.darkCard 
-            : ClearStateColors.lightCard;
+            ? TrueStateColors.darkCard 
+            : TrueStateColors.lightCard;
         foregroundColor = isDark 
-            ? ClearStateColors.textPrimaryDark 
-            : ClearStateColors.textPrimaryLight;
+            ? TrueStateColors.textPrimaryDark 
+            : TrueStateColors.textPrimaryLight;
         border = Border.all(
           color: isDark 
-              ? ClearStateColors.borderDark 
-              : ClearStateColors.borderLight,
+              ? TrueStateColors.borderDark 
+              : TrueStateColors.borderLight,
           width: 1,
         );
         break;
@@ -105,7 +105,7 @@ class _ModernButtonState extends ConsumerState<ModernButton> {
     }
 
     return AnimatedContainer(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 150)),
+      duration: TrueStateMotion.duration(const Duration(milliseconds: 150)),
       curve: Curves.easeOut,
       width: widget.width,
       height: widget.height ?? 56,
@@ -147,7 +147,7 @@ class _ModernButtonState extends ConsumerState<ModernButton> {
                       ],
                       Text(
                         widget.label,
-                        style: ClearStateTypography.button.copyWith(
+                        style: TrueStateTypography.button.copyWith(
                           color: foregroundColor,
                         ),
                       ),
@@ -198,15 +198,15 @@ class _ModernIconButtonState extends ConsumerState<ModernIconButton> {
     switch (widget.type) {
       case ModernButtonType.primary:
         backgroundColor = accentColor;
-        iconColor = ClearStateColors.textPrimaryLight;
+        iconColor = TrueStateColors.textPrimaryLight;
         break;
       case ModernButtonType.secondary:
         backgroundColor = isDark 
-            ? ClearStateColors.darkCard 
-            : ClearStateColors.lightElevated;
+            ? TrueStateColors.darkCard 
+            : TrueStateColors.lightElevated;
         iconColor = isDark 
-            ? ClearStateColors.textPrimaryDark 
-            : ClearStateColors.textPrimaryLight;
+            ? TrueStateColors.textPrimaryDark 
+            : TrueStateColors.textPrimaryLight;
         break;
       case ModernButtonType.text:
         backgroundColor = Colors.transparent;

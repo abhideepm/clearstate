@@ -4,6 +4,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
 import '../settings/subscription_provider.dart';
+import '../../core/theme/theme_provider.dart';
 
 /// Full-screen paywall with psychological pricing design
 class PaywallScreen extends ConsumerStatefulWidget {
@@ -45,9 +46,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   Widget build(BuildContext context) {
     final offeringsAsync = ref.watch(offeringsProvider);
     final notifier = ref.read(subscriptionStatusProvider.notifier);
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accentValue;
 
     return Scaffold(
-      backgroundColor: ClearStateColors.darkBackground,
+      backgroundColor: TrueStateColors.darkBackground,
       body: SafeArea(
         child: Stack(
           children: [
@@ -58,7 +61,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   alignment: Alignment.topRight,
                   child: IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close, color: ClearStateColors.textSecondaryDark),
+                    icon: const Icon(Icons.close, color: TrueStateColors.textSecondaryDark),
                   ),
                 ),
 
@@ -71,13 +74,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
                         // Value proposition
                         Text('Unlock Your Full\nRecovery Journey',
-                          style: ClearStateTypography.h1,
+                          style: TrueStateTypography.h1,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
                         Text(
                           'Keep your insights, unlimited habits, and 24/7 crisis support',
-                          style: ClearStateTypography.bodySecondary,
+                          style: TrueStateTypography.bodySecondary,
                           textAlign: TextAlign.center,
                         ),
 
@@ -92,6 +95,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                         offeringsAsync.when(
                           data: (offerings) => _PricingGrid(
                             offerings: offerings,
+                            accentColor: accentColor,
                             onPurchaseMonthly: () => _purchase(notifier.purchaseMonthly),
                             onPurchaseQuarterly: () => _purchase(notifier.purchaseQuarterly),
                             onPurchaseAnnual: () => _purchase(notifier.purchaseAnnual),
@@ -108,8 +112,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                           onPressed: _restore,
                           child: Text(
                             'Restore Purchases',
-                            style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.textTertiaryDark,
+                            style: TrueStateTypography.caption.copyWith(
+                              color: TrueStateColors.textTertiaryDark,
                             ),
                           ),
                         ),
@@ -121,8 +125,8 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                           onPressed: () => Navigator.of(context).pop(),
                           child: Text(
                             'Continue with Free',
-                            style: ClearStateTypography.bodySmall.copyWith(
-                              color: ClearStateColors.textSecondaryDark,
+                            style: TrueStateTypography.bodySmall.copyWith(
+                              color: TrueStateColors.textSecondaryDark,
                             ),
                           ),
                         ),
@@ -148,11 +152,13 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   }
 }
 
-class _FeatureList extends StatelessWidget {
+class _FeatureList extends ConsumerWidget {
   const _FeatureList();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accentValue;
     const features = [
       ('Unlimited habits', Icons.all_inclusive),
       ('AI Sponsor (24/7 support)', Icons.psychology),
@@ -169,13 +175,13 @@ class _FeatureList extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: ClearStateColors.accent.withOpacity(0.15),
+                color: accentColor.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(f.$2, color: ClearStateColors.accent, size: 20),
+              child: Icon(f.$2, color: accentColor, size: 20),
             ),
             const SizedBox(width: 16),
-            Text(f.$1, style: ClearStateTypography.body),
+            Text(f.$1, style: TrueStateTypography.body),
           ],
         ),
       )).toList(),
@@ -189,6 +195,7 @@ class _PricingGrid extends StatelessWidget {
   final VoidCallback onPurchaseQuarterly;
   final VoidCallback onPurchaseAnnual;
   final VoidCallback onPurchaseLifetime;
+  final Color accentColor;
 
   const _PricingGrid({
     required this.offerings,
@@ -196,6 +203,7 @@ class _PricingGrid extends StatelessWidget {
     required this.onPurchaseQuarterly,
     required this.onPurchaseAnnual,
     required this.onPurchaseLifetime,
+    required this.accentColor,
   });
 
   @override
@@ -213,6 +221,7 @@ class _PricingGrid extends StatelessWidget {
           price: lifetimePrice,
           subtitle: 'Pay once, own forever',
           isHighlighted: false,
+          accentColor: accentColor,
           onTap: onPurchaseLifetime,
         ),
         const SizedBox(height: 12),
@@ -224,6 +233,7 @@ class _PricingGrid extends StatelessWidget {
           subtitle: '\$3.33/month • Save 33%',
           badge: 'BEST VALUE',
           isHighlighted: true,
+          accentColor: accentColor,
           onTap: onPurchaseAnnual,
         ),
         const SizedBox(height: 12),
@@ -233,6 +243,7 @@ class _PricingGrid extends StatelessWidget {
           title: 'Quarterly',
           price: '\$14.99',
           subtitle: '\$5.00/month',
+          accentColor: accentColor,
           onTap: onPurchaseQuarterly,
         ),
         const SizedBox(height: 12),
@@ -242,6 +253,7 @@ class _PricingGrid extends StatelessWidget {
           title: 'Monthly',
           price: monthlyPrice,
           subtitle: 'Billed monthly',
+          accentColor: accentColor,
           onTap: onPurchaseMonthly,
         ),
       ],
@@ -255,6 +267,7 @@ class _PricingCard extends StatelessWidget {
   final String subtitle;
   final String? badge;
   final bool isHighlighted;
+  final Color accentColor;
   final VoidCallback onTap;
 
   const _PricingCard({
@@ -263,6 +276,7 @@ class _PricingCard extends StatelessWidget {
     required this.subtitle,
     this.badge,
     this.isHighlighted = false,
+    required this.accentColor,
     required this.onTap,
   });
 
@@ -274,13 +288,13 @@ class _PricingCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isHighlighted
-              ? ClearStateColors.accent.withOpacity(0.1)
-              : ClearStateColors.darkCard,
+              ? accentColor.withValues(alpha: 0.1)
+              : TrueStateColors.darkCard,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isHighlighted
-                ? ClearStateColors.accent
-                : ClearStateColors.borderDark,
+                ? accentColor
+                : TrueStateColors.borderDark,
             width: isHighlighted ? 2 : 1,
           ),
         ),
@@ -292,19 +306,19 @@ class _PricingCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(title, style: ClearStateTypography.bodySemiBold),
+                      Text(title, style: TrueStateTypography.bodySemiBold),
                       if (badge != null) ...[
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: ClearStateColors.accent,
+                            color: accentColor,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             badge!,
-                            style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.darkBackground,
+                            style: TrueStateTypography.caption.copyWith(
+                              color: TrueStateColors.darkBackground,
                               fontWeight: FontWeight.w700,
                               fontSize: 10,
                             ),
@@ -316,17 +330,17 @@ class _PricingCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: ClearStateTypography.caption,
+                    style: TrueStateTypography.caption,
                   ),
                 ],
               ),
             ),
             Text(
               price,
-              style: ClearStateTypography.h2.copyWith(
+              style: TrueStateTypography.h2.copyWith(
                 color: isHighlighted
-                    ? ClearStateColors.accent
-                    : ClearStateColors.textPrimaryDark,
+                    ? accentColor
+                    : TrueStateColors.textPrimaryDark,
               ),
             ),
           ],
@@ -343,11 +357,11 @@ class _FallbackPricing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Icon(Icons.cloud_off, color: ClearStateColors.textTertiaryDark, size: 48),
+        const Icon(Icons.cloud_off, color: TrueStateColors.textTertiaryDark, size: 48),
         const SizedBox(height: 16),
         Text(
           'Unable to load pricing.\nPlease check your connection.',
-          style: ClearStateTypography.bodySecondary,
+          style: TrueStateTypography.bodySecondary,
           textAlign: TextAlign.center,
         ),
       ],

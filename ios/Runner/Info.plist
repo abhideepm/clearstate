@@ -46,6 +46,6 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
-	<string>ClearState uses Face ID to keep your sobriety data private.</string>
+	<string>TrueState uses Face ID to keep your sobriety data private.</string>
 </dict>
 </plist>

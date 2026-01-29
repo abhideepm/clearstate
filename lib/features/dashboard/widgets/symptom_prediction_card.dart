@@ -4,6 +4,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/services/symptom_intelligence_service.dart';
 import '../../../core/services/sobriety_orchestrator.dart';
 import '../../timer/timer_provider.dart';
+import '../../../core/theme/theme_provider.dart';
 import 'bento_card.dart';
 
 class SymptomPredictionCard extends ConsumerStatefulWidget {
@@ -37,9 +38,12 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
 
     if (milestone == null) return const SizedBox.shrink();
 
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accentValue;
+
     return BentoCard(
-      backgroundColor: ClearStateColors.oledBlack,
-      borderColor: ClearStateColors.borderDark,
+      backgroundColor: TrueStateColors.deepCharcoal,
+      borderColor: themeState.border,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -49,7 +53,7 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
               fontFamily: 'JetBrains Mono',
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: ClearStateColors.textSecondaryDark,
+              color: TrueStateColors.textSecondaryDark,
               letterSpacing: 1.2,
             ),
           ),
@@ -60,18 +64,18 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
               Expanded(
                 child: Text(
                   milestone.title.toUpperCase(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'JetBrains Mono',
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: ClearStateColors.acidGreen,
+                    color: accentColor,
                   ),
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  border: Border.all(color: ClearStateColors.borderDark),
+                  border: Border.all(color: themeState.border),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -80,7 +84,7 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
                     fontFamily: 'JetBrains Mono',
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: ClearStateColors.textSecondaryDark,
+                    color: TrueStateColors.textSecondaryDark,
                   ),
                 ),
               ),
@@ -101,26 +105,26 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
             onTap: () => setState(() => _showScience = !_showScience),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.science_outlined,
                   size: 16,
-                  color: ClearStateColors.hyperViolet,
+                  color: accentColor,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   _showScience ? 'HIDE INSIGHT' : 'SCIENCE INSIGHT',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'JetBrains Mono',
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: ClearStateColors.hyperViolet,
+                    color: accentColor,
                   ),
                 ),
                 const Spacer(),
                 Icon(
                   _showScience ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                   size: 16,
-                  color: ClearStateColors.hyperViolet,
+                  color: accentColor,
                 ),
               ],
             ),
@@ -132,7 +136,7 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
               style: const TextStyle(
                 fontFamily: 'JetBrains Mono',
                 fontSize: 13,
-                color: ClearStateColors.textSecondaryDark,
+                color: TrueStateColors.textSecondaryDark,
                 height: 1.4,
               ),
             ),

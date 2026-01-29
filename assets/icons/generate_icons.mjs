@@ -60,7 +60,7 @@ const iosContentsJson = {
 };
 
 async function generateIcons() {
-  const svgPath = join(__dirname, 'clearstate_icon.svg');
+  const svgPath = join(__dirname, 'truestate_icon.svg');
   const svgBuffer = await readFile(svgPath);
 
   // Create iOS assets directory

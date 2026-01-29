@@ -132,8 +132,8 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
 
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.darkSurface,
-        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        color: TrueStateColors.darkSurface,
+        border: Border.all(color: TrueStateColors.borderDark, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(16),
@@ -160,19 +160,19 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
             padding: const EdgeInsets.all(8),
             child: const Icon(
               Icons.chevron_left,
-              color: ClearStateColors.textPrimaryDark,
+              color: TrueStateColors.textPrimaryDark,
               size: 24,
             ),
           ),
         ),
-        Text(_formatMonthYear(_currentMonth), style: ClearStateTypography.h3),
+        Text(_formatMonthYear(_currentMonth), style: TrueStateTypography.h3),
         GestureDetector(
           onTap: _goToNextMonth,
           child: Container(
             padding: const EdgeInsets.all(8),
             child: const Icon(
               Icons.chevron_right,
-              color: ClearStateColors.textPrimaryDark,
+              color: TrueStateColors.textPrimaryDark,
               size: 24,
             ),
           ),
@@ -190,8 +190,8 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 day,
-                style: ClearStateTypography.caption.copyWith(
-                  color: ClearStateColors.textSecondaryDark,
+                style: TrueStateTypography.caption.copyWith(
+                  color: TrueStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -284,18 +284,18 @@ class _CalendarCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = isSelected
-        ? ClearStateTypography.body.copyWith(
-            color: ClearStateColors.darkBackground,
+        ? TrueStateTypography.body.copyWith(
+            color: TrueStateColors.darkBackground,
             fontWeight: FontWeight.w600,
           )
         : isCurrentMonth
-            ? ClearStateTypography.body.copyWith(
+            ? TrueStateTypography.body.copyWith(
                 color: isDisabled
-                    ? ClearStateColors.textSecondaryDark.withValues(alpha: 0.5)
-                    : ClearStateColors.textPrimaryDark,
+                    ? TrueStateColors.textSecondaryDark.withValues(alpha: 0.5)
+                    : TrueStateColors.textPrimaryDark,
               )
-            : ClearStateTypography.body.copyWith(
-                color: ClearStateColors.textSecondaryDark.withValues(alpha: 0.5),
+            : TrueStateTypography.body.copyWith(
+                color: TrueStateColors.textSecondaryDark.withValues(alpha: 0.5),
               );
 
     final decoration = BoxDecoration(
@@ -303,12 +303,12 @@ class _CalendarCell extends StatelessWidget {
           ? accentColor
           : isToday
               ? Colors.transparent
-              : ClearStateColors.darkSurface,
+              : TrueStateColors.darkSurface,
       borderRadius: BorderRadius.circular(12),
       border: isToday && !isSelected
           ? Border.all(color: accentColor, width: 1.5)
           : Border.all(
-              color: ClearStateColors.borderDark.withValues(alpha: 0.3),
+              color: TrueStateColors.borderDark.withValues(alpha: 0.3),
               width: 1,
             ),
     );

@@ -146,7 +146,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                             children: [
                               Text(
                                 'Timeline',
-                                style: ClearStateTypography.h1.copyWith(
+                                style: TrueStateTypography.h1.copyWith(
                                   color: themeState.textPrimary,
                                   fontSize: 28,
                                 ),
@@ -157,14 +157,14 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                           const SizedBox(height: 8),
                           Text(
                             'Your recovery milestones',
-                            style: ClearStateTypography.bodySecondary.copyWith(
+                            style: TrueStateTypography.bodySecondary.copyWith(
                               color: themeState.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
                             'Your body is healing',
-                            style: ClearStateTypography.bodySecondary,
+                            style: TrueStateTypography.bodySecondary,
                           ),
                         ],
                       ),

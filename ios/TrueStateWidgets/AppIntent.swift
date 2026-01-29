@@ -1,6 +1,6 @@
 //
 //  AppIntent.swift
-//  ClearStateWidgets
+//  TrueStateWidgets
 //
 //  Created by Abhideep Maity on 15/01/26.
 //

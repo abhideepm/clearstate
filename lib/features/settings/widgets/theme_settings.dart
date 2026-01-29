@@ -61,7 +61,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
       }).toList();
 
   Color _selectedAccent = const Color(0xFFFF6B35);
-  Color _selectedBackground = ClearStateColors.darkBackground;
+  Color _selectedBackground = TrueStateColors.darkBackground;
 
   @override
   void initState() {
@@ -91,11 +91,11 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
   void _showUndoSnackbar() {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     final snackBar = SnackBar(
-      content: Text('Theme updated', style: ClearStateTypography.body),
-      backgroundColor: ClearStateColors.darkSurface,
+      content: Text('Theme updated', style: TrueStateTypography.body),
+      backgroundColor: TrueStateColors.darkSurface,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
-        side: const BorderSide(color: ClearStateColors.borderDark, width: 1),
+        side: const BorderSide(color: TrueStateColors.borderDark, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       margin: const EdgeInsets.all(16),
@@ -111,8 +111,8 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
       children: [
         Text(
           'Accent Color',
-          style: ClearStateTypography.caption.copyWith(
-            color: ClearStateColors.textSecondaryDark,
+          style: TrueStateTypography.caption.copyWith(
+            color: TrueStateColors.textSecondaryDark,
             letterSpacing: 1,
           ),
         ),
@@ -130,7 +130,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
               return GestureDetector(
                 onTap: () => _selectAccentColor(color),
                 child: AnimatedContainer(
-                  duration: ClearStateMotion.duration(
+                  duration: TrueStateMotion.duration(
                     const Duration(milliseconds: 150),
                   ),
                   curve: Curves.easeOutCubic,
@@ -140,7 +140,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                     color: color,
                     borderRadius: BorderRadius.circular(24),
                     border: isSelected
-                        ? Border.all(color: ClearStateColors.textPrimaryDark, width: 2)
+                        ? Border.all(color: TrueStateColors.textPrimaryDark, width: 2)
                         : null,
                     boxShadow: isSelected
                         ? [
@@ -172,8 +172,8 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
         const SizedBox(height: 24),
         Text(
           'Background',
-          style: ClearStateTypography.caption.copyWith(
-            color: ClearStateColors.textSecondaryDark,
+          style: TrueStateTypography.caption.copyWith(
+            color: TrueStateColors.textSecondaryDark,
             letterSpacing: 1,
           ),
         ),
@@ -191,7 +191,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
               return GestureDetector(
                 onTap: () => _selectBackground(option.color),
                 child: AnimatedContainer(
-                  duration: ClearStateMotion.duration(
+                  duration: TrueStateMotion.duration(
                     const Duration(milliseconds: 150),
                   ),
                   curve: Curves.easeOutCubic,
@@ -202,15 +202,15 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                     borderRadius: BorderRadius.circular(12),
                     border: isSelected
                         ? Border.all(color: _selectedAccent, width: 1.5)
-                        : Border.all(color: ClearStateColors.borderDark, width: 1),
+                        : Border.all(color: TrueStateColors.borderDark, width: 1),
                   ),
                   child: Center(
                     child: Text(
                       option.name,
-                      style: ClearStateTypography.caption.copyWith(
+                      style: TrueStateTypography.caption.copyWith(
                         color: isSelected
                             ? _selectedAccent
-                            : ClearStateColors.textSecondaryDark,
+                            : TrueStateColors.textSecondaryDark,
                       ),
                     ),
                   ),
@@ -248,7 +248,7 @@ class _VibeOption extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected ? color.withValues(alpha: 0.1) : Colors.transparent,
             border: Border.all(
-              color: isSelected ? color : ClearStateColors.borderDark,
+              color: isSelected ? color : TrueStateColors.borderDark,
               width: 1,
             ),
             borderRadius: BorderRadius.circular(12),
@@ -256,9 +256,9 @@ class _VibeOption extends StatelessWidget {
           child: Center(
             child: Text(
               label,
-              style: ClearStateTypography.timerLabel.copyWith(
+              style: TrueStateTypography.timerLabel.copyWith(
                 fontSize: 12,
-                color: isSelected ? color : ClearStateColors.textSecondaryDark,
+                color: isSelected ? color : TrueStateColors.textSecondaryDark,
                 letterSpacing: 2,
               ),
             ),
@@ -323,7 +323,7 @@ class AccentColorPicker extends StatelessWidget {
                 color: color,
                 borderRadius: BorderRadius.circular(24),
                 border: isSelected
-                    ? Border.all(color: ClearStateColors.textPrimaryDark, width: 2)
+                    ? Border.all(color: TrueStateColors.textPrimaryDark, width: 2)
                     : null,
               ),
               child: isSelected

@@ -1,6 +1,6 @@
 //
-//  ClearStateWidgets.swift
-//  ClearStateWidgets
+//  TrueStateWidgets.swift
+//  TrueStateWidgets
 //
 //  Created by Abhideep Maity on 15/01/26.
 //
@@ -41,7 +41,7 @@ struct SimpleEntry: TimelineEntry {
     let configuration: ConfigurationAppIntent
 }
 
-struct ClearStateWidgetsEntryView : View {
+struct TrueStateWidgetsEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
@@ -55,12 +55,12 @@ struct ClearStateWidgetsEntryView : View {
     }
 }
 
-struct ClearStateWidgets: Widget {
-    let kind: String = "ClearStateWidgets"
+struct TrueStateWidgets: Widget {
+    let kind: String = "TrueStateWidgets"
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
-            ClearStateWidgetsEntryView(entry: entry)
+            TrueStateWidgetsEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
     }
@@ -81,7 +81,7 @@ extension ConfigurationAppIntent {
 }
 
 #Preview(as: .systemSmall) {
-    ClearStateWidgets()
+    TrueStateWidgets()
 } timeline: {
     SimpleEntry(date: .now, configuration: .smiley)
     SimpleEntry(date: .now, configuration: .starEyes)

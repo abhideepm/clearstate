@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.clearstate" "\0"
-            VALUE "FileDescription", "clearstate" "\0"
+            VALUE "CompanyName", "com.truestate" "\0"
+            VALUE "FileDescription", "truestate" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "clearstate" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.clearstate. All rights reserved." "\0"
-            VALUE "OriginalFilename", "clearstate.exe" "\0"
-            VALUE "ProductName", "clearstate" "\0"
+            VALUE "InternalName", "truestate" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.truestate. All rights reserved." "\0"
+            VALUE "OriginalFilename", "truestate.exe" "\0"
+            VALUE "ProductName", "truestate" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

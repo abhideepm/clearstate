@@ -31,7 +31,7 @@ class _AnimatedChipState extends ConsumerState<AnimatedChip>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 200)),
+      duration: TrueStateMotion.duration(const Duration(milliseconds: 200)),
       vsync: this,
     );
     _scaleAnimation = Tween<double>(
@@ -77,16 +77,16 @@ class _AnimatedChipState extends ConsumerState<AnimatedChip>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           decoration: BoxDecoration(
-            color: widget.isSelected ? accentColor : ClearStateColors.darkSurface,
+            color: widget.isSelected ? accentColor : TrueStateColors.darkSurface,
             border: Border.all(
-              color: widget.isSelected ? accentColor : ClearStateColors.borderDark,
+              color: widget.isSelected ? accentColor : TrueStateColors.borderDark,
             ),
           ),
           child: DefaultTextStyle.merge(
-            style: ClearStateTypography.button.copyWith(
+            style: TrueStateTypography.button.copyWith(
               color: widget.isSelected
-                  ? ClearStateColors.darkBackground
-                  : ClearStateColors.textPrimaryDark,
+                  ? TrueStateColors.darkBackground
+                  : TrueStateColors.textPrimaryDark,
             ),
             child: widget.child,
           ),

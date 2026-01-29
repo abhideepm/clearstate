@@ -1,10 +1,10 @@
-# AGENTS.md - ClearState
+# AGENTS.md - TrueState
 
 This document provides context for AI coding agents working in this codebase.
 
 ## Project Overview
 
-**ClearState** is a minimalist sobriety tracker mobile app built with Flutter.
+**TrueState** is a minimalist sobriety tracker mobile app built with Flutter.
 - Framework: Flutter (Dart SDK ^3.10.7)
 - State Management: flutter_riverpod (^2.4.0)
 - Local Storage: Hive (^2.2.3) + hive_flutter
@@ -21,7 +21,7 @@ To maintain codebase health, agents **must** follow these steps for every modifi
 ## Project Structure
 
 ```
-clearstate/
+truestate/
 ├── lib/
 │   ├── main.dart         # App entry point, Hive setup, widget init
 │   ├── app.dart          # Root widget, navigation
@@ -130,9 +130,9 @@ class _TimerUnit extends StatelessWidget {
 ```
 
 ### Theme & Colors
-- Use `ClearStateColors` static constants: `void_`, `charcoal`, `bone`, `signal`
-- Use `ClearStateTypography` for text styles (JetBrains Mono)
-- Use `ClearStateMotion` for animation durations and curves
+- Use `TrueStateColors` static constants: `void_`, `charcoal`, `bone`, `signal`
+- Use `TrueStateTypography` for text styles (JetBrains Mono)
+- Use `TrueStateMotion` for animation durations and curves
 - Primary accent: Signal Orange (`#FF6B35`)
 
 ### Error Handling
@@ -213,7 +213,7 @@ runApp(
     overrides: [
       sobrietyRepositoryProvider.overrideWithValue(repository),
     ],
-    child: const ClearStateApp(),
+    child: const TrueStateApp(),
   ),
 );
 ```
@@ -251,10 +251,10 @@ Run with: `flutter test test/shared/widgets/`
 
 ## iOS Widget Extension Configuration
 
-The ClearStateWidgetsExtension target is configured in `ios/Runner.xcodeproj/project.pbxproj`. To avoid Xcode build cycle errors when embedding the widget extension:
+The TrueStateWidgetsExtension target is configured in `ios/Runner.xcodeproj/project.pbxproj`. To avoid Xcode build cycle errors when embedding the widget extension:
 
 1. **Do not use Xcode's native "Embed Foundation Extensions" build phase** - it can cause cycle errors
 2. **Use a shell script build phase instead** with `alwaysOutOfDate = 1` to copy the extension
 3. The shell script should check if the extension exists before copying
 
-The widget extension is embedded to `Runner.app/PlugIns/ClearStateWidgetsExtension.appex` via a custom shell script build phase in the Runner target.
+The widget extension is embedded to `Runner.app/PlugIns/TrueStateWidgetsExtension.appex` via a custom shell script build phase in the Runner target.

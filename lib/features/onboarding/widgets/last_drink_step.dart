@@ -39,8 +39,8 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
         backgroundColor: Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
-            color: ClearStateColors.darkSurface,
-            border: Border.all(color: ClearStateColors.borderDark, width: 1),
+            color: TrueStateColors.darkSurface,
+            border: Border.all(color: TrueStateColors.borderDark, width: 1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
@@ -50,12 +50,12 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    Icon(habit.icon, size: 20, color: ClearStateColors.textPrimaryDark),
+                    Icon(habit.icon, size: 20, color: TrueStateColors.textPrimaryDark),
                     const SizedBox(width: 12),
                     Text(
                       habit.name.toUpperCase(),
-                      style: ClearStateTypography.button.copyWith(
-                        color: ClearStateColors.textPrimaryDark,
+                      style: TrueStateTypography.button.copyWith(
+                        color: TrueStateColors.textPrimaryDark,
                       ),
                     ),
                   ],
@@ -81,8 +81,8 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ClearStateColors.dawnCoral,
-                      foregroundColor: ClearStateColors.darkBackground,
+                      backgroundColor: TrueStateColors.dawnCoral,
+                      foregroundColor: TrueStateColors.darkBackground,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -124,13 +124,13 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
           const SizedBox(height: 24),
           Text(
             'MARK YOUR\nTURNING POINT',
-            style: ClearStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
+            style: TrueStateTypography.h1.copyWith(fontSize: 32, height: 1.2),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           Text(
             'When did you take control?',
-            style: ClearStateTypography.bodySecondary,
+            style: TrueStateTypography.bodySecondary,
             textAlign: TextAlign.center,
           ),
           if (selectedHabits.length > 1) ...[
@@ -140,7 +140,7 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  border: Border.all(color: ClearStateColors.borderDark),
+                  border: Border.all(color: TrueStateColors.borderDark),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -150,13 +150,13 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                     const Icon(
                       Icons.today,
                       size: 16,
-                      color: ClearStateColors.textSecondaryDark,
+                      color: TrueStateColors.textSecondaryDark,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'USE TODAY FOR ALL',
-                      style: ClearStateTypography.caption.copyWith(
-                        color: ClearStateColors.textSecondaryDark,
+                      style: TrueStateTypography.caption.copyWith(
+                        color: TrueStateColors.textSecondaryDark,
                         letterSpacing: 1,
                       ),
                     ),
@@ -179,15 +179,15 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: ClearStateColors.darkSurface,
-                      border: Border.all(color: ClearStateColors.borderDark),
+                      color: TrueStateColors.darkSurface,
+                      border: Border.all(color: TrueStateColors.borderDark),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           habit.icon,
                           size: 24,
-                          color: ClearStateColors.textPrimaryDark,
+                          color: TrueStateColors.textPrimaryDark,
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -196,15 +196,15 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                             children: [
                               Text(
                                 habit.name.toUpperCase(),
-                                style: ClearStateTypography.button.copyWith(
-                                  color: ClearStateColors.textPrimaryDark,
+                                style: TrueStateTypography.button.copyWith(
+                                  color: TrueStateColors.textPrimaryDark,
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 _formatDate(startDate),
-                                style: ClearStateTypography.caption.copyWith(
-                                  color: ClearStateColors.textSecondaryDark,
+                                style: TrueStateTypography.caption.copyWith(
+                                  color: TrueStateColors.textSecondaryDark,
                                 ),
                               ),
                             ],
@@ -212,9 +212,9 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                         ),
                         Text(
                           'TAP TO CHANGE',
-                          style: ClearStateTypography.caption.copyWith(
+                          style: TrueStateTypography.caption.copyWith(
                             fontSize: 10,
-                            color: ClearStateColors.textSecondaryDark,
+                            color: TrueStateColors.textSecondaryDark,
                           ),
                         ),
                       ],

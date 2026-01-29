@@ -4,8 +4,8 @@ import 'colors.dart';
 import 'typography.dart';
 import 'theme_provider.dart';
 
-/// ClearState Theme - Modern Fintech aesthetic
-class ClearStateTheme {
+/// TrueState Theme - Modern Fintech aesthetic
+class TrueStateTheme {
   // Design constants - Increased radii for modern look
   static const double borderRadiusSmall = 12.0;
   static const double borderRadiusMedium = 16.0;
@@ -27,44 +27,44 @@ class ClearStateTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      scaffoldBackgroundColor: ClearStateColors.darkBackground,
+      scaffoldBackgroundColor: TrueStateColors.darkBackground,
       colorScheme: ColorScheme.dark(
-        surface: ClearStateColors.darkSurface,
+        surface: TrueStateColors.darkSurface,
         primary: accentColor,
         secondary: accentColor,
-        error: ClearStateColors.error,
-        onSurface: ClearStateColors.textPrimaryDark,
-        onPrimary: ClearStateColors.darkBackground,
+        error: TrueStateColors.error,
+        onSurface: TrueStateColors.textPrimaryDark,
+        onPrimary: TrueStateColors.darkBackground,
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: ClearStateTypography.h3,
+        titleTextStyle: TrueStateTypography.h3,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: ClearStateColors.darkSurface,
+        backgroundColor: TrueStateColors.darkSurface,
         selectedItemColor: accentColor,
-        unselectedItemColor: ClearStateColors.textMutedDark,
+        unselectedItemColor: TrueStateColors.textMutedDark,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
       ),
       cardTheme: CardThemeData(
-        color: ClearStateColors.darkCard,
+        color: TrueStateColors.darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusLarge),
         ),
       ),
       dividerTheme: const DividerThemeData(
-        color: ClearStateColors.borderDark,
+        color: TrueStateColors.borderDark,
         thickness: 1,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: accentColor,
-          foregroundColor: ClearStateColors.darkBackground,
+          foregroundColor: TrueStateColors.darkBackground,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(
@@ -87,7 +87,7 @@ class ClearStateTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: ClearStateColors.darkCard,
+        fillColor: TrueStateColors.darkCard,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadiusMedium),
           borderSide: BorderSide.none,
@@ -100,14 +100,14 @@ class ClearStateTheme {
           borderRadius: BorderRadius.circular(borderRadiusMedium),
           borderSide: BorderSide(color: accentColor, width: 2),
         ),
-        labelStyle: ClearStateTypography.caption,
-        hintStyle: ClearStateTypography.bodySecondary,
+        labelStyle: TrueStateTypography.caption,
+        hintStyle: TrueStateTypography.bodySecondary,
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       ),
       dropdownMenuTheme: DropdownMenuThemeData(
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: ClearStateColors.darkCard,
+          fillColor: TrueStateColors.darkCard,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(borderRadiusMedium),
             borderSide: BorderSide.none,
@@ -115,13 +115,13 @@ class ClearStateTheme {
         ),
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: ClearStateColors.darkSurface,
+        backgroundColor: TrueStateColors.darkSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadiusXLarge)),
         ),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: ClearStateColors.darkSurface,
+        backgroundColor: TrueStateColors.darkSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusXLarge),
         ),
@@ -134,47 +134,47 @@ class ClearStateTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      scaffoldBackgroundColor: ClearStateColors.lightBackground,
+      scaffoldBackgroundColor: TrueStateColors.lightBackground,
       colorScheme: ColorScheme.light(
-        surface: ClearStateColors.lightSurface,
+        surface: TrueStateColors.lightSurface,
         primary: accentColor,
         secondary: accentColor,
-        error: ClearStateColors.error,
-        onSurface: ClearStateColors.textPrimaryLight,
-        onPrimary: ClearStateColors.textPrimaryLight,
+        error: TrueStateColors.error,
+        onSurface: TrueStateColors.textPrimaryLight,
+        onPrimary: TrueStateColors.textPrimaryLight,
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: ClearStateTypography.h3.copyWith(
-          color: ClearStateColors.textPrimaryLight,
+        titleTextStyle: TrueStateTypography.h3.copyWith(
+          color: TrueStateColors.textPrimaryLight,
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        iconTheme: IconThemeData(color: ClearStateColors.textPrimaryLight),
+        iconTheme: IconThemeData(color: TrueStateColors.textPrimaryLight),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: ClearStateColors.lightSurface,
+        backgroundColor: TrueStateColors.lightSurface,
         selectedItemColor: accentColor,
-        unselectedItemColor: ClearStateColors.textMutedLight,
+        unselectedItemColor: TrueStateColors.textMutedLight,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
       cardTheme: CardThemeData(
-        color: ClearStateColors.lightCard,
+        color: TrueStateColors.lightCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusLarge),
         ),
       ),
       dividerTheme: const DividerThemeData(
-        color: ClearStateColors.borderLight,
+        color: TrueStateColors.borderLight,
         thickness: 1,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: accentColor,
-          foregroundColor: ClearStateColors.textPrimaryLight,
+          foregroundColor: TrueStateColors.textPrimaryLight,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(
@@ -184,8 +184,8 @@ class ClearStateTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: ClearStateColors.textPrimaryLight,
-          side: BorderSide(color: ClearStateColors.borderLight),
+          foregroundColor: TrueStateColors.textPrimaryLight,
+          side: BorderSide(color: TrueStateColors.borderLight),
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadiusMedium),
@@ -197,7 +197,7 @@ class ClearStateTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: ClearStateColors.lightElevated,
+        fillColor: TrueStateColors.lightElevated,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadiusMedium),
           borderSide: BorderSide.none,
@@ -210,22 +210,22 @@ class ClearStateTheme {
           borderRadius: BorderRadius.circular(borderRadiusMedium),
           borderSide: BorderSide(color: accentColor, width: 2),
         ),
-        labelStyle: ClearStateTypography.caption.copyWith(
-          color: ClearStateColors.textSecondaryLight,
+        labelStyle: TrueStateTypography.caption.copyWith(
+          color: TrueStateColors.textSecondaryLight,
         ),
-        hintStyle: ClearStateTypography.bodySecondary.copyWith(
-          color: ClearStateColors.textMutedLight,
+        hintStyle: TrueStateTypography.bodySecondary.copyWith(
+          color: TrueStateColors.textMutedLight,
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: ClearStateColors.lightSurface,
+        backgroundColor: TrueStateColors.lightSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadiusXLarge)),
         ),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: ClearStateColors.lightSurface,
+        backgroundColor: TrueStateColors.lightSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusXLarge),
         ),
@@ -234,7 +234,7 @@ class ClearStateTheme {
   }
 
   // Legacy getter for backward compatibility
-  static ThemeData get darkTheme => _buildDarkTheme(ClearStateColors.accent);
+  static ThemeData get darkTheme => _buildDarkTheme(TrueStateColors.accent);
 
   // Legacy method for backward compatibility
   static ThemeData getTheme(AccentColor accent, BackgroundTheme background) {

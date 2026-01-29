@@ -17,7 +17,7 @@ class SlipVsRelapseSheet extends ConsumerWidget {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: ClearStateColors.darkSurface,
+      backgroundColor: TrueStateColors.darkSurface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
@@ -43,7 +43,7 @@ class SlipVsRelapseSheet extends ConsumerWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: ClearStateColors.borderDark,
+                color: TrueStateColors.borderDark,
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
@@ -51,13 +51,13 @@ class SlipVsRelapseSheet extends ConsumerWidget {
           const SizedBox(height: 24),
           Text(
             'HOW WOULD YOU DESCRIBE THIS?',
-            style: ClearStateTypography.h2,
+            style: TrueStateTypography.h2,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             'Your choice affects how we track your progress',
-            style: ClearStateTypography.bodySecondary,
+            style: TrueStateTypography.bodySecondary,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -77,7 +77,7 @@ class SlipVsRelapseSheet extends ConsumerWidget {
             title: 'A FULL RELAPSE',
             subtitle: 'Back to old patterns. Timer resets.',
             icon: Icons.restart_alt,
-            color: ClearStateColors.error,
+            color: TrueStateColors.error,
             onTap: () => _showDrinkInput(context, isSlip: false),
           ),
           const SizedBox(height: 24),
@@ -90,8 +90,8 @@ class SlipVsRelapseSheet extends ConsumerWidget {
             },
             child: Text(
               'CANCEL',
-              style: ClearStateTypography.button.copyWith(
-                color: ClearStateColors.textSecondaryDark,
+              style: TrueStateTypography.button.copyWith(
+                color: TrueStateColors.textSecondaryDark,
               ),
             ),
           ),
@@ -125,7 +125,7 @@ class _ChoiceCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: ClearStateColors.darkBackground,
+          color: TrueStateColors.darkBackground,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
         ),
@@ -147,19 +147,19 @@ class _ChoiceCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: ClearStateTypography.button.copyWith(color: color),
+                    style: TrueStateTypography.button.copyWith(color: color),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: ClearStateTypography.caption.copyWith(
-                      color: ClearStateColors.textSecondaryDark,
+                    style: TrueStateTypography.caption.copyWith(
+                      color: TrueStateColors.textSecondaryDark,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: ClearStateColors.borderDark),
+            Icon(Icons.chevron_right, color: TrueStateColors.borderDark),
           ],
         ),
       ),

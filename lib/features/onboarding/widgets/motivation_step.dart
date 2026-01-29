@@ -89,7 +89,7 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
             const SizedBox(height: 24),
             Text(
               'Why are you\nquitting?',
-              style: ClearStateTypography.h1.copyWith(
+              style: TrueStateTypography.h1.copyWith(
                 fontSize: 32,
                 height: 1.2,
                 color: themeState.textPrimary,
@@ -99,7 +99,7 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
             const SizedBox(height: 16),
             Text(
               'Your personal motivation for staying sober',
-              style: ClearStateTypography.bodySecondary.copyWith(
+              style: TrueStateTypography.bodySecondary.copyWith(
                 color: themeState.textSecondary,
               ),
               textAlign: TextAlign.center,
@@ -139,17 +139,17 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
                           maxLines: 3,
                           maxLength: 200,
                           textAlign: TextAlign.center,
-                          style: ClearStateTypography.body.copyWith(
+                          style: TrueStateTypography.body.copyWith(
                             color: themeState.textPrimary,
                           ),
                           decoration: InputDecoration(
                             hintText: 'Write your reason...',
-                            hintStyle: ClearStateTypography.body.copyWith(
+                            hintStyle: TrueStateTypography.body.copyWith(
                               color: themeState.textMuted,
                             ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.all(20),
-                            counterStyle: ClearStateTypography.caption.copyWith(
+                            counterStyle: TrueStateTypography.caption.copyWith(
                               color: themeState.textMuted,
                             ),
                           ),
@@ -182,7 +182,7 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                     child: Text(
                       'Skip',
-                      style: ClearStateTypography.button.copyWith(
+                      style: TrueStateTypography.button.copyWith(
                         color: themeState.textMuted,
                       ),
                     ),
@@ -244,9 +244,9 @@ class _MotivationChip extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               label,
-              style: ClearStateTypography.body.copyWith(
+              style: TrueStateTypography.body.copyWith(
                 color: isSelected 
-                    ? ClearStateColors.textPrimaryLight 
+                    ? TrueStateColors.textPrimaryLight 
                     : themeState.textPrimary,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 fontSize: 14,

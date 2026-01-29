@@ -1,6 +1,6 @@
-# ClearState Monetization Design
+# TrueState Monetization Design
 
-> Final design document for ClearState monetization strategy
+> Final design document for TrueState monetization strategy
 
 ---
 
@@ -100,7 +100,7 @@ When a user feels an urge, they hit the **"I'm Struggling"** button. The AI Spon
 
 1. **Unique referral code** per user (e.g., `CLEARSTATE-ABHIDEEP`)
 2. **Share sheet** with pre-written message:
-   > "I've been using ClearState for my recovery—it's helped me track [X] days sober. Try it free: [link with code]"
+   > "I've been using TrueState for my recovery—it's helped me track [X] days sober. Try it free: [link with code]"
 3. **Track referrals** via App Store attribution or deep links
 
 ### Anti-Abuse
@@ -185,9 +185,9 @@ When a user feels an urge, they hit the **"I'm Struggling"** button. The AI Spon
 1. **RevenueCat SDK** — handles iOS/Android subscriptions, trials, and analytics
 2. **Entitlements**: `pro_access` (single entitlement for all Pro features)
 3. **Products** (configure in App Store Connect + Google Play):
-   - `clearstate_pro_monthly` ($4.99)
-   - `clearstate_pro_annual` ($39.99)
-   - `clearstate_pro_lifetime` ($79)
+   - `truestate_pro_monthly` ($4.99)
+   - `truestate_pro_annual` ($39.99)
+   - `truestate_pro_lifetime` ($79)
 
 ### User Flow
 

@@ -17,7 +17,7 @@ class AuroraBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ClearStateColors.deepCharcoal,
+      color: TrueStateColors.deepCharcoal,
       child: child ?? const SizedBox.expand(),
     );
   }

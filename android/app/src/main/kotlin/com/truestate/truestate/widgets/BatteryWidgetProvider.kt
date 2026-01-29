@@ -1,14 +1,14 @@
-package com.clearstate.clearstate.widgets
+package com.truestate.truestate.widgets
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import com.clearstate.clearstate.R
+import com.truestate.truestate.R
 
 /**
- * Battery-style circular progress widget for ClearState.
+ * Battery-style circular progress widget for TrueState.
  * Displays sobriety progress as a battery/circular gauge.
  * 
  * Data keys read from SharedPreferences:

@@ -301,13 +301,13 @@ class HabitDropdown extends ConsumerWidget {
 
   Color _parseColor(String? hexColor) {
     if (hexColor == null || hexColor.isEmpty) {
-      return ClearStateColors.sunriseGold;
+      return TrueStateColors.sunriseGold;
     }
     try {
       final hex = hexColor.replaceFirst('#', '');
       return Color(int.parse('FF$hex', radix: 16));
     } catch (_) {
-      return ClearStateColors.sunriseGold;
+      return TrueStateColors.sunriseGold;
     }
   }
 }
@@ -699,13 +699,13 @@ class _HabitPickerContent extends StatelessWidget {
 
   Color _parseColor(String? hexColor) {
     if (hexColor == null || hexColor.isEmpty) {
-      return ClearStateColors.sunriseGold;
+      return TrueStateColors.sunriseGold;
     }
     try {
       final hex = hexColor.replaceFirst('#', '');
       return Color(int.parse('FF$hex', radix: 16));
     } catch (_) {
-      return ClearStateColors.sunriseGold;
+      return TrueStateColors.sunriseGold;
     }
   }
 }

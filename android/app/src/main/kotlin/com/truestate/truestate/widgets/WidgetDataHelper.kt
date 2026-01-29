@@ -1,4 +1,4 @@
-package com.clearstate.clearstate.widgets
+package com.truestate.truestate.widgets
 
 import android.content.Context
 import android.content.SharedPreferences

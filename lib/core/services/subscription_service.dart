@@ -5,10 +5,10 @@ import '../../data/models/subscription_status.dart';
 
 /// Product identifiers configured in App Store Connect / Google Play Console
 class ProductIds {
-  static const monthly = 'clearstate_pro_monthly';
-  static const quarterly = 'clearstate_pro_quarterly';
-  static const annual = 'clearstate_pro_annual';
-  static const lifetime = 'clearstate_pro_lifetime';
+  static const monthly = 'truestate_pro_monthly';
+  static const quarterly = 'truestate_pro_quarterly';
+  static const annual = 'truestate_pro_annual';
+  static const lifetime = 'truestate_pro_lifetime';
 }
 
 /// RevenueCat subscription service

@@ -15,7 +15,7 @@ import '../../data/models/widget_config.dart';
 /// - Handling deep links from widget taps
 class WidgetUpdateService {
   /// iOS widget extension name (matches WidgetBundle name).
-  static const String _iOSWidgetName = 'ClearStateWidgets';
+  static const String _iOSWidgetName = 'TrueStateWidgets';
 
   /// Android widget provider class names.
   static const String _androidBatteryWidget = 'BatteryWidgetProvider';
@@ -23,7 +23,7 @@ class WidgetUpdateService {
   static const String _androidBioStateWidget = 'BioStateWidgetProvider';
 
   /// iOS App Group ID for shared data container.
-  static const String _appGroupId = 'group.com.clearstate.clearstate';
+  static const String _appGroupId = 'group.com.truestate.truestate';
 
   /// Stream subscription for widget click events.
   StreamSubscription<Uri?>? _widgetClickSubscription;
@@ -84,9 +84,9 @@ class WidgetUpdateService {
   ///
   /// [uri] contains the deep link data from the widget tap.
   /// Possible schemes:
-  /// - `clearstate://timer` - Navigate to timer tab
-  /// - `clearstate://timeline` - Navigate to timeline tab
-  /// - `clearstate://analytics` - Navigate to analytics tab
+  /// - `truestate://timer` - Navigate to timer tab
+  /// - `truestate://timeline` - Navigate to timeline tab
+  /// - `truestate://analytics` - Navigate to analytics tab
   void handleWidgetClick(Uri? uri) {
     _handleWidgetClickInternal(uri);
   }

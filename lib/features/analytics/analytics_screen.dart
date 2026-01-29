@@ -33,7 +33,7 @@ class AnalyticsScreen extends ConsumerWidget {
                   children: [
                     Text(
                       'Analytics',
-                      style: ClearStateTypography.h1.copyWith(
+                      style: TrueStateTypography.h1.copyWith(
                         color: themeState.textPrimary,
                         fontSize: 28,
                       ),
@@ -44,7 +44,7 @@ class AnalyticsScreen extends ConsumerWidget {
                 const SizedBox(height: 8),
                 Text(
                   'Your progress at a glance',
-                  style: ClearStateTypography.bodySecondary.copyWith(
+                  style: TrueStateTypography.bodySecondary.copyWith(
                     color: themeState.textSecondary,
                   ),
                 ),
@@ -53,7 +53,7 @@ class AnalyticsScreen extends ConsumerWidget {
                 // Consistency Heatmap
                 Text(
                   'Consistency',
-                  style: ClearStateTypography.h3.copyWith(
+                  style: TrueStateTypography.h3.copyWith(
                     color: themeState.textPrimary,
                   ),
                 ),
@@ -64,8 +64,8 @@ class AnalyticsScreen extends ConsumerWidget {
                     color: themeState.card,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: themeState.isDarkMode 
-                        ? ClearStateColors.cardShadowDark 
-                        : ClearStateColors.cardShadowLight,
+                        ? TrueStateColors.cardShadowDark 
+                        : TrueStateColors.cardShadowLight,
                   ),
                   child: const HeatmapCalendar(),
                 ),
@@ -80,13 +80,13 @@ class AnalyticsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(width: 24),
                     _LegendItem(
-                      color: ClearStateColors.success,
+                      color: TrueStateColors.success,
                       label: 'Sober',
                       themeState: themeState,
                     ),
                     const SizedBox(width: 24),
                     _LegendItem(
-                      color: ClearStateColors.error,
+                      color: TrueStateColors.error,
                       label: 'Relapse',
                       themeState: themeState,
                     ),
@@ -120,8 +120,8 @@ class AnalyticsScreen extends ConsumerWidget {
         color: themeState.card,
         borderRadius: BorderRadius.circular(20),
         boxShadow: themeState.isDarkMode 
-            ? ClearStateColors.cardShadowDark 
-            : ClearStateColors.cardShadowLight,
+            ? TrueStateColors.cardShadowDark 
+            : TrueStateColors.cardShadowLight,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +131,7 @@ class AnalyticsScreen extends ConsumerWidget {
             children: [
               Text(
                 'Success Rate',
-                style: ClearStateTypography.h3.copyWith(
+                style: TrueStateTypography.h3.copyWith(
                   color: themeState.textPrimary,
                   fontSize: 20,
                 ),
@@ -212,7 +212,7 @@ class AnalyticsScreen extends ConsumerWidget {
       ),
       child: Text(
         text.toUpperCase(),
-        style: ClearStateTypography.caption.copyWith(
+        style: TrueStateTypography.caption.copyWith(
           color: themeState.textMuted,
           fontSize: 9,
           letterSpacing: 0.5,

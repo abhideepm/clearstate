@@ -1,14 +1,14 @@
-package com.clearstate.clearstate.widgets
+package com.truestate.truestate.widgets
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import com.clearstate.clearstate.R
+import com.truestate.truestate.R
 
 /**
- * Stoic quote widget for ClearState.
+ * Stoic quote widget for TrueState.
  * Displays motivational quotes with author attribution.
  * 
  * Data keys read from SharedPreferences:

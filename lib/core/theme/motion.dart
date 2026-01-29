@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
-/// ClearState Motion - DAWN Aesthetic
+/// TrueState Motion - DAWN Aesthetic
 /// Organic animations: breathing, spring physics, natural easing
-class ClearStateMotion {
+class TrueStateMotion {
   // Duration constants
   static const Duration micro = Duration(milliseconds: 100);
   static const Duration fast = Duration(milliseconds: 150);

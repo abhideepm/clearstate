@@ -36,8 +36,8 @@ class WidgetPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.darkSurface,
-        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        color: TrueStateColors.darkSurface,
+        border: Border.all(color: TrueStateColors.borderDark, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
@@ -62,7 +62,7 @@ class WidgetPreviewCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               title,
-                              style: ClearStateTypography.h3.copyWith(
+                              style: TrueStateTypography.h3.copyWith(
                                 fontSize: 16,
                               ),
                             ),
@@ -74,16 +74,16 @@ class WidgetPreviewCard extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: ClearStateColors.success.withAlpha(
+                                color: TrueStateColors.success.withAlpha(
                                   (0.15 * 255).round(),
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
                                 'CONFIGURED',
-                                style: ClearStateTypography.caption.copyWith(
+                                style: TrueStateTypography.caption.copyWith(
                                   fontSize: 9,
-                                  color: ClearStateColors.success,
+                                  color: TrueStateColors.success,
                                   letterSpacing: 1,
                                 ),
                               ),
@@ -93,8 +93,8 @@ class WidgetPreviewCard extends StatelessWidget {
                       const SizedBox(height: 6),
                       Text(
                         description,
-                        style: ClearStateTypography.caption.copyWith(
-                          color: ClearStateColors.textSecondaryDark,
+                        style: TrueStateTypography.caption.copyWith(
+                          color: TrueStateColors.textSecondaryDark,
                         ),
                       ),
                     ],
@@ -104,7 +104,7 @@ class WidgetPreviewCard extends StatelessWidget {
                 // Chevron
                 const Icon(
                   Icons.chevron_right,
-                  color: ClearStateColors.borderDark,
+                  color: TrueStateColors.borderDark,
                   size: 24,
                 ),
               ],
@@ -128,8 +128,8 @@ class _WidgetPreviewThumbnail extends StatelessWidget {
       width: 72,
       height: 72,
       decoration: BoxDecoration(
-        color: ClearStateColors.darkBackground,
-        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        color: TrueStateColors.darkBackground,
+        border: Border.all(color: TrueStateColors.borderDark, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: _buildPreview(),
@@ -165,7 +165,7 @@ class _BatteryPreview extends StatelessWidget {
               height: 44,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: ClearStateColors.borderDark, width: 3),
+                border: Border.all(color: TrueStateColors.borderDark, width: 3),
               ),
             ),
             // Progress arc
@@ -176,9 +176,9 @@ class _BatteryPreview extends StatelessWidget {
             // Center percentage
             Text(
               '72',
-              style: ClearStateTypography.statNumber.copyWith(
+              style: TrueStateTypography.statNumber.copyWith(
                 fontSize: 14,
-                color: ClearStateColors.textPrimaryDark,
+                color: TrueStateColors.textPrimaryDark,
               ),
             ),
           ],
@@ -200,7 +200,7 @@ class _ProgressArcPainter extends CustomPainter {
     final radius = size.width / 2 - 1.5;
 
     final paint = Paint()
-      ..color = ClearStateColors.dawnCoral
+      ..color = TrueStateColors.dawnCoral
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
@@ -235,16 +235,16 @@ class _StoicPreview extends StatelessWidget {
         children: [
           Text(
             '"',
-            style: ClearStateTypography.h1.copyWith(
+            style: TrueStateTypography.h1.copyWith(
               fontSize: 24,
-              color: ClearStateColors.dawnCoral,
+              color: TrueStateColors.dawnCoral,
               height: 0.6,
             ),
           ),
           const SizedBox(height: 2),
-          Container(height: 4, width: 32, color: ClearStateColors.borderDark),
+          Container(height: 4, width: 32, color: TrueStateColors.borderDark),
           const SizedBox(height: 4),
-          Container(height: 4, width: 24, color: ClearStateColors.borderDark),
+          Container(height: 4, width: 24, color: TrueStateColors.borderDark),
         ],
       ),
     );
@@ -270,7 +270,7 @@ class _MiniGraphPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = ClearStateColors.dawnCoral
+      ..color = TrueStateColors.dawnCoral
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
@@ -295,7 +295,7 @@ class _MiniGraphPainter extends CustomPainter {
 
     // Draw baseline
     final baselinePaint = Paint()
-      ..color = ClearStateColors.borderDark
+      ..color = TrueStateColors.borderDark
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 

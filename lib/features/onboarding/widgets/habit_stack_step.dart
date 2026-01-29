@@ -27,7 +27,7 @@ class HabitStackStep extends ConsumerWidget {
           const SizedBox(height: 24),
           Text(
             'What would you\nlike to leave behind?',
-            style: ClearStateTypography.h1.copyWith(
+            style: TrueStateTypography.h1.copyWith(
               fontSize: 32,
               height: 1.2,
               color: themeState.textPrimary,
@@ -37,7 +37,7 @@ class HabitStackStep extends ConsumerWidget {
           const SizedBox(height: 16),
           Text(
             'Select all that apply',
-            style: ClearStateTypography.bodySecondary.copyWith(
+            style: TrueStateTypography.bodySecondary.copyWith(
               color: themeState.textSecondary,
             ),
             textAlign: TextAlign.center,
@@ -51,7 +51,7 @@ class HabitStackStep extends ConsumerWidget {
             ),
             child: Text(
               '✨ Join 10,000+ people on their journey',
-              style: ClearStateTypography.caption.copyWith(
+              style: TrueStateTypography.caption.copyWith(
                 color: themeState.accent.value,
               ),
               textAlign: TextAlign.center,
@@ -132,8 +132,8 @@ class _HabitChip extends StatelessWidget {
                   ),
                 ]
               : themeState.isDarkMode 
-                  ? ClearStateColors.cardShadowDark 
-                  : ClearStateColors.cardShadowLight,
+                  ? TrueStateColors.cardShadowDark 
+                  : TrueStateColors.cardShadowLight,
         ),
         child: Row(
           children: [
@@ -159,7 +159,7 @@ class _HabitChip extends StatelessWidget {
                 children: [
                   Text(
                     habit.name,
-                    style: ClearStateTypography.body.copyWith(
+                    style: TrueStateTypography.body.copyWith(
                       color: isSelected ? Colors.white : themeState.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
@@ -167,7 +167,7 @@ class _HabitChip extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     habit.description,
-                    style: ClearStateTypography.caption.copyWith(
+                    style: TrueStateTypography.caption.copyWith(
                       fontSize: 12,
                       color: isSelected
                           ? Colors.white.withValues(alpha: 0.8)

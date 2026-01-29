@@ -22,14 +22,14 @@ import 'features/timer/timer_provider.dart';
 import 'data/models/habit_template.dart';
 import 'core/providers/navigation_provider.dart';
 
-class ClearStateApp extends ConsumerStatefulWidget {
-  const ClearStateApp({super.key});
+class TrueStateApp extends ConsumerStatefulWidget {
+  const TrueStateApp({super.key});
 
   @override
-  ConsumerState<ClearStateApp> createState() => _ClearStateAppState();
+  ConsumerState<TrueStateApp> createState() => _TrueStateAppState();
 }
 
-class _ClearStateAppState extends ConsumerState<ClearStateApp>
+class _TrueStateAppState extends ConsumerState<TrueStateApp>
     with WidgetsBindingObserver {
   bool _showOnboarding = true;
 
@@ -208,9 +208,9 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
         securityState.biometricEnabled && !securityState.isUnlocked;
 
     return MaterialApp(
-      title: 'ClearState',
+      title: 'TrueState',
       debugShowCheckedModeBanner: false,
-      theme: ClearStateTheme.getThemeFromState(themeState),
+      theme: TrueStateTheme.getThemeFromState(themeState),
       home: _buildHome(shouldShowLock),
     );
   }
@@ -398,13 +398,13 @@ class _BottomNavBar extends StatelessWidget {
             Icon(
               isActive ? activeIcon : icon,
               size: 22,
-              color: isActive ? accentColor : ClearStateColors.textMutedDark,
+              color: isActive ? accentColor : TrueStateColors.textMutedDark,
             ),
             if (isActive) ...[
               const SizedBox(width: 8),
               Text(
                 label,
-                style: ClearStateTypography.navLabel.copyWith(
+                style: TrueStateTypography.navLabel.copyWith(
                   color: accentColor,
                   fontWeight: FontWeight.w600,
                 ),

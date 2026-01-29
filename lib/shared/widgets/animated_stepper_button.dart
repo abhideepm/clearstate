@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/colors.dart';
-import '../../../core/theme/motion.dart';
-import '../../../core/services/haptic_service.dart';
+import '../../core/theme/colors.dart';
+import '../../core/theme/motion.dart';
+import '../../core/services/haptic_service.dart';
 
 class AnimatedStepperButton extends ConsumerStatefulWidget {
   final IconData icon;
@@ -33,7 +33,7 @@ class _AnimatedStepperButtonState extends ConsumerState<AnimatedStepperButton>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 100)),
+      duration: TrueStateMotion.duration(const Duration(milliseconds: 100)),
       vsync: this,
     );
 
@@ -43,8 +43,8 @@ class _AnimatedStepperButtonState extends ConsumerState<AnimatedStepperButton>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _colorAnimation = ColorTween(
-      begin: ClearStateColors.darkSurface,
-      end: ClearStateColors.graphite,
+      begin: TrueStateColors.darkSurface,
+      end: TrueStateColors.darkElevated,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
   }
 
@@ -81,8 +81,8 @@ class _AnimatedStepperButtonState extends ConsumerState<AnimatedStepperButton>
               color: _colorAnimation.value,
               border: Border.all(
                 color: widget.enabled
-                    ? ClearStateColors.borderDark
-                    : ClearStateColors.borderDark.withValues(alpha: 0.3),
+                    ? TrueStateColors.borderDark
+                    : TrueStateColors.borderDark.withValues(alpha: 0.3),
                 width: 1,
               ),
               borderRadius: BorderRadius.circular(12),
@@ -96,8 +96,8 @@ class _AnimatedStepperButtonState extends ConsumerState<AnimatedStepperButton>
                   child: Icon(
                     widget.icon,
                     color: widget.enabled
-                        ? ClearStateColors.textPrimaryDark
-                        : ClearStateColors.textSecondaryDark.withValues(alpha: 0.5),
+                        ? TrueStateColors.textPrimaryDark
+                        : TrueStateColors.textSecondaryDark.withValues(alpha: 0.5),
                     size: 20,
                   ),
                 ),

@@ -38,7 +38,7 @@ class StatBox extends StatelessWidget {
           Text(
             label,
             textAlign: TextAlign.center,
-            style: ClearStateTypography.caption.copyWith(
+            style: TrueStateTypography.caption.copyWith(
               color: themeState.textMuted,
               fontSize: 10,
               letterSpacing: 1.2,
@@ -63,7 +63,7 @@ class StatBox extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   unit,
-                  style: ClearStateTypography.bodySecondary.copyWith(
+                  style: TrueStateTypography.bodySecondary.copyWith(
                     color: themeState.textMuted,
                     fontSize: 14,
                   ),

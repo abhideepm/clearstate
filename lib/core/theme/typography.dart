@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 
 /// Typography using DM Serif Display for headers and Plus Jakarta Sans for body
-class ClearStateTypography {
-  ClearStateTypography._();
+class TrueStateTypography {
+  TrueStateTypography._();
 
   // Display font - elegant serif
   static String get displayFontFamily => GoogleFonts.dmSerifDisplay().fontFamily!;
@@ -18,7 +18,7 @@ class ClearStateTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: -1,
     height: 1.0,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   // Timer label
@@ -26,7 +26,7 @@ class ClearStateTypography {
     fontSize: 12,
     fontWeight: FontWeight.w500,
     letterSpacing: 1.5,
-    color: ClearStateColors.textSecondaryDark,
+    color: TrueStateColors.textSecondaryDark,
   );
 
   // Headings - DM Serif Display
@@ -35,7 +35,7 @@ class ClearStateTypography {
     fontWeight: FontWeight.w400,
     height: 1.2,
     letterSpacing: -0.5,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   static TextStyle get h2 => GoogleFonts.dmSerifDisplay(
@@ -43,14 +43,14 @@ class ClearStateTypography {
     fontWeight: FontWeight.w400,
     height: 1.25,
     letterSpacing: -0.3,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   static TextStyle get h3 => GoogleFonts.dmSerifDisplay(
     fontSize: 20,
     fontWeight: FontWeight.w400,
     height: 1.3,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   // Body text - Plus Jakarta Sans
@@ -58,28 +58,28 @@ class ClearStateTypography {
     fontSize: 16,
     fontWeight: FontWeight.w400,
     height: 1.5,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   static TextStyle get bodySecondary => GoogleFonts.plusJakartaSans(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     height: 1.5,
-    color: ClearStateColors.textSecondaryDark,
+    color: TrueStateColors.textSecondaryDark,
   );
 
   static TextStyle get bodySmall => GoogleFonts.plusJakartaSans(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     height: 1.5,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   static TextStyle get bodySemiBold => GoogleFonts.plusJakartaSans(
     fontSize: 16,
     fontWeight: FontWeight.w600,
     height: 1.5,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   // Caption & small text
@@ -87,14 +87,14 @@ class ClearStateTypography {
     fontSize: 13,
     fontWeight: FontWeight.w400,
     height: 1.4,
-    color: ClearStateColors.textSecondaryDark,
+    color: TrueStateColors.textSecondaryDark,
   );
 
   static TextStyle get captionBold => GoogleFonts.plusJakartaSans(
     fontSize: 13,
     fontWeight: FontWeight.w600,
     height: 1.4,
-    color: ClearStateColors.textSecondaryDark,
+    color: TrueStateColors.textSecondaryDark,
   );
 
   // Button text
@@ -117,7 +117,7 @@ class ClearStateTypography {
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.italic,
     height: 1.4,
-    color: ClearStateColors.lavender,
+    color: TrueStateColors.lavender,
   );
 
   // Stat/number display
@@ -125,14 +125,14 @@ class ClearStateTypography {
     fontSize: 48,
     fontWeight: FontWeight.w400,
     height: 1.1,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   static TextStyle get statMedium => GoogleFonts.dmSerifDisplay(
     fontSize: 32,
     fontWeight: FontWeight.w400,
     height: 1.1,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   // Navigation label
@@ -140,7 +140,7 @@ class ClearStateTypography {
     fontSize: 11,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.3,
-    color: ClearStateColors.textSecondaryDark,
+    color: TrueStateColors.textSecondaryDark,
   );
 
   // Stat display styles
@@ -148,13 +148,13 @@ class ClearStateTypography {
     fontSize: 28,
     fontWeight: FontWeight.w400,
     height: 1.1,
-    color: ClearStateColors.textPrimaryDark,
+    color: TrueStateColors.textPrimaryDark,
   );
 
   static TextStyle get statLabel => GoogleFonts.plusJakartaSans(
     fontSize: 12,
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
-    color: ClearStateColors.textSecondaryDark,
+    color: TrueStateColors.textSecondaryDark,
   );
 }

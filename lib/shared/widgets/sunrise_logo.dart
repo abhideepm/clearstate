@@ -28,7 +28,7 @@ class SunriseLogo extends StatelessWidget {
               ? BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: ClearStateColors.dawnCoral.withValues(alpha: 0.4),
+                      color: TrueStateColors.dawnCoral.withValues(alpha: 0.4),
                       blurRadius: 30,
                       spreadRadius: 5,
                     ),
@@ -47,10 +47,10 @@ class SunriseLogo extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'CLEARSTATE',
-            style: ClearStateTypography.timerLabel.copyWith(
+            style: TrueStateTypography.timerLabel.copyWith(
               fontSize: 11,
               letterSpacing: 3,
-              color: ClearStateColors.textSecondaryDark,
+              color: TrueStateColors.textSecondaryDark,
             ),
           ),
         ],
@@ -82,7 +82,7 @@ class _SunriseGradientPainter extends CustomPainter {
         end: Alignment.bottomCenter,
         colors: accentColor != null
             ? [accentColor!, accentColor!.withValues(alpha: 0.7)]
-            : [ClearStateColors.dawnCoral, ClearStateColors.sunriseGold],
+            : [TrueStateColors.dawnCoral, TrueStateColors.sunriseGold],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;
 
@@ -90,7 +90,7 @@ class _SunriseGradientPainter extends CustomPainter {
 
     // Subtle horizon line
     final horizonPaint = Paint()
-      ..color = ClearStateColors.deepForest.withValues(alpha: 0.5)
+      ..color = TrueStateColors.deepForest.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
@@ -145,7 +145,7 @@ class _SunriseSmallGradientPainter extends CustomPainter {
         end: Alignment.bottomCenter,
         colors: accentColor != null
             ? [accentColor!, accentColor!.withValues(alpha: 0.7)]
-            : [ClearStateColors.dawnCoral, ClearStateColors.sunriseGold],
+            : [TrueStateColors.dawnCoral, TrueStateColors.sunriseGold],
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..style = PaintingStyle.fill;
 
@@ -180,18 +180,18 @@ class _AnimatedSunriseLogoState extends State<AnimatedSunriseLogo>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: ClearStateMotion.breathCycle,
+      duration: TrueStateMotion.breathCycle,
       vsync: this,
     );
 
     _glowAnimation = Tween<double>(begin: 0.2, end: 0.5).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: ClearStateMotion.organic,
+        curve: TrueStateMotion.organic,
       ),
     );
 
-    if (!ClearStateMotion.reduceMotion) {
+    if (!TrueStateMotion.reduceMotion) {
       _controller.repeat(reverse: true);
     }
   }
@@ -211,7 +211,7 @@ class _AnimatedSunriseLogoState extends State<AnimatedSunriseLogo>
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: ClearStateColors.dawnCoral.withValues(alpha: _glowAnimation.value),
+                color: TrueStateColors.dawnCoral.withValues(alpha: _glowAnimation.value),
                 blurRadius: 30,
                 spreadRadius: 5,
               ),

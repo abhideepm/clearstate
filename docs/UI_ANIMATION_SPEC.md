@@ -1,4 +1,4 @@
-# ClearState UI/UX Enhancement Specification
+# TrueState UI/UX Enhancement Specification
 
 > Comprehensive specification for animations, haptics, typography, and theming improvements.
 
@@ -66,14 +66,14 @@ flutter:
 Update `lib/core/theme/typography.dart`:
 
 ```dart
-class ClearStateTypography {
+class TrueStateTypography {
   static const String _fontFamily = 'JetBrains Mono';
 
   static TextStyle get timerDisplay => const TextStyle(
     fontFamily: _fontFamily,
     fontSize: 72,
     fontWeight: FontWeight.w700,
-    color: ClearStateColors.bone,
+    color: TrueStateColors.bone,
     letterSpacing: -2,
     height: 1.0,
     fontVariations: [FontVariation('wght', 700)],
@@ -83,7 +83,7 @@ class ClearStateTypography {
     fontFamily: _fontFamily,
     fontSize: 28,
     fontWeight: FontWeight.w700,
-    color: ClearStateColors.bone,
+    color: TrueStateColors.bone,
     letterSpacing: 1,
   );
 
@@ -91,7 +91,7 @@ class ClearStateTypography {
     fontFamily: _fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w400,
-    color: ClearStateColors.bone,
+    color: TrueStateColors.bone,
   );
 
   // ... update all text styles with fontFamily: _fontFamily
@@ -110,7 +110,7 @@ Create `lib/core/theme/motion.dart`:
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-class ClearStateMotion {
+class TrueStateMotion {
   // Durations (context-variable)
   static const Duration micro = Duration(milliseconds: 100);      // Button press
   static const Duration fast = Duration(milliseconds: 150);       // Chip selection
@@ -148,9 +148,9 @@ class ClearStateMotion {
 // Usage in drinks_per_week_step.dart
 AnimatedDigitWidget(
   value: _count,
-  textStyle: ClearStateTypography.timerDisplay,
-  duration: ClearStateMotion.fast,
-  curve: ClearStateMotion.standard,
+  textStyle: TrueStateTypography.timerDisplay,
+  duration: TrueStateMotion.fast,
+  curve: TrueStateMotion.standard,
 )
 ```
 
@@ -421,7 +421,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
 
 ### Dynamic Color Usage
 
-Update `ClearStateColors` to be theme-aware:
+Update `TrueStateColors` to be theme-aware:
 
 ```dart
 // In widgets, access current accent:
@@ -487,7 +487,7 @@ class AnimatedCounter extends StatelessWidget {
 }
 
 // Uses animated_digit package or custom SVG morphing
-// Respects ClearStateMotion.reduceMotion
+// Respects TrueStateMotion.reduceMotion
 ```
 
 ### 3. Brutalist Button System
@@ -582,7 +582,7 @@ class CelebrationOverlay extends StatefulWidget {
 ```dart
 // Logo implementation
 SvgPicture.asset(
-  'assets/icons/clearstate_icon.svg',
+  'assets/icons/truestate_icon.svg',
   width: 80,
   height: 80,
   colorFilter: ColorFilter.mode(
@@ -802,10 +802,10 @@ Execute all changes in a single comprehensive pass:
 
 ### Reduced Motion
 
-All animations check `ClearStateMotion.reduceMotion`:
+All animations check `TrueStateMotion.reduceMotion`:
 
 ```dart
-if (ClearStateMotion.reduceMotion) {
+if (TrueStateMotion.reduceMotion) {
   // Instant transition, no animation
   return child;
 } else {
@@ -817,7 +817,7 @@ if (ClearStateMotion.reduceMotion) {
 ### Screen Reader
 
 - All interactive elements have semantic labels
-- Logo has `Semantics(label: 'ClearState logo')`
+- Logo has `Semantics(label: 'TrueState logo')`
 - Celebration overlay announces milestone to screen readers
 
 ---

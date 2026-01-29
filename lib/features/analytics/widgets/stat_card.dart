@@ -19,20 +19,20 @@ class StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: ClearStateColors.darkSurface,
-        border: Border.all(color: ClearStateColors.borderDark),
+        color: TrueStateColors.darkSurface,
+        border: Border.all(color: TrueStateColors.borderDark),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: ClearStateColors.textSecondaryDark),
+              Icon(icon, size: 16, color: TrueStateColors.textSecondaryDark),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   label,
-                  style: ClearStateTypography.caption.copyWith(
+                  style: TrueStateTypography.caption.copyWith(
                     letterSpacing: 1,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -43,7 +43,7 @@ class StatCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             value,
-            style: ClearStateTypography.statNumber.copyWith(fontSize: 24),
+            style: TrueStateTypography.statNumber.copyWith(fontSize: 24),
           ),
         ],
       ),

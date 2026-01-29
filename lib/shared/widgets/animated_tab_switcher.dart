@@ -33,7 +33,7 @@ class AnimatedTabSwitcher extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: ClearStateColors.borderDark, width: 1)),
+        border: Border(top: BorderSide(color: TrueStateColors.borderDark, width: 1)),
       ),
       child: BottomNavigationBar(
         currentIndex: currentIndex,
@@ -43,8 +43,8 @@ class AnimatedTabSwitcher extends ConsumerWidget {
         },
         items: items,
         selectedItemColor: selectedItemColor ?? accentColor,
-        unselectedItemColor: unselectedItemColor ?? ClearStateColors.textSecondaryDark,
-        backgroundColor: backgroundColor ?? ClearStateColors.darkBackground,
+        unselectedItemColor: unselectedItemColor ?? TrueStateColors.textSecondaryDark,
+        backgroundColor: backgroundColor ?? TrueStateColors.darkBackground,
         elevation: elevation,
         type: BottomNavigationBarType.fixed,
       ),
@@ -84,7 +84,7 @@ class _AnimatedNavIconState extends ConsumerState<AnimatedNavIcon>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 300)),
+      duration: TrueStateMotion.duration(const Duration(milliseconds: 300)),
       vsync: this,
     );
 
@@ -143,14 +143,14 @@ class _AnimatedNavIconState extends ConsumerState<AnimatedNavIcon>
                   ? (widget.activeIcon ?? widget.icon)
                   : widget.icon,
               size: widget.size,
-              color: widget.isActive ? accentColor : ClearStateColors.textSecondaryDark,
+              color: widget.isActive ? accentColor : TrueStateColors.textSecondaryDark,
             ),
             const SizedBox(height: 4),
             Text(
               widget.label,
-              style: ClearStateTypography.caption.copyWith(
+              style: TrueStateTypography.caption.copyWith(
                 fontSize: 10,
-                color: widget.isActive ? accentColor : ClearStateColors.textSecondaryDark,
+                color: widget.isActive ? accentColor : TrueStateColors.textSecondaryDark,
                 letterSpacing: 1,
               ),
             ),

@@ -113,16 +113,16 @@ class _BreathingCircleState extends State<BreathingCircle>
           height: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: ClearStateColors.dawnCoral.withValues(alpha: 0.3),
-            border: Border.all(color: ClearStateColors.dawnCoral, width: 3),
+            color: TrueStateColors.dawnCoral.withValues(alpha: 0.3),
+            border: Border.all(color: TrueStateColors.dawnCoral, width: 3),
             boxShadow: [
               BoxShadow(
-                color: ClearStateColors.dawnCoral.withValues(alpha: 0.4),
+                color: TrueStateColors.dawnCoral.withValues(alpha: 0.4),
                 blurRadius: 30,
                 spreadRadius: 10,
               ),
               BoxShadow(
-                color: ClearStateColors.dawnCoral.withValues(alpha: 0.2),
+                color: TrueStateColors.dawnCoral.withValues(alpha: 0.2),
                 blurRadius: 60,
                 spreadRadius: 20,
               ),

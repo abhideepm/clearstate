@@ -49,7 +49,7 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
     }
 
     return Scaffold(
-      backgroundColor: ClearStateColors.darkBackground,
+      backgroundColor: TrueStateColors.darkBackground,
       body: DawnBackground(
         opacity: 0.02,
         child: SafeArea(
@@ -63,10 +63,10 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                 Text(
                   'BREATHE',
                   textAlign: TextAlign.center,
-                  style: ClearStateTypography.timerDisplay.copyWith(
+                  style: TrueStateTypography.timerDisplay.copyWith(
                     fontSize: 48,
                     letterSpacing: 8,
-                    color: ClearStateColors.textPrimaryDark,
+                    color: TrueStateColors.textPrimaryDark,
                   ),
                 ),
                 const Spacer(flex: 2),
@@ -80,10 +80,10 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                     state.phaseText,
                     key: ValueKey(state.phase),
                     textAlign: TextAlign.center,
-                    style: ClearStateTypography.h1.copyWith(
+                    style: TrueStateTypography.h1.copyWith(
                       fontSize: 24,
                       letterSpacing: 6,
-                      color: ClearStateColors.textSecondaryDark,
+                      color: TrueStateColors.textSecondaryDark,
                     ),
                   ),
                 ),
@@ -92,18 +92,18 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                 Text(
                   state.formattedTime,
                   textAlign: TextAlign.center,
-                  style: ClearStateTypography.statNumber.copyWith(
+                  style: TrueStateTypography.statNumber.copyWith(
                     fontSize: 20,
-                    color: ClearStateColors.textSecondaryDark,
+                    color: TrueStateColors.textSecondaryDark,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'REMAINING',
                   textAlign: TextAlign.center,
-                  style: ClearStateTypography.timerLabel.copyWith(
+                  style: TrueStateTypography.timerLabel.copyWith(
                     fontSize: 10,
-                    color: ClearStateColors.borderDark,
+                    color: TrueStateColors.borderDark,
                   ),
                 ),
                 const SizedBox(height: 40),
@@ -122,8 +122,8 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                   ),
                   child: Text(
                     "I'M OKAY NOW",
-                    style: ClearStateTypography.button.copyWith(
-                      color: ClearStateColors.textPrimaryDark,
+                    style: TrueStateTypography.button.copyWith(
+                      color: TrueStateColors.textPrimaryDark,
                       letterSpacing: 2,
                     ),
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/settings/subscription_provider.dart';
 import '../theme/colors.dart';
 import '../theme/typography.dart';
+import '../theme/theme_provider.dart';
 
 class ProFeatureGate extends ConsumerWidget {
   final Widget child;
@@ -32,19 +33,21 @@ class ProFeatureGate extends ConsumerWidget {
   }
 }
 
-class LockedPlaceholder extends StatelessWidget {
+class LockedPlaceholder extends ConsumerWidget {
   final String? featureName;
 
   const LockedPlaceholder({super.key, this.featureName});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
+    final accentValue = themeState.accentValue;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: ClearStateColors.darkSurface,
+        color: themeState.surface,
         border: Border.all(
-          color: ClearStateColors.lavender.withValues(alpha: 0.4),
+          color: accentValue.withValues(alpha: 0.4),
           width: 1,
         ),
         borderRadius: BorderRadius.circular(16),
@@ -56,22 +59,22 @@ class LockedPlaceholder extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: ClearStateColors.lavender.withValues(alpha: 0.15),
+              color: accentValue.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
               Icons.lock_outline_rounded,
               size: 28,
-              color: ClearStateColors.lavender,
+              color: accentValue,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             'PRO FEATURE',
-            style: ClearStateTypography.caption.copyWith(
+            style: TrueStateTypography.caption.copyWith(
               fontWeight: FontWeight.w600,
               letterSpacing: 1.5,
-              color: ClearStateColors.lavender,
+              color: accentValue,
             ),
           ),
           if (featureName != null) ...[
@@ -79,7 +82,7 @@ class LockedPlaceholder extends StatelessWidget {
             Text(
               featureName!,
               textAlign: TextAlign.center,
-              style: ClearStateTypography.bodySecondary,
+              style: TrueStateTypography.bodySecondary,
             ),
           ],
           const SizedBox(height: 20),
@@ -92,8 +95,8 @@ class LockedPlaceholder extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ClearStateColors.lavender,
-                foregroundColor: ClearStateColors.darkBackground,
+                backgroundColor: accentValue,
+                foregroundColor: themeState.background,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -102,8 +105,8 @@ class LockedPlaceholder extends StatelessWidget {
               ),
               child: Text(
                 'UNLOCK PRO',
-                style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.darkBackground,
+                style: TrueStateTypography.button.copyWith(
+                  color: themeState.background,
                   letterSpacing: 1,
                 ),
               ),

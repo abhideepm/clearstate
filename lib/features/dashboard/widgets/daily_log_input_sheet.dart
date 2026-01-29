@@ -56,7 +56,7 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: ClearStateColors.borderDark,
+                  color: TrueStateColors.borderDark,
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
@@ -64,7 +64,7 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
             const SizedBox(height: 24),
             Text(
               'DAILY CHECK-IN',
-              style: ClearStateTypography.h2.copyWith(
+              style: TrueStateTypography.h2.copyWith(
                 color: accentColor,
               ),
               textAlign: TextAlign.center,
@@ -74,8 +74,8 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
             // Mood Selector
             Text(
               'MOOD',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.textSecondaryDark,
+              style: TrueStateTypography.caption.copyWith(
+                color: TrueStateColors.textSecondaryDark,
               ),
             ),
             const SizedBox(height: 12),
@@ -91,7 +91,7 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
               max: 5.0,
               divisions: 4,
               activeColor: accentColor,
-              inactiveColor: ClearStateColors.darkSurface,
+              inactiveColor: TrueStateColors.darkSurface,
               onChanged: (value) {
                 if (value != _mood) {
                   HapticService.light();
@@ -104,8 +104,8 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
             // Symptoms Selector
             Text(
               'SYMPTOMS',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.textSecondaryDark,
+              style: TrueStateTypography.caption.copyWith(
+                color: TrueStateColors.textSecondaryDark,
               ),
             ),
             const SizedBox(height: 12),
@@ -127,16 +127,16 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
                       }
                     });
                   },
-                  backgroundColor: ClearStateColors.darkBackground,
+                  backgroundColor: TrueStateColors.darkBackground,
                   selectedColor: accentColor.withValues(alpha: 0.2),
                   checkmarkColor: accentColor,
-                  labelStyle: ClearStateTypography.caption.copyWith(
-                    color: isSelected ? accentColor : ClearStateColors.textSecondaryDark,
+                  labelStyle: TrueStateTypography.caption.copyWith(
+                    color: isSelected ? accentColor : TrueStateColors.textSecondaryDark,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
-                      color: isSelected ? accentColor : ClearStateColors.borderDark,
+                      color: isSelected ? accentColor : TrueStateColors.borderDark,
                     ),
                   ),
                 );
@@ -148,17 +148,17 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
             if (habitId != null) ...[
               Text(
                 'EXPECTED TODAY',
-                style: ClearStateTypography.caption.copyWith(
-                  color: ClearStateColors.textSecondaryDark,
+                style: TrueStateTypography.caption.copyWith(
+                  color: TrueStateColors.textSecondaryDark,
                 ),
               ),
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: ClearStateColors.darkBackground,
+                  color: TrueStateColors.darkBackground,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: ClearStateColors.borderDark),
+                  border: Border.all(color: TrueStateColors.borderDark),
                 ),
                 child: Row(
                   children: [
@@ -167,8 +167,8 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
                     Expanded(
                       child: Text(
                         'Keep your streak alive. Focus on hydration and rest.',
-                        style: ClearStateTypography.caption.copyWith(
-                          color: ClearStateColors.textPrimaryDark,
+                        style: TrueStateTypography.caption.copyWith(
+                          color: TrueStateColors.textPrimaryDark,
                         ),
                       ),
                     ),
@@ -190,7 +190,7 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: ClearStateColors.darkBackground,
+                        color: TrueStateColors.darkBackground,
                       ),
                     )
                   : const Text('SUBMIT LOG'),
@@ -205,8 +205,8 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
               },
               child: Text(
                 'CANCEL',
-                style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.textSecondaryDark,
+                style: TrueStateTypography.button.copyWith(
+                  color: TrueStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -242,7 +242,7 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Daily log saved!'),
-            backgroundColor: ClearStateColors.darkSurface,
+            backgroundColor: TrueStateColors.darkSurface,
           ),
         );
       }
@@ -252,7 +252,7 @@ class _DailyLogInputSheetState extends ConsumerState<DailyLogInputSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: $e'),
-            backgroundColor: ClearStateColors.error,
+            backgroundColor: TrueStateColors.error,
           ),
         );
       }

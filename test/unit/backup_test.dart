@@ -29,7 +29,7 @@ void main() {
   late Directory tempDir;
 
   setUp(() async {
-    tempDir = await Directory.systemTemp.createTemp('clearstate_backup_test');
+    tempDir = await Directory.systemTemp.createTemp('truestate_backup_test');
     Hive.init(tempDir.path);
 
     // Register adapters if not already registered

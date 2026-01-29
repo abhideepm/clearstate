@@ -16,9 +16,9 @@ class AppIconWidget extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: ClearStateColors.darkBackground,
+        color: TrueStateColors.darkBackground,
         border: showBorder
-            ? Border.all(color: ClearStateColors.borderDark, width: 1)
+            ? Border.all(color: TrueStateColors.borderDark, width: 1)
             : null,
       ),
       child: Stack(
@@ -29,7 +29,7 @@ class AppIconWidget extends StatelessWidget {
             left: 0,
             right: 0,
             height: size * 0.15,
-            child: Container(color: ClearStateColors.dawnCoral),
+            child: Container(color: TrueStateColors.dawnCoral),
           ),
           // Typography
           Center(
@@ -38,7 +38,7 @@ class AppIconWidget extends StatelessWidget {
               children: [
                 Text(
                   'CS',
-                  style: ClearStateTypography.timerDisplay.copyWith(
+                  style: TrueStateTypography.timerDisplay.copyWith(
                     fontSize: size * 0.45,
                     height: 1.0,
                     letterSpacing: -2,
@@ -47,10 +47,10 @@ class AppIconWidget extends StatelessWidget {
                 SizedBox(height: size * 0.02),
                 Text(
                   'CLEAR',
-                  style: ClearStateTypography.timerLabel.copyWith(
+                  style: TrueStateTypography.timerLabel.copyWith(
                     fontSize: size * 0.08,
                     letterSpacing: size * 0.02,
-                    color: ClearStateColors.textSecondaryDark,
+                    color: TrueStateColors.textSecondaryDark,
                   ),
                 ),
               ],
@@ -73,7 +73,7 @@ class AppIconMinimal extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(color: ClearStateColors.darkBackground),
+      decoration: const BoxDecoration(color: TrueStateColors.darkBackground),
       child: Stack(
         children: [
           // Signal accent bar at bottom
@@ -82,13 +82,13 @@ class AppIconMinimal extends StatelessWidget {
             left: 0,
             right: 0,
             height: size * 0.12,
-            child: Container(color: ClearStateColors.dawnCoral),
+            child: Container(color: TrueStateColors.dawnCoral),
           ),
           // Just "CS" letters
           Center(
             child: Text(
               'CS',
-              style: ClearStateTypography.timerDisplay.copyWith(
+              style: TrueStateTypography.timerDisplay.copyWith(
                 fontSize: size * 0.5,
                 height: 1.0,
                 letterSpacing: -1,

@@ -1,6 +1,6 @@
 //
-//  ClearStateWidgetsControl.swift
-//  ClearStateWidgets
+//  TrueStateWidgetsControl.swift
+//  TrueStateWidgets
 //
 //  Created by Abhideep Maity on 15/01/26.
 //
@@ -9,8 +9,8 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
-struct ClearStateWidgetsControl: ControlWidget {
-    static let kind: String = "com.clearstate.clearstate.ClearStateWidgets"
+struct TrueStateWidgetsControl: ControlWidget {
+    static let kind: String = "com.truestate.truestate.TrueStateWidgets"
 
     var body: some ControlWidgetConfiguration {
         AppIntentControlConfiguration(
@@ -30,7 +30,7 @@ struct ClearStateWidgetsControl: ControlWidget {
     }
 }
 
-extension ClearStateWidgetsControl {
+extension TrueStateWidgetsControl {
     struct Value {
         var isRunning: Bool
         var name: String
@@ -38,12 +38,12 @@ extension ClearStateWidgetsControl {
 
     struct Provider: AppIntentControlValueProvider {
         func previewValue(configuration: TimerConfiguration) -> Value {
-            ClearStateWidgetsControl.Value(isRunning: false, name: configuration.timerName)
+            TrueStateWidgetsControl.Value(isRunning: false, name: configuration.timerName)
         }
 
         func currentValue(configuration: TimerConfiguration) async throws -> Value {
             let isRunning = true // Check if the timer is running
-            return ClearStateWidgetsControl.Value(isRunning: isRunning, name: configuration.timerName)
+            return TrueStateWidgetsControl.Value(isRunning: isRunning, name: configuration.timerName)
         }
     }
 }

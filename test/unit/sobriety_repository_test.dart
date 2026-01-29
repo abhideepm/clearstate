@@ -30,7 +30,7 @@ void main() {
   const habitId = 'test-habit';
 
   setUp(() async {
-    tempDir = await Directory.systemTemp.createTemp('clearstate_test');
+    tempDir = await Directory.systemTemp.createTemp('truestate_test');
     Hive.init(tempDir.path);
 
     // Register adapters if not already registered

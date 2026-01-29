@@ -40,7 +40,7 @@ class _BioStateConfigSheetState extends ConsumerState<BioStateConfigSheet> {
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: const BoxDecoration(
-          color: ClearStateColors.darkSurface,
+          color: TrueStateColors.darkSurface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         constraints: BoxConstraints(
@@ -56,7 +56,7 @@ class _BioStateConfigSheetState extends ConsumerState<BioStateConfigSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: ClearStateColors.borderDark,
+                  color: TrueStateColors.borderDark,
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
@@ -66,16 +66,16 @@ class _BioStateConfigSheetState extends ConsumerState<BioStateConfigSheet> {
             // Title
             Text(
               'BIO-STATE WIDGET',
-              style: ClearStateTypography.h2.copyWith(
-                color: ClearStateColors.dawnCoral,
+              style: TrueStateTypography.h2.copyWith(
+                color: TrueStateColors.dawnCoral,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               'Select the recovery metric to display',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.textSecondaryDark,
+              style: TrueStateTypography.caption.copyWith(
+                color: TrueStateColors.textSecondaryDark,
               ),
               textAlign: TextAlign.center,
             ),
@@ -111,8 +111,8 @@ class _BioStateConfigSheetState extends ConsumerState<BioStateConfigSheet> {
                   ? null
                   : _handleSave,
               style: ElevatedButton.styleFrom(
-                backgroundColor: ClearStateColors.dawnCoral,
-                disabledBackgroundColor: ClearStateColors.dawnCoral.withAlpha(
+                backgroundColor: TrueStateColors.dawnCoral,
+                disabledBackgroundColor: TrueStateColors.dawnCoral.withAlpha(
                   (0.3 * 255).round(),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -126,13 +126,13 @@ class _BioStateConfigSheetState extends ConsumerState<BioStateConfigSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: ClearStateColors.darkBackground,
+                        color: TrueStateColors.darkBackground,
                       ),
                     )
                   : Text(
                       'SAVE CONFIGURATION',
-                      style: ClearStateTypography.button.copyWith(
-                        color: ClearStateColors.darkBackground,
+                      style: TrueStateTypography.button.copyWith(
+                        color: TrueStateColors.darkBackground,
                       ),
                     ),
             ),
@@ -146,8 +146,8 @@ class _BioStateConfigSheetState extends ConsumerState<BioStateConfigSheet> {
               },
               child: Text(
                 'CANCEL',
-                style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.textSecondaryDark,
+                style: TrueStateTypography.button.copyWith(
+                  color: TrueStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -191,10 +191,10 @@ class _MetricOption extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isSelected
-            ? ClearStateColors.dawnCoral.withAlpha((0.1 * 255).round())
-            : ClearStateColors.darkBackground,
+            ? TrueStateColors.dawnCoral.withAlpha((0.1 * 255).round())
+            : TrueStateColors.darkBackground,
         border: Border.all(
-          color: isSelected ? ClearStateColors.dawnCoral : ClearStateColors.borderDark,
+          color: isSelected ? TrueStateColors.dawnCoral : TrueStateColors.borderDark,
           width: isSelected ? 2 : 1,
         ),
         borderRadius: BorderRadius.circular(12),
@@ -216,8 +216,8 @@ class _MetricOption extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isSelected
-                          ? ClearStateColors.dawnCoral
-                          : ClearStateColors.borderDark,
+                          ? TrueStateColors.dawnCoral
+                          : TrueStateColors.borderDark,
                       width: 2,
                     ),
                   ),
@@ -228,7 +228,7 @@ class _MetricOption extends StatelessWidget {
                             height: 10,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: ClearStateColors.dawnCoral,
+                              color: TrueStateColors.dawnCoral,
                             ),
                           ),
                         )
@@ -244,10 +244,10 @@ class _MetricOption extends StatelessWidget {
                         children: [
                           Text(
                             metric.stealthLabel.toUpperCase(),
-                            style: ClearStateTypography.caption.copyWith(
+                            style: TrueStateTypography.caption.copyWith(
                               color: isSelected
-                                  ? ClearStateColors.dawnCoral
-                                  : ClearStateColors.textSecondaryDark,
+                                  ? TrueStateColors.dawnCoral
+                                  : TrueStateColors.textSecondaryDark,
                               letterSpacing: 2,
                               fontSize: 10,
                             ),
@@ -255,8 +255,8 @@ class _MetricOption extends StatelessWidget {
                           const Spacer(),
                           Text(
                             metric.displayName,
-                            style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.borderDark,
+                            style: TrueStateTypography.caption.copyWith(
+                              color: TrueStateColors.borderDark,
                               fontSize: 10,
                             ),
                           ),
@@ -265,8 +265,8 @@ class _MetricOption extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         metric.description,
-                        style: ClearStateTypography.caption.copyWith(
-                          color: ClearStateColors.textSecondaryDark,
+                        style: TrueStateTypography.caption.copyWith(
+                          color: TrueStateColors.textSecondaryDark,
                         ),
                       ),
                     ],

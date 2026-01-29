@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Refactor ClearState into a multi-habit sobriety tracker with a Neobrutalist Bento Grid UI, multi-habit support, and anti-shame metrics.
+**Goal:** Refactor TrueState into a multi-habit sobriety tracker with a Neobrutalist Bento Grid UI, multi-habit support, and anti-shame metrics.
 
 **Architecture:** Transition from a single-session model to a multi-habit architecture. The `SobrietyRepository` will manage `Habit` objects and `DailyLog` entries keyed by `habitId`. The `SobrietyOrchestrator` will be updated to handle habit-specific events.
 

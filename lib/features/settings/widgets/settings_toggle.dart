@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/services/haptic_service.dart';
+import '../../../core/theme/theme_provider.dart';
 
 /// A reusable toggle row for settings with label and switch.
-class SettingsToggle extends StatelessWidget {
+class SettingsToggle extends ConsumerWidget {
   final String label;
   final String? subtitle;
   final bool value;
@@ -21,11 +22,12 @@ class SettingsToggle extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.darkSurface,
-        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        color: themeState.surface,
+        border: Border.all(color: themeState.border, width: 1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
@@ -48,18 +50,18 @@ class SettingsToggle extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style: ClearStateTypography.body.copyWith(
+                        style: TrueStateTypography.body.copyWith(
                           color: enabled
-                              ? ClearStateColors.textPrimaryDark
-                              : ClearStateColors.textSecondaryDark,
+                              ? themeState.textPrimary
+                              : themeState.textSecondary,
                         ),
                       ),
                       if (subtitle != null) ...[
                         const SizedBox(height: 4),
                         Text(
                           subtitle!,
-                          style: ClearStateTypography.caption.copyWith(
-                            color: ClearStateColors.textSecondaryDark,
+                          style: TrueStateTypography.caption.copyWith(
+                            color: themeState.textSecondary,
                           ),
                         ),
                       ],
@@ -81,16 +83,17 @@ class SettingsToggle extends StatelessWidget {
 }
 
 /// Custom switch widget matching app styling.
-class _CustomSwitch extends StatelessWidget {
+class _CustomSwitch extends ConsumerWidget {
   final bool value;
   final ValueChanged<bool>? onChanged;
 
   const _CustomSwitch({required this.value, this.onChanged});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final enabled = onChanged != null;
-    final primaryColor = Theme.of(context).primaryColor;
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accentValue;
 
     return GestureDetector(
       onTap: enabled
@@ -104,10 +107,10 @@ class _CustomSwitch extends StatelessWidget {
         width: 48,
         height: 28,
         decoration: BoxDecoration(
-          color: value ? primaryColor : ClearStateColors.darkSurface,
+          color: value ? accentColor : themeState.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: value ? primaryColor : ClearStateColors.borderDark,
+            color: value ? accentColor : themeState.border,
             width: 1,
           ),
         ),
@@ -120,7 +123,7 @@ class _CustomSwitch extends StatelessWidget {
             height: 22,
             margin: const EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: enabled ? ClearStateColors.textPrimaryDark : ClearStateColors.textSecondaryDark,
+              color: enabled ? themeState.textPrimary : themeState.textSecondary,
               borderRadius: BorderRadius.circular(12),
             ),
           ),

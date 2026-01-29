@@ -104,7 +104,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
                 AnimatedEntrance(
                   delay: const Duration(milliseconds: 300),
                   duration: const Duration(milliseconds: 300),
-                  child: Text('Unlock', style: ClearStateTypography.h1),
+                  child: Text('Unlock', style: TrueStateTypography.h1),
                 ),
                 const Spacer(flex: 2),
                 AnimatedEntrance(
@@ -118,7 +118,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
                   duration: const Duration(milliseconds: 300),
                   child: Text(
                     _isIOS ? 'Authenticating...' : 'Tap to authenticate',
-                    style: ClearStateTypography.caption,
+                    style: TrueStateTypography.caption,
                   ),
                 ),
                 const Spacer(flex: 1),
@@ -145,7 +145,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: ClearStateColors.darkSurface,
+            color: TrueStateColors.darkSurface,
             border: Border.all(color: accentColor, width: 2),
             borderRadius: BorderRadius.circular(12),
           ),

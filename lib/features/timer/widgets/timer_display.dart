@@ -54,14 +54,14 @@ class _TimerDisplayState extends ConsumerState<TimerDisplay> {
             _SmallTimerUnit(value: components.hours, label: 'h'),
             Text(
               ' : ',
-              style: ClearStateTypography.statNumber.copyWith(
+              style: TrueStateTypography.statNumber.copyWith(
                 color: themeState.textSecondary,
               ),
             ),
             _SmallTimerUnit(value: components.minutes, label: 'm'),
             Text(
               ' : ',
-              style: ClearStateTypography.statNumber.copyWith(
+              style: TrueStateTypography.statNumber.copyWith(
                 color: themeState.textSecondary,
               ),
             ),
@@ -154,14 +154,14 @@ class _TimerUnit extends ConsumerWidget {
       children: [
         AnimatedCounter(
           value: value, 
-          style: ClearStateTypography.timerDisplay.copyWith(
+          style: TrueStateTypography.timerDisplay.copyWith(
             color: themeState.textPrimary,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: ClearStateTypography.timerLabel.copyWith(
+          style: TrueStateTypography.timerLabel.copyWith(
             color: themeState.textSecondary,
           ),
         ),
@@ -185,14 +185,14 @@ class _SmallTimerUnit extends ConsumerWidget {
       children: [
         AnimatedCounter(
           value: value, 
-          style: ClearStateTypography.statNumber.copyWith(
+          style: TrueStateTypography.statNumber.copyWith(
             color: themeState.textPrimary,
           ),
         ),
         const SizedBox(width: 4),
         Text(
           label,
-          style: ClearStateTypography.statLabel.copyWith(
+          style: TrueStateTypography.statLabel.copyWith(
             color: themeState.textSecondary,
           ),
         ),

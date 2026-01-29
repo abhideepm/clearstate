@@ -488,7 +488,7 @@ class SobrietyRepository implements ISobrietyRepository {
     if (version > currentSchemaVersion) {
       throw Exception(
         'Backup from newer app version (v$version). '
-        'Please update ClearState to restore this backup.',
+        'Please update TrueState to restore this backup.',
       );
     }
 

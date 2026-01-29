@@ -25,8 +25,8 @@ class HeatmapCalendar extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: ClearStateColors.darkSurface,
-        border: Border.all(color: ClearStateColors.borderDark),
+        color: themeState.surface,
+        border: Border.all(color: themeState.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,9 +108,9 @@ class HeatmapCalendar extends ConsumerWidget {
             child: Center(
               child: Text(
                 day,
-                style: ClearStateTypography.caption.copyWith(
+                style: TrueStateTypography.caption.copyWith(
                   fontSize: 9,
-                  color: ClearStateColors.textSecondaryDark,
+                  color: TrueStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -148,9 +148,9 @@ class HeatmapCalendar extends ConsumerWidget {
           child: monthLabel != null
               ? Text(
                   monthLabel,
-                  style: ClearStateTypography.caption.copyWith(
+                  style: TrueStateTypography.caption.copyWith(
                     fontSize: 9,
-                    color: ClearStateColors.textSecondaryDark,
+                    color: TrueStateColors.textSecondaryDark,
                   ),
                 )
               : null,
@@ -177,7 +177,7 @@ class HeatmapCalendar extends ConsumerWidget {
             color: _getCellColor(date, startDate, now, theme),
             borderRadius: BorderRadius.circular(12),
             border: _isToday(date, now)
-                ? Border.all(color: theme.accent.value, width: 1.5)
+                ? Border.all(color: theme.accentValue, width: 1.5)
                 : null,
           ),
         );
@@ -204,11 +204,11 @@ class HeatmapCalendar extends ConsumerWidget {
 
     if (isSober) {
       // Use the semantic sober color (green)
-      return ClearStateColors.success.withValues(alpha: 0.8);
+      return TrueStateColors.success.withValues(alpha: 0.8);
     }
 
     // Use the semantic relapse color (red) for non-sober days
-    return ClearStateColors.error.withValues(alpha: 0.6);
+    return TrueStateColors.error.withValues(alpha: 0.6);
   }
 
   bool _isToday(DateTime? date, DateTime now) {

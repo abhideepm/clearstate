@@ -39,12 +39,12 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
     );
 
     _contentController = AnimationController(
-      duration: ClearStateMotion.dramatic,
+      duration: TrueStateMotion.dramatic,
       vsync: this,
     );
 
     _glowController = AnimationController(
-      duration: ClearStateMotion.breathCycle,
+      duration: TrueStateMotion.breathCycle,
       vsync: this,
     );
 
@@ -77,7 +77,7 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
     _updateElapsedTime();
 
     await Future.delayed(const Duration(milliseconds: 200));
-    if (!ClearStateMotion.reduceMotion) {
+    if (!TrueStateMotion.reduceMotion) {
       _particleController.repeat();
       _glowController.repeat(reverse: true);
     }
@@ -106,10 +106,10 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
 
   Color _getOrganicColor() {
     final colors = [
-      ClearStateColors.dawnCoral.withValues(alpha: 0.6),
-      ClearStateColors.sunriseGold.withValues(alpha: 0.5),
-      ClearStateColors.moss.withValues(alpha: 0.4),
-      ClearStateColors.morningMist.withValues(alpha: 0.3),
+      TrueStateColors.dawnCoral.withValues(alpha: 0.6),
+      TrueStateColors.sunriseGold.withValues(alpha: 0.5),
+      TrueStateColors.moss.withValues(alpha: 0.4),
+      TrueStateColors.morningMist.withValues(alpha: 0.3),
     ];
     return colors[math.Random().nextInt(colors.length)];
   }
@@ -150,8 +150,8 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            ClearStateColors.deepForest,
-            ClearStateColors.darkSurface,
+            TrueStateColors.deepForest,
+            TrueStateColors.darkSurface,
           ],
         ),
       ),
@@ -184,7 +184,7 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
                     end: Offset.zero,
                   ).animate(CurvedAnimation(
                     parent: _contentController,
-                    curve: ClearStateMotion.organic,
+                    curve: TrueStateMotion.organic,
                   )),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -193,10 +193,10 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
                       // Warm, hopeful messaging
                       Text(
                         'Your healing\nhas begun',
-                        style: ClearStateTypography.h1.copyWith(
+                        style: TrueStateTypography.h1.copyWith(
                           fontSize: 38,
                           height: 1.15,
-                          color: ClearStateColors.warmIvory,
+                          color: TrueStateColors.warmIvory,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -214,24 +214,24 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
                             children: [
                               Text(
                                 'Already sober for',
-                                style: ClearStateTypography.bodySmall.copyWith(
-                                  color: ClearStateColors.dawnCoral,
+                                style: TrueStateTypography.bodySmall.copyWith(
+                                  color: TrueStateColors.dawnCoral,
                                   letterSpacing: 0.5,
                                 ),
                               ),
                               const SizedBox(height: 12),
                               Text(
                                 _formatTime(_elapsedDuration),
-                                style: ClearStateTypography.timerDisplay.copyWith(
+                                style: TrueStateTypography.timerDisplay.copyWith(
                                   fontSize: 52,
-                                  color: ClearStateColors.warmIvory,
+                                  color: TrueStateColors.warmIvory,
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 'and counting...',
-                                style: ClearStateTypography.caption.copyWith(
-                                  color: ClearStateColors.morningMist,
+                                style: TrueStateTypography.caption.copyWith(
+                                  color: TrueStateColors.morningMist,
                                   fontStyle: FontStyle.italic,
                                 ),
                               ),
@@ -245,8 +245,8 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
                         habitCount == 1
                             ? 'Tracking: $habitNames'
                             : 'Tracking $habitCount habits',
-                        style: ClearStateTypography.body.copyWith(
-                          color: ClearStateColors.morningMist,
+                        style: TrueStateTypography.body.copyWith(
+                          color: TrueStateColors.morningMist,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -254,8 +254,8 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
                       // Consistency rate teaser
                       Text(
                         "You're already at 100% today ✨",
-                        style: ClearStateTypography.quote.copyWith(
-                          color: ClearStateColors.sunriseGold,
+                        style: TrueStateTypography.quote.copyWith(
+                          color: TrueStateColors.sunriseGold,
                           fontSize: 16,
                         ),
                         textAlign: TextAlign.center,

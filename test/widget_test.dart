@@ -1,4 +1,4 @@
-// ClearState widget tests
+// TrueState widget tests
 
 import 'package:flutter_test/flutter_test.dart';
 

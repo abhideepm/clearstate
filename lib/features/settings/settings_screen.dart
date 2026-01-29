@@ -48,7 +48,7 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: 32),
                     Text(
                       'Settings',
-                      style: ClearStateTypography.h1.copyWith(
+                      style: TrueStateTypography.h1.copyWith(
                         color: themeState.textPrimary,
                         fontSize: 28,
                       ),
@@ -106,9 +106,16 @@ class SettingsScreen extends ConsumerWidget {
                             (e) => e.value == accent,
                             orElse: () => AccentColor.teal,
                           );
+                          final bgTheme = BackgroundTheme.values.firstWhere(
+                            (e) => e.value == background,
+                            orElse: () => BackgroundTheme.void_,
+                          );
                           ref
                               .read(themeProvider.notifier)
                               .setAccentColor(accentColor);
+                          ref
+                              .read(themeProvider.notifier)
+                              .setBackgroundColor(bgTheme);
                         },
                         currentAccentColor: themeState.accent.value,
                         currentBackgroundColor: themeState.background,
@@ -272,17 +279,18 @@ class SettingsScreen extends ConsumerWidget {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
+class _SectionHeader extends ConsumerWidget {
   final String title;
 
   const _SectionHeader({required this.title});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
     return Text(
       title.toUpperCase(),
-      style: ClearStateTypography.caption.copyWith(
-        color: ClearStateColors.lavender,
+      style: TrueStateTypography.caption.copyWith(
+        color: themeState.accentValue,
         letterSpacing: 2,
         fontWeight: FontWeight.w600,
       ),
@@ -290,7 +298,7 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _SettingsItem extends StatelessWidget {
+class _SettingsItem extends ConsumerWidget {
   final String label;
   final String? subtitle;
   final IconData icon;
@@ -304,7 +312,8 @@ class _SettingsItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
     return GlassContainer(
       padding: EdgeInsets.zero,
       borderRadius: 16,
@@ -321,10 +330,10 @@ class _SettingsItem extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: ClearStateColors.lavender.withValues(alpha: 0.15),
+                    color: themeState.accentValue.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(icon, color: ClearStateColors.lavender, size: 22),
+                  child: Icon(icon, color: themeState.accentValue, size: 22),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -333,16 +342,16 @@ class _SettingsItem extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style: ClearStateTypography.body.copyWith(
-                          color: ClearStateColors.textPrimaryDark,
+                        style: TrueStateTypography.body.copyWith(
+                          color: TrueStateColors.textPrimaryDark,
                         ),
                       ),
                       if (subtitle != null) ...[
                         const SizedBox(height: 4),
                         Text(
                           subtitle!,
-                          style: ClearStateTypography.caption.copyWith(
-                            color: ClearStateColors.textSecondaryDark,
+                          style: TrueStateTypography.caption.copyWith(
+                            color: TrueStateColors.textSecondaryDark,
                           ),
                         ),
                       ],
@@ -351,7 +360,7 @@ class _SettingsItem extends StatelessWidget {
                 ),
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: ClearStateColors.textSecondaryDark,
+                  color: TrueStateColors.textSecondaryDark,
                   size: 24,
                 ),
               ],
@@ -378,9 +387,9 @@ class _DestructiveSettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.error.withValues(alpha: 0.1),
+        color: TrueStateColors.error.withValues(alpha: 0.1),
         border: Border.all(
-          color: ClearStateColors.error.withValues(alpha: 0.3),
+          color: TrueStateColors.error.withValues(alpha: 0.3),
           width: 1,
         ),
         borderRadius: BorderRadius.circular(16),
@@ -398,12 +407,12 @@ class _DestructiveSettingsItem extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: ClearStateColors.error.withValues(alpha: 0.15),
+                    color: TrueStateColors.error.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.delete_forever_outlined,
-                    color: ClearStateColors.error,
+                    color: TrueStateColors.error,
                     size: 22,
                   ),
                 ),
@@ -414,16 +423,16 @@ class _DestructiveSettingsItem extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style: ClearStateTypography.body.copyWith(
-                          color: ClearStateColors.error,
+                        style: TrueStateTypography.body.copyWith(
+                          color: TrueStateColors.error,
                         ),
                       ),
                       if (subtitle != null) ...[
                         const SizedBox(height: 4),
                         Text(
                           subtitle!,
-                          style: ClearStateTypography.caption.copyWith(
-                            color: ClearStateColors.textSecondaryDark,
+                          style: TrueStateTypography.caption.copyWith(
+                            color: TrueStateColors.textSecondaryDark,
                           ),
                         ),
                       ],
@@ -432,7 +441,7 @@ class _DestructiveSettingsItem extends StatelessWidget {
                 ),
                 const Icon(
                   Icons.chevron_right_rounded,
-                  color: ClearStateColors.error,
+                  color: TrueStateColors.error,
                   size: 24,
                 ),
               ],
@@ -444,9 +453,10 @@ class _DestructiveSettingsItem extends StatelessWidget {
   }
 }
 
-class _SettingsFooter extends StatelessWidget {
+class _SettingsFooter extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
       child: Column(
@@ -458,7 +468,7 @@ class _SettingsFooter extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  ClearStateColors.borderDark,
+                  TrueStateColors.borderDark,
                   Colors.transparent,
                 ],
               ),
@@ -468,8 +478,8 @@ class _SettingsFooter extends StatelessWidget {
           // Version
           Text(
             'CLEARSTATE v1.0.0',
-            style: ClearStateTypography.caption.copyWith(
-              color: ClearStateColors.textSecondaryDark,
+            style: TrueStateTypography.caption.copyWith(
+              color: TrueStateColors.textSecondaryDark,
               letterSpacing: 2,
             ),
           ),
@@ -477,8 +487,8 @@ class _SettingsFooter extends StatelessWidget {
           // Made with care
           Text(
             'Made with care ✨',
-            style: ClearStateTypography.caption.copyWith(
-              color: ClearStateColors.lavender.withValues(alpha: 0.6),
+            style: TrueStateTypography.caption.copyWith(
+              color: themeState.accentValue.withValues(alpha: 0.6),
             ),
           ),
         ],
@@ -487,7 +497,7 @@ class _SettingsFooter extends StatelessWidget {
   }
 }
 
-class _SubscriptionCard extends StatelessWidget {
+class _SubscriptionCard extends ConsumerWidget {
   final SubscriptionStatus status;
   final VoidCallback onUpgrade;
   final VoidCallback onRestore;
@@ -499,7 +509,8 @@ class _SubscriptionCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeState = ref.watch(themeProvider);
     final isPro = status.isPro;
     final isTrialing = status.isTrialing;
 
@@ -515,15 +526,15 @@ class _SubscriptionCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: isPro
-                      ? ClearStateColors.accent.withOpacity(0.2)
-                      : ClearStateColors.textTertiaryDark.withOpacity(0.2),
+                      ? themeState.accentValue.withOpacity(0.2)
+                      : themeState.textMuted.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   isPro ? Icons.star : Icons.star_border,
                   color: isPro
-                      ? ClearStateColors.accent
-                      : ClearStateColors.textTertiaryDark,
+                      ? themeState.accentValue
+                      : themeState.textMuted,
                   size: 20,
                 ),
               ),
@@ -536,10 +547,10 @@ class _SubscriptionCard extends StatelessWidget {
                       isPro
                           ? (isTrialing ? 'Pro Trial' : 'Pro')
                           : 'Free',
-                      style: ClearStateTypography.bodySemiBold.copyWith(
+                      style: TrueStateTypography.bodySemiBold.copyWith(
                         color: isPro
-                            ? ClearStateColors.accent
-                            : ClearStateColors.textPrimaryDark,
+                            ? themeState.accentValue
+                            : themeState.textPrimary,
                       ),
                     ),
                     Text(
@@ -548,7 +559,7 @@ class _SubscriptionCard extends StatelessWidget {
                               ? 'Full features during trial'
                               : 'All features unlocked')
                           : 'Limited to 2 habits',
-                      style: ClearStateTypography.caption,
+                      style: TrueStateTypography.caption,
                     ),
                   ],
                 ),
@@ -562,8 +573,8 @@ class _SubscriptionCard extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onUpgrade,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: ClearStateColors.accent,
-                  foregroundColor: ClearStateColors.darkBackground,
+                  backgroundColor: themeState.accentValue,
+                  foregroundColor: themeState.background,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -571,7 +582,7 @@ class _SubscriptionCard extends StatelessWidget {
                 ),
                 child: Text(
                   isTrialing ? 'Upgrade Now' : 'Upgrade to Pro',
-                  style: ClearStateTypography.button,
+                  style: TrueStateTypography.button,
                 ),
               ),
             ),
@@ -582,8 +593,8 @@ class _SubscriptionCard extends StatelessWidget {
               onPressed: onRestore,
               child: Text(
                 'Restore Purchases',
-                style: ClearStateTypography.caption.copyWith(
-                  color: ClearStateColors.textTertiaryDark,
+                style: TrueStateTypography.caption.copyWith(
+                  color: TrueStateColors.textTertiaryDark,
                 ),
               ),
             ),

@@ -40,7 +40,7 @@ class _BatteryConfigSheetState extends ConsumerState<BatteryConfigSheet> {
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: const BoxDecoration(
-          color: ClearStateColors.darkSurface,
+          color: TrueStateColors.darkSurface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: Column(
@@ -53,7 +53,7 @@ class _BatteryConfigSheetState extends ConsumerState<BatteryConfigSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: ClearStateColors.borderDark,
+                  color: TrueStateColors.borderDark,
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
@@ -63,16 +63,16 @@ class _BatteryConfigSheetState extends ConsumerState<BatteryConfigSheet> {
             // Title
             Text(
               'BATTERY WIDGET',
-              style: ClearStateTypography.h2.copyWith(
-                color: ClearStateColors.dawnCoral,
+              style: TrueStateTypography.h2.copyWith(
+                color: TrueStateColors.dawnCoral,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               'Choose what the progress ring displays',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.textSecondaryDark,
+              style: TrueStateTypography.caption.copyWith(
+                color: TrueStateColors.textSecondaryDark,
               ),
               textAlign: TextAlign.center,
             ),
@@ -81,8 +81,8 @@ class _BatteryConfigSheetState extends ConsumerState<BatteryConfigSheet> {
             // Display Mode selection
             Text(
               'DISPLAY MODE',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.textSecondaryDark,
+              style: TrueStateTypography.caption.copyWith(
+                color: TrueStateColors.textSecondaryDark,
                 letterSpacing: 2,
               ),
             ),
@@ -129,7 +129,7 @@ class _BatteryConfigSheetState extends ConsumerState<BatteryConfigSheet> {
             ElevatedButton(
               onPressed: _isSaving ? null : _handleSave,
               style: ElevatedButton.styleFrom(
-                backgroundColor: ClearStateColors.dawnCoral,
+                backgroundColor: TrueStateColors.dawnCoral,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -141,13 +141,13 @@ class _BatteryConfigSheetState extends ConsumerState<BatteryConfigSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: ClearStateColors.darkBackground,
+                        color: TrueStateColors.darkBackground,
                       ),
                     )
                   : Text(
                       'SAVE CONFIGURATION',
-                      style: ClearStateTypography.button.copyWith(
-                        color: ClearStateColors.darkBackground,
+                      style: TrueStateTypography.button.copyWith(
+                        color: TrueStateColors.darkBackground,
                       ),
                     ),
             ),
@@ -161,8 +161,8 @@ class _BatteryConfigSheetState extends ConsumerState<BatteryConfigSheet> {
               },
               child: Text(
                 'CANCEL',
-                style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.textSecondaryDark,
+                style: TrueStateTypography.button.copyWith(
+                  color: TrueStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -213,10 +213,10 @@ class _ModeOption extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isSelected
-            ? ClearStateColors.dawnCoral.withAlpha((0.1 * 255).round())
-            : ClearStateColors.darkBackground,
+            ? TrueStateColors.dawnCoral.withAlpha((0.1 * 255).round())
+            : TrueStateColors.darkBackground,
         border: Border.all(
-          color: isSelected ? ClearStateColors.dawnCoral : ClearStateColors.borderDark,
+          color: isSelected ? TrueStateColors.dawnCoral : TrueStateColors.borderDark,
           width: isSelected ? 2 : 1,
         ),
         borderRadius: BorderRadius.circular(12),
@@ -238,8 +238,8 @@ class _ModeOption extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isSelected
-                          ? ClearStateColors.dawnCoral
-                          : ClearStateColors.borderDark,
+                          ? TrueStateColors.dawnCoral
+                          : TrueStateColors.borderDark,
                       width: 2,
                     ),
                   ),
@@ -250,7 +250,7 @@ class _ModeOption extends StatelessWidget {
                             height: 10,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: ClearStateColors.dawnCoral,
+                              color: TrueStateColors.dawnCoral,
                             ),
                           ),
                         )
@@ -264,10 +264,10 @@ class _ModeOption extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: ClearStateTypography.body.copyWith(
+                        style: TrueStateTypography.body.copyWith(
                           color: isSelected
-                              ? ClearStateColors.textPrimaryDark
-                              : ClearStateColors.textSecondaryDark,
+                              ? TrueStateColors.textPrimaryDark
+                              : TrueStateColors.textSecondaryDark,
                           fontWeight: isSelected
                               ? FontWeight.w600
                               : FontWeight.w400,
@@ -276,8 +276,8 @@ class _ModeOption extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         description,
-                        style: ClearStateTypography.caption.copyWith(
-                          color: ClearStateColors.textSecondaryDark,
+                        style: TrueStateTypography.caption.copyWith(
+                          color: TrueStateColors.textSecondaryDark,
                         ),
                       ),
                     ],
@@ -309,22 +309,22 @@ class _GoalDaysSlider extends StatelessWidget {
           children: [
             Text(
               'GOAL DAYS',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.textSecondaryDark,
+              style: TrueStateTypography.caption.copyWith(
+                color: TrueStateColors.textSecondaryDark,
                 letterSpacing: 2,
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: ClearStateColors.dawnCoral.withAlpha((0.15 * 255).round()),
+                color: TrueStateColors.dawnCoral.withAlpha((0.15 * 255).round()),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 '$value DAYS',
-                style: ClearStateTypography.statNumber.copyWith(
+                style: TrueStateTypography.statNumber.copyWith(
                   fontSize: 16,
-                  color: ClearStateColors.dawnCoral,
+                  color: TrueStateColors.dawnCoral,
                 ),
               ),
             ),
@@ -333,10 +333,10 @@ class _GoalDaysSlider extends StatelessWidget {
         const SizedBox(height: 12),
         SliderTheme(
           data: SliderThemeData(
-            activeTrackColor: ClearStateColors.dawnCoral,
-            inactiveTrackColor: ClearStateColors.borderDark,
-            thumbColor: ClearStateColors.dawnCoral,
-            overlayColor: ClearStateColors.dawnCoral.withAlpha(
+            activeTrackColor: TrueStateColors.dawnCoral,
+            inactiveTrackColor: TrueStateColors.borderDark,
+            thumbColor: TrueStateColors.dawnCoral,
+            overlayColor: TrueStateColors.dawnCoral.withAlpha(
               (0.2 * 255).round(),
             ),
             trackHeight: 4,
@@ -355,15 +355,15 @@ class _GoalDaysSlider extends StatelessWidget {
           children: [
             Text(
               '7 days',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.borderDark,
+              style: TrueStateTypography.caption.copyWith(
+                color: TrueStateColors.borderDark,
                 fontSize: 10,
               ),
             ),
             Text(
               '365 days',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.borderDark,
+              style: TrueStateTypography.caption.copyWith(
+                color: TrueStateColors.borderDark,
                 fontSize: 10,
               ),
             ),

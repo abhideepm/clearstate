@@ -1,6 +1,6 @@
 //
-//  ClearStateWidgetsLiveActivity.swift
-//  ClearStateWidgets
+//  TrueStateWidgetsLiveActivity.swift
+//  TrueStateWidgets
 //
 //  Created by Abhideep Maity on 15/01/26.
 //
@@ -9,7 +9,7 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
-struct ClearStateWidgetsAttributes: ActivityAttributes {
+struct TrueStateWidgetsAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
         // Dynamic stateful properties about your activity go here!
         var emoji: String
@@ -19,9 +19,9 @@ struct ClearStateWidgetsAttributes: ActivityAttributes {
     var name: String
 }
 
-struct ClearStateWidgetsLiveActivity: Widget {
+struct TrueStateWidgetsLiveActivity: Widget {
     var body: some WidgetConfiguration {
-        ActivityConfiguration(for: ClearStateWidgetsAttributes.self) { context in
+        ActivityConfiguration(for: TrueStateWidgetsAttributes.self) { context in
             // Lock screen/banner UI goes here
             VStack {
                 Text("Hello \(context.state.emoji)")
@@ -56,25 +56,25 @@ struct ClearStateWidgetsLiveActivity: Widget {
     }
 }
 
-extension ClearStateWidgetsAttributes {
-    fileprivate static var preview: ClearStateWidgetsAttributes {
-        ClearStateWidgetsAttributes(name: "World")
+extension TrueStateWidgetsAttributes {
+    fileprivate static var preview: TrueStateWidgetsAttributes {
+        TrueStateWidgetsAttributes(name: "World")
     }
 }
 
-extension ClearStateWidgetsAttributes.ContentState {
-    fileprivate static var smiley: ClearStateWidgetsAttributes.ContentState {
-        ClearStateWidgetsAttributes.ContentState(emoji: "😀")
+extension TrueStateWidgetsAttributes.ContentState {
+    fileprivate static var smiley: TrueStateWidgetsAttributes.ContentState {
+        TrueStateWidgetsAttributes.ContentState(emoji: "😀")
      }
      
-     fileprivate static var starEyes: ClearStateWidgetsAttributes.ContentState {
-         ClearStateWidgetsAttributes.ContentState(emoji: "🤩")
+     fileprivate static var starEyes: TrueStateWidgetsAttributes.ContentState {
+         TrueStateWidgetsAttributes.ContentState(emoji: "🤩")
      }
 }
 
-#Preview("Notification", as: .content, using: ClearStateWidgetsAttributes.preview) {
-   ClearStateWidgetsLiveActivity()
+#Preview("Notification", as: .content, using: TrueStateWidgetsAttributes.preview) {
+   TrueStateWidgetsLiveActivity()
 } contentStates: {
-    ClearStateWidgetsAttributes.ContentState.smiley
-    ClearStateWidgetsAttributes.ContentState.starEyes
+    TrueStateWidgetsAttributes.ContentState.smiley
+    TrueStateWidgetsAttributes.ContentState.starEyes
 }

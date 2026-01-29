@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/theme/colors.dart';
-import '../../core/theme/typography.dart';
-import '../../data/repositories/sobriety_repository.dart';
-import '../settings/subscription_provider.dart';
-import 'paywall_screen.dart';
+import '../../../core/theme/typography.dart';
+import '../../../data/repositories/sobriety_repository.dart';
+import '../../settings/subscription_provider.dart';
+import '../paywall_screen.dart';
+import '../../../core/theme/theme_provider.dart';
 
 /// Banner showing trial days remaining, tappable to show paywall
 class TrialBanner extends ConsumerWidget {
@@ -26,6 +26,9 @@ class TrialBanner extends ConsumerWidget {
     final daysRemaining = profile?.trialDaysRemaining ?? 0;
     if (daysRemaining <= 0) return const SizedBox.shrink();
 
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accentValue;
+
     return GestureDetector(
       onTap: () => _showPaywall(context),
       child: Container(
@@ -34,13 +37,13 @@ class TrialBanner extends ConsumerWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              ClearStateColors.accent.withOpacity(0.2),
-              ClearStateColors.accent.withOpacity(0.1),
+              accentColor.withValues(alpha: 0.2),
+              accentColor.withValues(alpha: 0.1),
             ],
           ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: ClearStateColors.accent.withOpacity(0.3),
+            color: accentColor.withValues(alpha: 0.3),
           ),
         ),
         child: Row(
@@ -48,12 +51,12 @@ class TrialBanner extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: ClearStateColors.accent.withOpacity(0.2),
+                color: accentColor.withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.star,
-                color: ClearStateColors.accent,
+                color: accentColor,
                 size: 16,
               ),
             ),
@@ -64,22 +67,22 @@ class TrialBanner extends ConsumerWidget {
                 children: [
                   Text(
                     '$daysRemaining day${daysRemaining == 1 ? '' : 's'} left in trial',
-                    style: ClearStateTypography.bodySemiBold.copyWith(
-                      color: ClearStateColors.accent,
+                    style: TrueStateTypography.bodySemiBold.copyWith(
+                      color: accentColor,
                     ),
                   ),
                   Text(
                     'Tap to keep your Pro features',
-                    style: ClearStateTypography.caption.copyWith(
-                      color: ClearStateColors.textSecondaryDark,
+                    style: TrueStateTypography.caption.copyWith(
+                      color: themeState.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.chevron_right,
-              color: ClearStateColors.accent,
+              color: accentColor,
             ),
           ],
         ),

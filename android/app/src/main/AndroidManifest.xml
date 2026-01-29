@@ -43,7 +43,7 @@
         <!-- Notification receiver -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
         
-        <!-- ClearState Stealth Widgets -->
+        <!-- TrueState Stealth Widgets -->
         <!-- Battery Widget -->
         <receiver android:name=".widgets.BatteryWidgetProvider"
             android:exported="true"

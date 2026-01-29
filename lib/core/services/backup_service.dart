@@ -30,14 +30,14 @@ class BackupService {
 
     final tempDir = await getTemporaryDirectory();
     final dateStr = DateTime.now().toIso8601String().split('T')[0];
-    final file = File('${tempDir.path}/clearstate_backup_$dateStr.enc');
+    final file = File('${tempDir.path}/truestate_backup_$dateStr.enc');
 
     await file.writeAsBytes(encryptedBytes);
 
     await SharePlus.instance.share(
       ShareParams(
         files: [XFile(file.path)],
-        subject: 'ClearState Backup - $dateStr (Encrypted)',
+        subject: 'TrueState Backup - $dateStr (Encrypted)',
       ),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 /// Standardized spacing and sizing constants for consistent UI
-class ClearStateSpacing {
-  ClearStateSpacing._();
+class TrueStateSpacing {
+  TrueStateSpacing._();
 
   // Border radius - soft, organic feel
   static const double radiusXs = 8.0;

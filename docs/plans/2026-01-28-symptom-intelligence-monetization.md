@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Transform ClearState into a "Recovery OS" by implementing a scientific symptom tracking system, an intelligence engine powered by neurobiological research, and a "Lifetime Unlock" monetization model.
+**Goal:** Transform TrueState into a "Recovery OS" by implementing a scientific symptom tracking system, an intelligence engine powered by neurobiological research, and a "Lifetime Unlock" monetization model.
 
 **Architecture:** We will extend the existing `DailyLog` model and `SobrietyRepository` to handle rich symptom data. The `SymptomIntelligenceService` will use a milestone-based lookup to provide phase-specific predictions and "micro-insights" (scientific explanations). Monetization will be handled via `purchases_flutter` with a local-first gating strategy.
 

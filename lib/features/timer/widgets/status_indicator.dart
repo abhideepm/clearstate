@@ -44,9 +44,9 @@ class StatusIndicator extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: ClearStateColors.darkSurface,
+          color: TrueStateColors.darkSurface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: ClearStateColors.borderDark, width: 1),
+          border: Border.all(color: TrueStateColors.borderDark, width: 1),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -55,7 +55,7 @@ class StatusIndicator extends ConsumerWidget {
               width: 8,
               height: 8,
               decoration: const BoxDecoration(
-                color: ClearStateColors.success,
+                color: TrueStateColors.success,
                 shape: BoxShape.circle,
               ),
             ),
@@ -63,8 +63,8 @@ class StatusIndicator extends ConsumerWidget {
             Flexible(
               child: Text(
                 currentMilestone.status,
-                style: ClearStateTypography.caption.copyWith(
-                  color: ClearStateColors.textPrimaryDark,
+                style: TrueStateTypography.caption.copyWith(
+                  color: TrueStateColors.textPrimaryDark,
                 ),
                 textAlign: TextAlign.center,
               ),

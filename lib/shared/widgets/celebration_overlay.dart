@@ -1,10 +1,12 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
 import '../../../core/services/haptic_service.dart';
+import '../../../core/theme/theme_provider.dart';
 
-class CelebrationOverlay extends StatefulWidget {
+class CelebrationOverlay extends ConsumerStatefulWidget {
   final String milestoneTitle;
   final VoidCallback onComplete;
   final Duration duration;
@@ -17,10 +19,10 @@ class CelebrationOverlay extends StatefulWidget {
   });
 
   @override
-  State<CelebrationOverlay> createState() => _CelebrationOverlayState();
+  ConsumerState<CelebrationOverlay> createState() => _CelebrationOverlayState();
 }
 
-class _CelebrationOverlayState extends State<CelebrationOverlay>
+class _CelebrationOverlayState extends ConsumerState<CelebrationOverlay>
     with TickerProviderStateMixin {
   late AnimationController _toastController;
   late AnimationController _confettiController;
@@ -73,10 +75,12 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
   }
 
   Color _getRandomColor() {
+    final themeState = ref.read(themeProvider);
     final colors = [
-      ClearStateColors.dawnCoral,
-      ClearStateColors.success,
-      ClearStateColors.textPrimaryDark,
+      themeState.accentValue,
+      TrueStateColors.dawnCoral,
+      TrueStateColors.success,
+      themeState.textPrimary,
       Colors.white,
       const Color(0xFFFF6B35),
       const Color(0xFF00D26A),
@@ -136,8 +140,8 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
             margin: const EdgeInsets.only(top: 60),
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
-              color: ClearStateColors.darkSurface,
-              border: Border.all(color: ClearStateColors.borderDark, width: 1),
+              color: ref.watch(themeProvider).surface,
+              border: Border.all(color: ref.watch(themeProvider).border, width: 1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -145,24 +149,24 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
               children: [
                 Text(
                   'MILESTONE REACHED',
-                  style: ClearStateTypography.caption.copyWith(
-                    color: ClearStateColors.success,
+                  style: TrueStateTypography.caption.copyWith(
+                    color: TrueStateColors.success,
                     letterSpacing: 2,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   widget.milestoneTitle,
-                  style: ClearStateTypography.h2.copyWith(
-                    color: ClearStateColors.textPrimaryDark,
+                  style: TrueStateTypography.h2.copyWith(
+                    color: ref.watch(themeProvider).textPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Tap anywhere to continue',
-                  style: ClearStateTypography.caption.copyWith(
-                    color: ClearStateColors.textSecondaryDark,
+                  style: TrueStateTypography.caption.copyWith(
+                    color: ref.watch(themeProvider).textSecondary,
                   ),
                 ),
               ],

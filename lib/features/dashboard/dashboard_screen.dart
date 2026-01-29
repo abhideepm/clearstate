@@ -49,8 +49,8 @@ class DashboardScreen extends ConsumerWidget {
       body: Container(
         decoration: BoxDecoration(
           gradient: themeState.isDarkMode
-              ? ClearStateColors.darkBackgroundGradient
-              : ClearStateColors.lightBackgroundGradient,
+              ? TrueStateColors.darkBackgroundGradient
+              : TrueStateColors.lightBackgroundGradient,
         ),
         child: CustomScrollView(
           slivers: [
@@ -59,7 +59,7 @@ class DashboardScreen extends ConsumerWidget {
               floating: true,
               title: Text(
                 'Dashboard',
-                style: ClearStateTypography.h2.copyWith(
+                style: TrueStateTypography.h2.copyWith(
                   color: themeState.textPrimary,
                 ),
               ),
@@ -78,8 +78,8 @@ class DashboardScreen extends ConsumerWidget {
                         children: [
                           Text(
                             'Current Streak',
-                            style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.textPrimaryLight.withValues(alpha: 0.7),
+                            style: TrueStateTypography.caption.copyWith(
+                              color: TrueStateColors.textPrimaryLight.withValues(alpha: 0.7),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -92,15 +92,15 @@ class DashboardScreen extends ConsumerWidget {
                                 style: TextStyle(
                                   fontSize: 56,
                                   fontWeight: FontWeight.w700,
-                                  color: ClearStateColors.textPrimaryLight,
+                                  color: TrueStateColors.textPrimaryLight,
                                   height: 1,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 'days',
-                                style: ClearStateTypography.h3.copyWith(
-                                  color: ClearStateColors.textPrimaryLight.withValues(alpha: 0.8),
+                                style: TrueStateTypography.h3.copyWith(
+                                  color: TrueStateColors.textPrimaryLight.withValues(alpha: 0.8),
                                 ),
                               ),
                             ],
@@ -108,8 +108,8 @@ class DashboardScreen extends ConsumerWidget {
                           const SizedBox(height: 8),
                           Text(
                             '${timer.hours}h ${timer.minutes}m ${timer.seconds}s',
-                            style: ClearStateTypography.body.copyWith(
-                              color: ClearStateColors.textPrimaryLight.withValues(alpha: 0.7),
+                            style: TrueStateTypography.body.copyWith(
+                              color: TrueStateColors.textPrimaryLight.withValues(alpha: 0.7),
                             ),
                           ),
                         ],
@@ -126,15 +126,15 @@ class DashboardScreen extends ConsumerWidget {
                               children: [
                                 Text(
                                   'Success Rate',
-                                  style: ClearStateTypography.caption.copyWith(
+                                  style: TrueStateTypography.caption.copyWith(
                                     color: themeState.textSecondary,
                                   ),
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   '${successRate.toStringAsFixed(1)}%',
-                                  style: ClearStateTypography.h2.copyWith(
-                                    color: ClearStateColors.success,
+                                  style: TrueStateTypography.h2.copyWith(
+                                    color: TrueStateColors.success,
                                   ),
                                 ),
                               ],
@@ -150,14 +150,14 @@ class DashboardScreen extends ConsumerWidget {
                               children: [
                                 Text(
                                   'Phase',
-                                  style: ClearStateTypography.caption.copyWith(
+                                  style: TrueStateTypography.caption.copyWith(
                                     color: themeState.textSecondary,
                                   ),
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   phase,
-                                  style: ClearStateTypography.body.copyWith(
+                                  style: TrueStateTypography.body.copyWith(
                                     color: themeState.textPrimary,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -177,8 +177,8 @@ class DashboardScreen extends ConsumerWidget {
                     // Quick Log Card
                     BentoCard(
                       backgroundColor: themeState.isDarkMode 
-                          ? ClearStateColors.darkCard 
-                          : ClearStateColors.lightCard,
+                          ? TrueStateColors.darkCard 
+                          : TrueStateColors.lightCard,
                       onTap: habitId == null
                           ? null
                           : () {
@@ -220,7 +220,7 @@ class DashboardScreen extends ConsumerWidget {
                           const SizedBox(width: 12),
                           Text(
                             'Log Sober Day',
-                            style: ClearStateTypography.button.copyWith(
+                            style: TrueStateTypography.button.copyWith(
                               color: accentColor,
                             ),
                           ),

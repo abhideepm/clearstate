@@ -77,7 +77,7 @@ void main() {
       );
 
       final decoration = container.decoration as BoxDecoration;
-      expect(decoration.color, ClearStateColors.charcoal);
+      expect(decoration.color, TrueStateColors.charcoal);
     });
 
     testWidgets('animation triggers on selection change', (tester) async {
@@ -202,7 +202,7 @@ void main() {
             )
             .first,
       );
-      expect(defaultTextStyle.style.color, ClearStateColors.deepCharcoal);
+      expect(defaultTextStyle.style.color, TrueStateColors.deepCharcoal);
     });
 
     testWidgets('correct text color when unselected', (tester) async {
@@ -224,7 +224,7 @@ void main() {
             )
             .first,
       );
-      expect(defaultTextStyle.style.color, ClearStateColors.warmIvory);
+      expect(defaultTextStyle.style.color, TrueStateColors.warmIvory);
     });
 
     testWidgets('padding is applied correctly', (tester) async {
