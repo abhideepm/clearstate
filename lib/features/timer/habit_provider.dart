@@ -7,22 +7,25 @@ import 'timer_provider.dart';
 /// ID of the currently selected habit for display
 final selectedHabitIdProvider = StateProvider<String?>((ref) => null);
 
-/// All active habits for the user
+/// All active habits - synchronous provider for instant access
+/// Uses keepAlive to warm up the cache on app start
 final activeHabitsProvider = Provider<List<Habit>>((ref) {
+  ref.keepAlive();
   final repository = ref.watch(sobrietyRepositoryProvider);
   return repository.getAllHabits().where((h) => h.isActive).toList();
 });
 
+
+
 /// Currently selected habit (full object)
 /// Returns the selected habit, or the first habit if none is selected.
-/// Does NOT trigger state updates during build to avoid lag.
 final selectedHabitProvider = Provider<Habit?>((ref) {
   final selectedId = ref.watch(selectedHabitIdProvider);
   final habits = ref.watch(activeHabitsProvider);
 
   if (habits.isEmpty) return null;
 
-  // If no habit is selected, just return the first one without side effects
+  // If no habit is selected, just return the first one
   if (selectedId == null) {
     return habits.first;
   }

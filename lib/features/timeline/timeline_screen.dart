@@ -7,6 +7,7 @@ import '../../shared/widgets/noise_background.dart';
 import '../../shared/widgets/scroll_reveal.dart';
 import '../../shared/widgets/haptic_scroll_view.dart';
 import '../timer/timer_provider.dart';
+import '../timer/habit_provider.dart';
 import '../timer/widgets/habit_dropdown.dart';
 import 'widgets/milestone_card.dart';
 
@@ -17,6 +18,12 @@ class TimelineScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final durationAsync = ref.watch(elapsedDurationProvider);
     final themeState = ref.watch(themeProvider);
+    final selectedHabit = ref.watch(selectedHabitProvider);
+
+    // Get habit-specific milestones (habit is always selected after onboarding)
+    final milestones = RecoveryMilestones.getMilestonesForHabit(
+      selectedHabit?.id ?? 'alcohol',
+    );
 
     return Scaffold(
       backgroundColor: themeState.background,
@@ -68,14 +75,13 @@ class TimelineScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
-                        final milestone = RecoveryMilestones.milestones[index];
+                        final milestone = milestones[index];
                         final isUnlocked =
                             currentDays >= milestone.dayThreshold;
-                        final isCurrent =
-                            milestone ==
-                            RecoveryMilestones.getCurrentMilestone(currentDays);
-                        final isLast =
-                            index == RecoveryMilestones.milestones.length - 1;
+                        final isCurrent = milestone ==
+                            RecoveryMilestones.getCurrentMilestoneFromList(
+                                currentDays, milestones);
+                        final isLast = index == milestones.length - 1;
 
                         return ScrollRevealItem(
                           delay: Duration(milliseconds: index * 50),
@@ -86,7 +92,7 @@ class TimelineScreen extends ConsumerWidget {
                             isLast: isLast,
                           ),
                         );
-                      }, childCount: RecoveryMilestones.milestones.length),
+                      }, childCount: milestones.length),
                     ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 100)),
@@ -104,3 +110,4 @@ class TimelineScreen extends ConsumerWidget {
     );
   }
 }
+

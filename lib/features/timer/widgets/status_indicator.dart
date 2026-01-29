@@ -4,6 +4,7 @@ import '../../../core/theme/typography.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/constants/milestones.dart';
 import '../timer_provider.dart';
+import '../habit_provider.dart';
 
 class StatusIndicator extends ConsumerWidget {
   const StatusIndicator({super.key});
@@ -11,11 +12,18 @@ class StatusIndicator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final durationAsync = ref.watch(elapsedDurationProvider);
+    final selectedHabit = ref.watch(selectedHabitProvider);
+
+    // Get habit-specific milestones (habit is always selected after onboarding)
+    final milestones = RecoveryMilestones.getMilestonesForHabit(
+      selectedHabit?.id ?? 'alcohol',
+    );
 
     return durationAsync.when(
       data: (duration) {
-        final currentMilestone = RecoveryMilestones.getCurrentMilestone(
+        final currentMilestone = RecoveryMilestones.getCurrentMilestoneFromList(
           duration.inDays,
+          milestones,
         );
 
         return Container(
@@ -51,7 +59,8 @@ class StatusIndicator extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, _) => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }
+

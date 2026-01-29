@@ -85,43 +85,27 @@ class HabitDropdown extends ConsumerWidget {
     List<Habit> habits,
     Habit? selectedHabit,
   ) {
+    // Pre-capture all data BEFORE showing the modal to avoid lag
     final themeState = ref.read(themeProvider);
+    final habitSwitcher = ref.read(habitSwitcherProvider);
 
     showModalBottomSheet(
       context: context,
       backgroundColor: themeState.surface,
+      useRootNavigator: true,
+      isScrollControlled: false,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                'Select Habit',
-                style: TextStyle(
-                  color: themeState.textPrimary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const Divider(height: 1),
-            ...habits.map((habit) => _buildHabitOption(
-                  sheetContext,
-                  ref,
-                  habit,
-                  isSelected: habit.id == selectedHabit?.id,
-                  themeState: themeState,
-                )),
-            // Add Habit option
-            _buildAddHabitOption(context, sheetContext, themeState),
-            const SizedBox(height: 16),
-          ],
-        ),
+      builder: (sheetContext) => _HabitPickerContent(
+        habits: habits,
+        selectedHabit: selectedHabit,
+        themeState: themeState,
+        habitSwitcher: habitSwitcher,
+        onAddHabit: () {
+          Navigator.pop(sheetContext);
+          _showAddHabitDialog(context, themeState);
+        },
       ),
     );
   }
@@ -477,6 +461,159 @@ class _AddHabitDialogState extends ConsumerState<_AddHabitDialog> {
 
     if (context.mounted) {
       Navigator.pop(context);
+    }
+  }
+}
+
+/// Pre-built content for habit picker modal to avoid lag on first click.
+/// All data is passed in as constructor arguments, no provider access during build.
+class _HabitPickerContent extends StatelessWidget {
+  final List<Habit> habits;
+  final Habit? selectedHabit;
+  final ThemeState themeState;
+  final HabitSwitcher habitSwitcher;
+  final VoidCallback onAddHabit;
+
+  const _HabitPickerContent({
+    required this.habits,
+    required this.selectedHabit,
+    required this.themeState,
+    required this.habitSwitcher,
+    required this.onAddHabit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              'Select Habit',
+              style: TextStyle(
+                color: themeState.textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const Divider(height: 1),
+          ...habits.map((habit) => _buildHabitOption(context, habit)),
+          _buildAddHabitOption(),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHabitOption(BuildContext context, Habit habit) {
+    final isSelected = habit.id == selectedHabit?.id;
+    final habitColor = _parseColor(habit.themeColor);
+
+    return InkWell(
+      onTap: () {
+        habitSwitcher.selectHabit(habit.id);
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        color: isSelected ? habitColor.withValues(alpha: 0.1) : null,
+        child: Row(
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: habitColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    habit.name,
+                    style: TextStyle(
+                      color: themeState.textPrimary,
+                      fontSize: 16,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    '${habit.totalDays} days',
+                    style: TextStyle(
+                      color: themeState.textMuted,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              Icon(
+                Icons.check_rounded,
+                color: habitColor,
+                size: 20,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddHabitOption() {
+    return InkWell(
+      onTap: onAddHabit,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Row(
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: themeState.accent.value.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: themeState.accent.value,
+                  width: 2,
+                ),
+              ),
+              child: Icon(
+                Icons.add,
+                size: 8,
+                color: themeState.accent.value,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              'Add New Habit',
+              style: TextStyle(
+                color: themeState.accent.value,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _parseColor(String? hexColor) {
+    if (hexColor == null || hexColor.isEmpty) {
+      return ClearStateColors.sunriseGold;
+    }
+    try {
+      final hex = hexColor.replaceFirst('#', '');
+      return Color(int.parse('FF$hex', radix: 16));
+    } catch (_) {
+      return ClearStateColors.sunriseGold;
     }
   }
 }
