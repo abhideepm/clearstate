@@ -47,11 +47,19 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionStatus> {
 
   Future<void> _init() async {
     await _service.initialize();
+    
+    // Listen for real-time updates
+    _service.addCustomerInfoUpdateListener((customerInfo) {
+      if (mounted) {
+        state = _service.mapCustomerInfoToStatus(customerInfo);
+      }
+    });
+
     await refreshStatus();
   }
 
   Future<void> refreshStatus() async {
-    final remoteStatus = await _service.getSubscriptionStatus();
+    final remoteStatus = await _service.refreshStatus();
 
     // If no remote subscription, check local trial
     if (!remoteStatus.isPro) {

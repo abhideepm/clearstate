@@ -15,6 +15,10 @@ class SubscriptionService {
   static const _apiKey = 'test_vrFuaaVwnGePwdtgQujHRacWWeE';
   static const _entitlementId = 'truestate_pro';
 
+  static final SubscriptionService _instance = SubscriptionService._internal();
+  factory SubscriptionService() => _instance;
+  SubscriptionService._internal();
+
   bool _initialized = false;
 
   Future<void> initialize() async {
@@ -26,6 +30,11 @@ class SubscriptionService {
 
     await Purchases.configure(PurchasesConfiguration(_apiKey));
     _initialized = true;
+  }
+
+  /// Set up a listener for customer info updates
+  void addCustomerInfoUpdateListener(Function(CustomerInfo) onUpdate) {
+    Purchases.addCustomerInfoUpdateListener(onUpdate);
   }
 
   /// Get current offerings from RevenueCat
@@ -42,7 +51,7 @@ class SubscriptionService {
   Future<SubscriptionStatus> getSubscriptionStatus() async {
     try {
       final customerInfo = await Purchases.getCustomerInfo();
-      return _mapCustomerInfoToStatus(customerInfo);
+      return mapCustomerInfoToStatus(customerInfo);
     } catch (e) {
       debugPrint('Error fetching subscription status: $e');
       return SubscriptionStatus.free();
@@ -90,14 +99,14 @@ class SubscriptionService {
   Future<SubscriptionStatus> restorePurchases() async {
     try {
       final customerInfo = await Purchases.restorePurchases();
-      return _mapCustomerInfoToStatus(customerInfo);
+      return mapCustomerInfoToStatus(customerInfo);
     } catch (e) {
       debugPrint('Error restoring purchases: $e');
       return SubscriptionStatus.free();
     }
   }
 
-  SubscriptionStatus _mapCustomerInfoToStatus(CustomerInfo customerInfo) {
+  SubscriptionStatus mapCustomerInfoToStatus(CustomerInfo customerInfo) {
     final entitlement = customerInfo.entitlements.all[_entitlementId];
 
     if (entitlement == null || !entitlement.isActive) {
@@ -111,12 +120,24 @@ class SubscriptionService {
     return SubscriptionStatus(
       tier: SubscriptionTier.pro,
       isActive: true,
-      isTrialing: false,
+      isTrialing: entitlement.periodType == PeriodType.trial,
       planType: planType,
       expirationDate: entitlement.expirationDate != null
           ? DateTime.parse(entitlement.expirationDate!)
           : null,
     );
+  }
+
+  /// Force a refresh of customer info from the server
+  Future<SubscriptionStatus> refreshStatus() async {
+    try {
+      await Purchases.invalidateCustomerInfoCache();
+      final customerInfo = await Purchases.getCustomerInfo();
+      return mapCustomerInfoToStatus(customerInfo);
+    } catch (e) {
+      debugPrint('Error refreshing status: $e');
+      return getSubscriptionStatus();
+    }
   }
 
   PlanType _getPlanTypeFromProductId(String productId) {
