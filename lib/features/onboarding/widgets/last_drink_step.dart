@@ -147,7 +147,7 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.today,
                       size: 16,
                       color: ClearStateColors.textSecondaryDark,

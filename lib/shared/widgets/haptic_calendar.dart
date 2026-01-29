@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/typography.dart';
-import '../../core/theme/motion.dart';
 import '../../core/theme/theme_provider.dart';
 import '../../core/services/haptic_service.dart';
 
@@ -128,6 +127,8 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
   Widget _buildCalendarContent() {
     final days = _getCalendarDays();
     final today = DateTime.now();
+    final themeState = ref.watch(themeProvider);
+    final accentColor = themeState.accent.value;
 
     return Container(
       decoration: BoxDecoration(
@@ -143,7 +144,7 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
           const SizedBox(height: 16),
           _buildWeekdayHeader(),
           const SizedBox(height: 8),
-          _buildCalendarGrid(days, today),
+          _buildCalendarGrid(days, today, accentColor),
         ],
       ),
     );
@@ -200,43 +201,40 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
     );
   }
 
-  Widget _buildCalendarGrid(List<DateTime> days, DateTime today) {
-    final themeState = ref.watch(themeProvider);
-    final accentColor = themeState.accent.value;
-
+  Widget _buildCalendarGrid(List<DateTime> days, DateTime today, Color accentColor) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(opacity: animation, child: child);
       },
-      child: LayoutBuilder(
+      child: GridView.builder(
         key: ValueKey(_currentMonth),
-        builder: (context, constraints) {
-          final cellSize = (constraints.maxWidth - 16) / 7;
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          mainAxisSpacing: 4,
+          crossAxisSpacing: 4,
+        ),
+        itemCount: days.length,
+        itemBuilder: (context, index) {
+          final date = days[index];
+          final isCurrentMonth = _isCurrentMonth(date);
+          final isSelected =
+              _selectedDate.year == date.year &&
+              _selectedDate.month == date.month &&
+              _selectedDate.day == date.day;
+          final isToday = _isToday(date);
+          final isDisabled = widget.shouldDisableDate?.call(date) ?? false;
 
-          return Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: days.map((date) {
-              final isCurrentMonth = _isCurrentMonth(date);
-              final isSelected =
-                  _selectedDate.year == date.year &&
-                  _selectedDate.month == date.month &&
-                  _selectedDate.day == date.day;
-              final isToday = _isToday(date);
-              final isDisabled = widget.shouldDisableDate?.call(date) ?? false;
-
-              return _CalendarCell(
-                date: date,
-                isCurrentMonth: isCurrentMonth,
-                isSelected: isSelected,
-                isToday: isToday,
-                isDisabled: isDisabled,
-                size: cellSize,
-                accentColor: accentColor,
-                onTap: () => _onDateTapped(date),
-              );
-            }).toList(),
+          return _CalendarCell(
+            date: date,
+            isCurrentMonth: isCurrentMonth,
+            isSelected: isSelected,
+            isToday: isToday,
+            isDisabled: isDisabled,
+            accentColor: accentColor,
+            onTap: () => _onDateTapped(date),
           );
         },
       ),
@@ -270,7 +268,6 @@ class _CalendarCell extends StatelessWidget {
   final bool isSelected;
   final bool isToday;
   final bool isDisabled;
-  final double size;
   final Color accentColor;
   final VoidCallback onTap;
 
@@ -280,55 +277,71 @@ class _CalendarCell extends StatelessWidget {
     required this.isSelected,
     required this.isToday,
     required this.isDisabled,
-    required this.size,
     required this.accentColor,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: ClearStateMotion.duration(const Duration(milliseconds: 150)),
-      curve: Curves.easeOutCubic,
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: isSelected
-            ? accentColor
-            : isToday
-            ? Colors.transparent
-            : ClearStateColors.darkSurface,
-        borderRadius: BorderRadius.circular(12),
-        border: isToday && !isSelected
-            ? Border.all(color: accentColor, width: 1.5)
-            : Border.all(
-                color: ClearStateColors.borderDark.withValues(alpha: 0.3),
-                width: 1,
-              ),
-      ),
+    final textStyle = isSelected
+        ? ClearStateTypography.body.copyWith(
+            color: ClearStateColors.darkBackground,
+            fontWeight: FontWeight.w600,
+          )
+        : isCurrentMonth
+            ? ClearStateTypography.body.copyWith(
+                color: isDisabled
+                    ? ClearStateColors.textSecondaryDark.withValues(alpha: 0.5)
+                    : ClearStateColors.textPrimaryDark,
+              )
+            : ClearStateTypography.body.copyWith(
+                color: ClearStateColors.textSecondaryDark.withValues(alpha: 0.5),
+              );
+
+    final decoration = BoxDecoration(
+      color: isSelected
+          ? accentColor
+          : isToday
+              ? Colors.transparent
+              : ClearStateColors.darkSurface,
+      borderRadius: BorderRadius.circular(12),
+      border: isToday && !isSelected
+          ? Border.all(color: accentColor, width: 1.5)
+          : Border.all(
+              color: ClearStateColors.borderDark.withValues(alpha: 0.3),
+              width: 1,
+            ),
+    );
+
+    // Only animate selected cells for performance
+    if (isSelected) {
+      return TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.95, end: 1.0),
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOutCubic,
+        builder: (context, scale, child) {
+          return Transform.scale(
+            scale: scale,
+            child: child,
+          );
+        },
+        child: _buildCellContent(decoration, textStyle),
+      );
+    }
+
+    return _buildCellContent(decoration, textStyle);
+  }
+
+  Widget _buildCellContent(BoxDecoration decoration, TextStyle textStyle) {
+    return Container(
+      decoration: decoration,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: isDisabled ? null : onTap,
           borderRadius: BorderRadius.circular(12),
           child: Center(
-            child: Text(
-              date.day.toString(),
-              style: isSelected
-                  ? ClearStateTypography.body.copyWith(
-                      color: ClearStateColors.darkBackground,
-                      fontWeight: FontWeight.w600,
-                    )
-                  : isCurrentMonth
-                  ? ClearStateTypography.body.copyWith(
-                      color: isDisabled
-                          ? ClearStateColors.textSecondaryDark.withValues(alpha: 0.5)
-                          : ClearStateColors.textPrimaryDark,
-                    )
-                  : ClearStateTypography.body.copyWith(
-                      color: ClearStateColors.textSecondaryDark.withValues(alpha: 0.5),
-                    ),
-            ),
+            child: Text(date.day.toString(), style: textStyle),
           ),
         ),
       ),

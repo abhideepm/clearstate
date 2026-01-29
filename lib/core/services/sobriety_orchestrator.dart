@@ -97,22 +97,10 @@ class SobrietyOrchestrator {
   }
 
   /// Logs a relapse: ends session, logs event, starts new session.
-  Future<void> logRelapse(
-    String habitId, {
-    required int drinksConsumed,
-    required double costIncurred,
-    required int caloriesConsumed,
-    required String drinkType,
-  }) async {
+  Future<void> logRelapse(String habitId) async {
     await _notificationService.cancelAllMilestoneNotifications();
 
-    await _repository.logRelapse(
-      habitId,
-      drinksConsumed: drinksConsumed,
-      costIncurred: costIncurred,
-      caloriesConsumed: caloriesConsumed,
-      drinkType: drinkType,
-    );
+    await _repository.logRelapse(habitId);
 
     final activeSession = _repository.getActiveSession(habitId);
     if (activeSession != null) {
@@ -125,20 +113,8 @@ class SobrietyOrchestrator {
   }
 
   /// Logs a slip without resetting the timer.
-  Future<void> logSlip(
-    String habitId, {
-    required int drinksConsumed,
-    required double costIncurred,
-    required int caloriesConsumed,
-    required String drinkType,
-  }) async {
-    await _repository.logSlip(
-      habitId,
-      drinksConsumed: drinksConsumed,
-      costIncurred: costIncurred,
-      caloriesConsumed: caloriesConsumed,
-      drinkType: drinkType,
-    );
+  Future<void> logSlip(String habitId) async {
+    await _repository.logSlip(habitId);
 
     await triggerWidgetUpdate();
   }

@@ -20,6 +20,7 @@ class ResetButton extends StatelessWidget {
         height: 56,
         decoration: BoxDecoration(
           color: ClearStateColors.darkSurface,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: ClearStateColors.borderDark, width: 1),
         ),
         child: Center(

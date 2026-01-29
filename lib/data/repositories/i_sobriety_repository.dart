@@ -31,21 +31,8 @@ abstract class ISobrietyRepository {
   Future<void> saveHabit(Habit habit);
 
   // Relapses
-  Future<void> logRelapse(
-    String habitId, {
-    required int drinksConsumed,
-    required double costIncurred,
-    required int caloriesConsumed,
-    required String drinkType,
-  });
-
-  Future<void> logSlip(
-    String habitId, {
-    required int drinksConsumed,
-    required double costIncurred,
-    required int caloriesConsumed,
-    required String drinkType,
-  });
+  Future<void> logRelapse(String habitId);
+  Future<void> logSlip(String habitId);
 
   // Daily logs
   DailyLog? getDailyLog(String habitId, DateTime date);

@@ -19,6 +19,7 @@ import 'features/security/security_provider.dart';
 import 'features/security/biometric_lock_screen.dart';
 import 'data/repositories/sobriety_repository.dart';
 import 'features/timer/timer_provider.dart';
+import 'data/models/habit_template.dart';
 
 class ClearStateApp extends ConsumerStatefulWidget {
   const ClearStateApp({super.key});
@@ -118,22 +119,41 @@ class _ClearStateAppState extends ConsumerState<ClearStateApp>
   void _completeOnboarding() async {
     final orchestrator = ref.read(sobrietyOrchestratorProvider);
     final onboardingState = ref.read(onboardingProvider);
+    final repository = ref.read(sobrietyRepositoryProvider);
 
     // Request notification permissions during onboarding completion
     await NotificationService.instance.requestPermissions();
 
-    // Get selected habit IDs and their start dates
-    final selectedHabitIds = onboardingState.selectedHabitIds;
+    // Get selected habits and their start dates
+    final selectedHabits = onboardingState.selectedHabits;
     final habitStartDates = onboardingState.habitStartDates;
+    final motivation = onboardingState.motivation;
+
+    // Create actual Habit objects from the selected templates
+    for (final template in selectedHabits) {
+      final habitStartDate = habitStartDates[template.id] ?? DateTime.now();
+      final habit = template.toHabit(
+        startDate: habitStartDate,
+        motivation: motivation,
+      );
+      await repository.saveHabit(habit);
+      
+      // Start a session for each habit
+      await orchestrator.startNewSession(
+        habit.id,
+        habitStartDate,
+        scheduleNotifications: template == selectedHabits.first,
+      );
+    }
 
     // Use the earliest start date for the main timer, or today if none set
     final startDate = habitStartDates.isNotEmpty
         ? habitStartDates.values.reduce((a, b) => a.isBefore(b) ? a : b)
         : DateTime.now();
 
-    // Save user profile (this also starts the session and schedules notifications)
+    // Save user profile
     await orchestrator.saveUserProfile(
-      selectedHabitIds: selectedHabitIds.isNotEmpty ? selectedHabitIds : const ['default'],
+      selectedHabitIds: selectedHabits.map((h) => h.id).toList(),
       lastDrinkDate: startDate,
     );
 

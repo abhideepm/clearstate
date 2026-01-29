@@ -5,13 +5,11 @@ import '../../../core/theme/typography.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../../core/services/haptic_service.dart';
 import '../../../core/services/sobriety_orchestrator.dart';
-import '../../../core/constants/drink_presets.dart';
 import '../../../data/repositories/sobriety_repository.dart';
 import '../../timer/timer_provider.dart';
 import 'slip_pattern_dialog.dart';
 
-/// Sheet for inputting drink details (quantity, type, cost).
-/// Used for both slips and relapses.
+/// Simplified sheet for logging a slip or relapse.
 class DrinkInputSheet extends ConsumerStatefulWidget {
   final bool isSlip;
 
@@ -22,13 +20,7 @@ class DrinkInputSheet extends ConsumerStatefulWidget {
 }
 
 class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
-  int _drinks = 1;
-  String _drinkType = 'Beer';
   bool _isLogging = false;
-
-  DrinkPreset get _currentPreset => DrinkPresets.getByName(_drinkType);
-  double get _totalCost => _drinks * _currentPreset.defaultCost;
-  int get _totalCalories => _drinks * _currentPreset.defaultCalories;
 
   @override
   Widget build(BuildContext context) {
@@ -64,62 +56,15 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 32),
-
-            // Drink type selector
+            const SizedBox(height: 16),
             Text(
-              'DRINK TYPE',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.textSecondaryDark,
+              widget.isSlip
+                  ? 'A momentary slip won\'t reset your progress.'
+                  : 'This will reset your timer and start fresh.',
+              style: ClearStateTypography.bodySecondary.copyWith(
+                color: themeState.textMuted,
               ),
-            ),
-            const SizedBox(height: 12),
-            _DrinkTypeSelector(
-              selectedType: _drinkType,
-              accentColor: accentColor,
-              onChanged: (type) {
-                HapticService.light();
-                setState(() => _drinkType = type);
-              },
-            ),
-            const SizedBox(height: 24),
-
-            // Quantity selector
-            Text(
-              'HOW MANY?',
-              style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.textSecondaryDark,
-              ),
-            ),
-            const SizedBox(height: 12),
-            _QuantitySelector(
-              value: _drinks,
-              onChanged: (value) {
-                HapticService.light();
-                setState(() => _drinks = value);
-              },
-            ),
-            const SizedBox(height: 24),
-
-            // Summary
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: ClearStateColors.darkBackground,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: ClearStateColors.borderDark),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _SummaryItem(
-                    label: 'COST',
-                    value: '\$${_totalCost.toStringAsFixed(0)}',
-                  ),
-                  Container(width: 1, height: 32, color: ClearStateColors.borderDark),
-                  _SummaryItem(label: 'CALORIES', value: '$_totalCalories'),
-                ],
-              ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
 
@@ -183,31 +128,19 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
       }
 
       if (widget.isSlip) {
-        await orchestrator.logSlip(
-          habitId,
-          drinksConsumed: _drinks,
-          costIncurred: _totalCost,
-          caloriesConsumed: _totalCalories,
-          drinkType: _drinkType,
-        );
+        await orchestrator.logSlip(habitId);
 
         // Check for slip pattern (3+ slips in a week)
         final slipsThisWeek = repository.getSlipsThisWeek(habitId);
         if (slipsThisWeek >= 3 && mounted) {
           HapticService.medium();
           _showSlipPatternDialog();
-          return; // Don't pop - dialog will handle navigation
+          return;
         } else {
           HapticService.success();
         }
       } else {
-        await orchestrator.logRelapse(
-          habitId,
-          drinksConsumed: _drinks,
-          costIncurred: _totalCost,
-          caloriesConsumed: _totalCalories,
-          drinkType: _drinkType,
-        );
+        await orchestrator.logRelapse(habitId);
 
         // Reset the timer state
         ref.read(sobrietyStartDateProvider.notifier).state = DateTime.now();
@@ -240,7 +173,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
       builder: (dialogContext) => SlipPatternDialog(
         onKeepAsSlips: () {
           Navigator.pop(dialogContext);
-          navigator.pop(); // Close this sheet
+          navigator.pop();
         },
         onConvertToRelapse: () async {
           final dialogNavigator = Navigator.of(dialogContext);
@@ -249,173 +182,9 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
           ref.read(sobrietyStartDateProvider.notifier).state = DateTime.now();
           HapticService.relapseConfirm();
           dialogNavigator.pop();
-          navigator.pop(); // Close this sheet
+          navigator.pop();
         },
       ),
-    );
-  }
-}
-
-/// Horizontal drink type selector.
-class _DrinkTypeSelector extends StatelessWidget {
-  final String selectedType;
-  final Color accentColor;
-  final ValueChanged<String> onChanged;
-
-  const _DrinkTypeSelector({
-    required this.selectedType,
-    required this.accentColor,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 64,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: DrinkPresets.presets.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 12),
-        itemBuilder: (context, index) {
-          final preset = DrinkPresets.presets[index];
-          final isSelected = preset.name == selectedType;
-          return GestureDetector(
-            onTap: () => onChanged(preset.name),
-            child: Container(
-              width: 64,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? accentColor.withValues(alpha: 0.15)
-                    : ClearStateColors.darkBackground,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isSelected ? accentColor : ClearStateColors.borderDark,
-                  width: isSelected ? 2 : 1,
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(preset.icon, style: const TextStyle(fontSize: 18)),
-                  const SizedBox(height: 2),
-                  Text(
-                    preset.name,
-                    style: ClearStateTypography.caption.copyWith(
-                      fontSize: 8,
-                      color: isSelected
-                          ? ClearStateColors.textPrimaryDark
-                          : ClearStateColors.textSecondaryDark,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-/// Quantity stepper with +/- buttons.
-class _QuantitySelector extends StatelessWidget {
-  final int value;
-  final ValueChanged<int> onChanged;
-
-  const _QuantitySelector({required this.value, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: ClearStateColors.darkBackground,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ClearStateColors.borderDark),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _StepperButton(
-            icon: Icons.remove,
-            onPressed: value > 1 ? () => onChanged(value - 1) : null,
-          ),
-          Column(
-            children: [
-              Text('$value', style: ClearStateTypography.statNumber),
-              Text(
-                value == 1 ? 'DRINK' : 'DRINKS',
-                style: ClearStateTypography.caption.copyWith(
-                  color: ClearStateColors.textSecondaryDark,
-                ),
-              ),
-            ],
-          ),
-          _StepperButton(
-            icon: Icons.add,
-            onPressed: value < 20 ? () => onChanged(value + 1) : null,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StepperButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback? onPressed;
-
-  const _StepperButton({required this.icon, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    final isEnabled = onPressed != null;
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: isEnabled
-              ? ClearStateColors.darkSurface
-              : ClearStateColors.darkSurface.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(
-          icon,
-          color: isEnabled ? ClearStateColors.textPrimaryDark : ClearStateColors.borderDark,
-        ),
-      ),
-    );
-  }
-}
-
-class _SummaryItem extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _SummaryItem({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: ClearStateTypography.caption.copyWith(
-            color: ClearStateColors.textSecondaryDark,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: ClearStateTypography.statNumber.copyWith(fontSize: 20),
-        ),
-      ],
     );
   }
 }

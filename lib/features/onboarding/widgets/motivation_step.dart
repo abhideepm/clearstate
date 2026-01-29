@@ -105,54 +105,61 @@ class _MotivationStepState extends ConsumerState<MotivationStep> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              alignment: WrapAlignment.center,
-              children: _motivationChips.map((chip) {
-                final label = chip['label'] as String;
-                final emoji = chip['emoji'] as String;
-                final isSelected = _selectedChips.contains(label);
-                return _MotivationChip(
-                  label: label,
-                  emoji: emoji,
-                  isSelected: isSelected,
-                  themeState: themeState,
-                  onTap: () => _toggleChip(label),
-                );
-              }).toList(),
-            ),
-            if (_showOtherTextField) ...[
-              const SizedBox(height: 24),
-              Container(
-                decoration: BoxDecoration(
-                  color: themeState.card,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: themeState.border),
-                ),
-                child: TextField(
-                  controller: _controller,
-                  maxLines: 3,
-                  maxLength: 200,
-                  textAlign: TextAlign.center,
-                  style: ClearStateTypography.body.copyWith(
-                    color: themeState.textPrimary,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Write your reason...',
-                    hintStyle: ClearStateTypography.body.copyWith(
-                      color: themeState.textMuted,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      alignment: WrapAlignment.center,
+                      children: _motivationChips.map((chip) {
+                        final label = chip['label'] as String;
+                        final emoji = chip['emoji'] as String;
+                        final isSelected = _selectedChips.contains(label);
+                        return _MotivationChip(
+                          label: label,
+                          emoji: emoji,
+                          isSelected: isSelected,
+                          themeState: themeState,
+                          onTap: () => _toggleChip(label),
+                        );
+                      }).toList(),
                     ),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.all(20),
-                    counterStyle: ClearStateTypography.caption.copyWith(
-                      color: themeState.textMuted,
-                    ),
-                  ),
+                    if (_showOtherTextField) ...[
+                      const SizedBox(height: 24),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: themeState.card,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: themeState.border),
+                        ),
+                        child: TextField(
+                          controller: _controller,
+                          maxLines: 3,
+                          maxLength: 200,
+                          textAlign: TextAlign.center,
+                          style: ClearStateTypography.body.copyWith(
+                            color: themeState.textPrimary,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Write your reason...',
+                            hintStyle: ClearStateTypography.body.copyWith(
+                              color: themeState.textMuted,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(20),
+                            counterStyle: ClearStateTypography.caption.copyWith(
+                              color: themeState.textMuted,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
-            ],
-            const Spacer(),
+            ),
             ModernButton(
               label: 'Start My Journey',
               onPressed: _handleContinue,
@@ -212,8 +219,7 @@ class _MotivationChip extends StatelessWidget {
     
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+      child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected ? accentColor : themeState.card,

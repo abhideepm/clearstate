@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:clearstate/core/theme/colors.dart';
 import 'package:clearstate/core/theme/theme_provider.dart';
 import 'package:clearstate/data/models/habit.dart';
+import 'package:clearstate/data/models/habit_template.dart';
+import 'package:clearstate/data/repositories/sobriety_repository.dart';
+import 'package:clearstate/core/services/sobriety_orchestrator.dart';
 import 'package:clearstate/features/timer/habit_provider.dart';
 
 /// Modern dropdown widget for selecting active habit
@@ -15,14 +18,8 @@ class HabitDropdown extends ConsumerWidget {
     final selectedHabit = ref.watch(selectedHabitProvider);
     final themeState = ref.watch(themeProvider);
 
-    if (habits.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    // Show single habit without dropdown if only one
-    if (habits.length == 1) {
-      return _buildSingleHabitDisplay(habits.first, themeState);
-    }
+    // Always show dropdown, even with 0 or 1 habit (allows adding new habits)
+    final displayHabit = selectedHabit ?? (habits.isNotEmpty ? habits.first : null);
 
     return GestureDetector(
       onTap: () => _showHabitPicker(context, ref, habits, selectedHabit),
@@ -36,20 +33,35 @@ class HabitDropdown extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (selectedHabit != null) ...[
+            if (displayHabit != null) ...[
               Container(
                 width: 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: _parseColor(selectedHabit.themeColor),
+                  color: _parseColor(displayHabit.themeColor),
                   shape: BoxShape.circle,
                 ),
               ),
               const SizedBox(width: 10),
               Text(
-                selectedHabit.name,
+                displayHabit.name,
                 style: TextStyle(
                   color: themeState.textPrimary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ] else ...[
+              Icon(
+                Icons.add_rounded,
+                color: themeState.textSecondary,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Add Habit',
+                style: TextStyle(
+                  color: themeState.textSecondary,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -63,39 +75,6 @@ class HabitDropdown extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSingleHabitDisplay(Habit habit, ThemeState themeState) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: themeState.card,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: themeState.border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: _parseColor(habit.themeColor),
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            habit.name,
-            style: TextStyle(
-              color: themeState.textPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -114,7 +93,7 @@ class HabitDropdown extends ConsumerWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,16 +111,71 @@ class HabitDropdown extends ConsumerWidget {
             ),
             const Divider(height: 1),
             ...habits.map((habit) => _buildHabitOption(
-                  context,
+                  sheetContext,
                   ref,
                   habit,
                   isSelected: habit.id == selectedHabit?.id,
                   themeState: themeState,
                 )),
+            // Add Habit option
+            _buildAddHabitOption(context, sheetContext, themeState),
             const SizedBox(height: 16),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAddHabitOption(
+    BuildContext parentContext,
+    BuildContext sheetContext,
+    ThemeState themeState,
+  ) {
+    return InkWell(
+      onTap: () {
+        Navigator.pop(sheetContext);
+        _showAddHabitDialog(parentContext, themeState);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Row(
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: themeState.accent.value.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: themeState.accent.value,
+                  width: 2,
+                ),
+              ),
+              child: Icon(
+                Icons.add,
+                size: 8,
+                color: themeState.accent.value,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Text(
+              'Add New Habit',
+              style: TextStyle(
+                color: themeState.accent.value,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAddHabitDialog(BuildContext context, ThemeState themeState) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => _AddHabitDialog(themeState: themeState),
     );
   }
 
@@ -216,6 +250,233 @@ class HabitDropdown extends ConsumerWidget {
       return Color(int.parse('FF$hex', radix: 16));
     } catch (_) {
       return ClearStateColors.sunriseGold;
+    }
+  }
+}
+
+/// Dialog for adding a new habit
+class _AddHabitDialog extends ConsumerStatefulWidget {
+  final ThemeState themeState;
+
+  const _AddHabitDialog({required this.themeState});
+
+  @override
+  ConsumerState<_AddHabitDialog> createState() => _AddHabitDialogState();
+}
+
+class _AddHabitDialogState extends ConsumerState<_AddHabitDialog> {
+  HabitTemplate? _selectedTemplate;
+  DateTime _startDate = DateTime.now();
+
+  @override
+  Widget build(BuildContext context) {
+    final themeState = widget.themeState;
+    final existingHabits = ref.watch(activeHabitsProvider);
+    final existingIds = existingHabits.map((h) => h.id).toSet();
+    
+    // Filter out already added habits
+    final availableTemplates = HabitTemplate.all
+        .where((t) => !existingIds.contains(t.id))
+        .toList();
+
+    return AlertDialog(
+      backgroundColor: themeState.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: Text(
+        'Add New Habit',
+        style: TextStyle(
+          color: themeState.textPrimary,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      content: availableTemplates.isEmpty
+          ? Text(
+              'All available habits have been added.',
+              style: TextStyle(color: themeState.textSecondary),
+            )
+          : SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Select a habit to track:',
+                    style: TextStyle(
+                      color: themeState.textSecondary,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ...availableTemplates.map((template) => _buildTemplateOption(template, themeState)),
+                  const SizedBox(height: 16),
+                  if (_selectedTemplate != null) ...[
+                    Text(
+                      'Start date:',
+                      style: TextStyle(
+                        color: themeState.textSecondary,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: themeState.card,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: themeState.border),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _formatDate(_startDate),
+                              style: TextStyle(
+                                color: themeState.textPrimary,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Icon(
+                              Icons.calendar_today_outlined,
+                              color: themeState.textSecondary,
+                              size: 18,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: themeState.textSecondary),
+          ),
+        ),
+        if (availableTemplates.isNotEmpty && _selectedTemplate != null)
+          TextButton(
+            onPressed: () => _addHabit(context),
+            child: Text(
+              'Add',
+              style: TextStyle(color: themeState.accent.value),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildTemplateOption(HabitTemplate template, ThemeState themeState) {
+    final isSelected = _selectedTemplate?.id == template.id;
+
+    return GestureDetector(
+      onTap: () => setState(() => _selectedTemplate = template),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? template.defaultThemeColor.withValues(alpha: 0.15)
+              : themeState.card,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? template.defaultThemeColor : themeState.border,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              template.icon,
+              color: template.defaultThemeColor,
+              size: 24,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    template.name,
+                    style: TextStyle(
+                      color: themeState.textPrimary,
+                      fontSize: 16,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    template.description,
+                    style: TextStyle(
+                      color: themeState.textMuted,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              Icon(
+                Icons.check_circle,
+                color: template.defaultThemeColor,
+                size: 20,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _startDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() => _startDate = picked);
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final diff = now.difference(date).inDays;
+    if (diff == 0) return 'Today';
+    if (diff == 1) return 'Yesterday';
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
+  Future<void> _addHabit(BuildContext context) async {
+    if (_selectedTemplate == null) return;
+
+    final repository = ref.read(sobrietyRepositoryProvider);
+    final orchestrator = ref.read(sobrietyOrchestratorProvider);
+
+    // Create habit from template
+    final habit = _selectedTemplate!.toHabit(
+      startDate: _startDate,
+      motivation: '',
+    );
+
+    // Save habit and start session
+    await repository.saveHabit(habit);
+    await orchestrator.startNewSession(
+      habit.id,
+      _startDate,
+      scheduleNotifications: false,
+    );
+
+    // Select the newly added habit
+    ref.read(habitSwitcherProvider).selectHabit(habit.id);
+
+    if (context.mounted) {
+      Navigator.pop(context);
     }
   }
 }

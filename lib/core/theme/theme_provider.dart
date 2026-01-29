@@ -31,22 +31,27 @@ class ThemeState {
   final AccentColor accent;
   final AppThemeMode themeMode;
   final bool isDarkMode;
+  final Color? customAccentColor;
 
   const ThemeState({
     required this.accent,
     required this.themeMode,
     required this.isDarkMode,
+    this.customAccentColor,
   });
 
   ThemeState copyWith({
     AccentColor? accent,
     AppThemeMode? themeMode,
     bool? isDarkMode,
+    Color? customAccentColor,
+    bool clearCustomAccent = false,
   }) {
     return ThemeState(
       accent: accent ?? this.accent,
       themeMode: themeMode ?? this.themeMode,
       isDarkMode: isDarkMode ?? this.isDarkMode,
+      customAccentColor: clearCustomAccent ? null : (customAccentColor ?? this.customAccentColor),
     );
   }
 
@@ -67,6 +72,9 @@ class ThemeState {
       isDarkMode ? ClearStateColors.textMutedDark : ClearStateColors.textMutedLight;
   Color get border =>
       isDarkMode ? ClearStateColors.borderDark : ClearStateColors.borderLight;
+  
+  /// Returns the effective accent color (custom if set, otherwise from enum)
+  Color get accentValue => customAccentColor ?? accent.value;
 }
 
 final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeState>((ref) {
@@ -123,6 +131,30 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
   void setAccentColor(AccentColor accent) {
     state = state.copyWith(accent: accent);
     _saveTheme();
+  }
+
+  /// Sets accent color from a hex color string (for habit theme colors)
+  void setAccentColorFromHex(String? hexColor) {
+    if (hexColor == null || hexColor.isEmpty) return;
+    
+    try {
+      final hex = hexColor.replaceFirst('#', '');
+      final color = Color(int.parse('FF$hex', radix: 16));
+      
+      // Find matching AccentColor or use the custom color directly
+      final matchingAccent = AccentColor.values.firstWhere(
+        (a) => a.value.value == color.value,
+        orElse: () => AccentColor.teal,
+      );
+      
+      if (matchingAccent.value.value == color.value) {
+        state = state.copyWith(accent: matchingAccent, clearCustomAccent: true);
+      } else {
+        state = state.copyWith(customAccentColor: color);
+      }
+    } catch (_) {
+      // Ignore invalid hex colors
+    }
   }
 
   void setThemeMode(AppThemeMode mode) {

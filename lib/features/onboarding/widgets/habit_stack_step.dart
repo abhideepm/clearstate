@@ -112,9 +112,7 @@ class _HabitChip extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOut,
+      child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isSelected ? accentColor : themeState.card,
@@ -181,8 +179,8 @@ class _HabitChip extends StatelessWidget {
                 ],
               ),
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
+            // Static checkbox - no animation needed for simple toggle
+            Container(
               width: 24,
               height: 24,
               decoration: BoxDecoration(

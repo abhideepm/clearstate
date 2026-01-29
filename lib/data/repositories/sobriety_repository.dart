@@ -154,72 +154,56 @@ class SobrietyRepository implements ISobrietyRepository {
   }
 
   // Relapses (habit-aware)
-  Future<void> logRelapse(
-    String habitId, {
-    required int drinksConsumed,
-    required double costIncurred,
-    required int caloriesConsumed,
-    required String drinkType,
-  }) async {
+  Future<void> logRelapse(String habitId) async {
     _assertInitialized();
     final habit = getHabit(habitId);
+    if (habit == null) return;
+
+    // Update habit statistics before resetting
+    final currentStreak = habit.totalDays;
+    final newLongestStreak = currentStreak > habit.longestStreak
+        ? currentStreak
+        : habit.longestStreak;
+    final newTotalSober = habit.totalSoberDays + currentStreak;
+    final newRelapseCount = habit.relapseCount + 1;
 
     // Log relapse event
     final relapse = RelapseEvent(
       id: IdGenerator.uuid(),
       habitId: habitId,
       timestamp: DateTime.now(),
-      drinksConsumed: drinksConsumed,
-      costIncurred: costIncurred,
-      caloriesConsumed: caloriesConsumed,
-      streakDaysLost: habit?.totalDays ?? 0,
-      drinkType: drinkType,
+      streakDaysLost: currentStreak,
       isSlip: false,
     );
     await _relapseBox.put(relapse.id, relapse);
 
-    // Update habit start date to reset timer
-    if (habit != null) {
-      final updatedHabit = Habit(
-        id: habit.id,
-        name: habit.name,
-        type: habit.type,
-        themeColor: habit.themeColor,
-        motivation: habit.motivation,
-        startDate: DateTime.now(),
-      );
-      await saveHabit(updatedHabit);
-    }
+    // Update habit with new stats and reset start date
+    final updatedHabit = habit.copyWith(
+      startDate: DateTime.now(),
+      longestStreak: newLongestStreak,
+      totalSoberDays: newTotalSober,
+      relapseCount: newRelapseCount,
+    );
+    await saveHabit(updatedHabit);
 
     // Log daily
     await logDay(
       date: DateTime.now(),
       habitId: habitId,
       isSober: false,
-      drinks: drinksConsumed,
-      moodScore: 3, // Default mood for relapse
+      moodScore: 3,
       symptoms: [],
     );
   }
 
-  Future<void> logSlip(
-    String habitId, {
-    required int drinksConsumed,
-    required double costIncurred,
-    required int caloriesConsumed,
-    required String drinkType,
-  }) async {
+  Future<void> logSlip(String habitId) async {
     _assertInitialized();
 
     final slip = RelapseEvent(
       id: IdGenerator.uuid(),
       habitId: habitId,
       timestamp: DateTime.now(),
-      drinksConsumed: drinksConsumed,
-      costIncurred: costIncurred,
-      caloriesConsumed: caloriesConsumed,
-      streakDaysLost: 0, // Slip doesn't lose streak
-      drinkType: drinkType,
+      streakDaysLost: 0,
       isSlip: true,
     );
     await _relapseBox.put(slip.id, slip);
@@ -228,7 +212,6 @@ class SobrietyRepository implements ISobrietyRepository {
       date: DateTime.now(),
       habitId: habitId,
       isSober: false,
-      drinks: drinksConsumed,
       moodScore: 3,
       symptoms: [],
     );
@@ -394,13 +377,9 @@ class SobrietyRepository implements ISobrietyRepository {
         id: slip.id,
         timestamp: slip.timestamp,
         habitId: slip.habitId,
-        drinksConsumed: slip.drinksConsumed,
-        costIncurred: slip.costIncurred,
-        caloriesConsumed: slip.caloriesConsumed,
         streakDaysLost: habit == null
             ? 0
             : now.difference(habit.startDate).inDays,
-        drinkType: slip.drinkType,
         isSlip: false,
       );
       await _relapseBox.put(updated.id, updated);

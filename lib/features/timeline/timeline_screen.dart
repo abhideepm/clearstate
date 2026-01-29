@@ -7,6 +7,7 @@ import '../../shared/widgets/noise_background.dart';
 import '../../shared/widgets/scroll_reveal.dart';
 import '../../shared/widgets/haptic_scroll_view.dart';
 import '../timer/timer_provider.dart';
+import '../timer/widgets/habit_dropdown.dart';
 import 'widgets/milestone_card.dart';
 
 class TimelineScreen extends ConsumerWidget {
@@ -34,12 +35,18 @@ class TimelineScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Timeline',
-                            style: ClearStateTypography.h1.copyWith(
-                              color: themeState.textPrimary,
-                              fontSize: 28,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Timeline',
+                                style: ClearStateTypography.h1.copyWith(
+                                  color: themeState.textPrimary,
+                                  fontSize: 28,
+                                ),
+                              ),
+                              const HabitDropdown(),
+                            ],
                           ),
                           const SizedBox(height: 8),
                           Text(
