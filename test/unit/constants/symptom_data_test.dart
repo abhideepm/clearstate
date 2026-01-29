@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clearstate/core/constants/symptom_definitions.dart';
-import 'package:clearstate/core/constants/symptom_milestones.dart';
+import 'package:truestate/core/constants/symptom_definitions.dart';
+import 'package:truestate/core/constants/symptom_milestones.dart';
 
 void main() {
   group('Symptom Data Tests', () {

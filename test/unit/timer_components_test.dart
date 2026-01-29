@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clearstate/features/timer/timer_provider.dart';
+import 'package:truestate/features/timer/timer_provider.dart';
 
 void main() {
   group('TimerComponents', () {

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clearstate/core/constants/stoic_quotes.dart';
-import 'package:clearstate/core/constants/bio_states.dart';
-import 'package:clearstate/data/models/widget_config.dart';
+import 'package:truestate/core/constants/stoic_quotes.dart';
+import 'package:truestate/core/constants/bio_states.dart';
+import 'package:truestate/data/models/widget_config.dart';
 
 void main() {
   // ============================================================

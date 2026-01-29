@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clearstate/core/constants/milestones.dart';
+import 'package:truestate/core/constants/milestones.dart';
 
 void main() {
   group('RecoveryMilestones', () {
@@ -13,7 +13,7 @@ void main() {
 
     test('getNextMilestone returns next milestone correctly', () {
       expect(RecoveryMilestones.getNextMilestone(0)?.title, '24 Hours');
-      expect(RecoveryMilestones.getNextMilestone(1)?.title, '48 Hours');
+      expect(RecoveryMilestones.getNextMilestone(1)?.title, '72 Hours');
       expect(RecoveryMilestones.getNextMilestone(365), isNull);
     });
 

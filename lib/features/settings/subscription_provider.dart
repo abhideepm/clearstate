@@ -1,20 +1,47 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../core/services/subscription_service.dart';
 import '../../data/models/subscription_status.dart';
+import '../../data/repositories/i_sobriety_repository.dart';
+import '../../data/repositories/sobriety_repository.dart';
 
 final subscriptionServiceProvider = Provider<SubscriptionService>((ref) {
   return SubscriptionService();
 });
 
-final subscriptionStatusProvider = StateNotifierProvider<SubscriptionNotifier, SubscriptionStatus>((ref) {
+final subscriptionStatusProvider =
+    StateNotifierProvider<SubscriptionNotifier, SubscriptionStatus>((ref) {
   final service = ref.watch(subscriptionServiceProvider);
-  return SubscriptionNotifier(service);
+  final repository = ref.watch(sobrietyRepositoryProvider);
+  return SubscriptionNotifier(service, repository);
+});
+
+/// Computed provider for checking if user has premium access (trial OR subscription)
+final hasPremiumAccessProvider = Provider<bool>((ref) {
+  final status = ref.watch(subscriptionStatusProvider);
+  final repository = ref.watch(sobrietyRepositoryProvider);
+  final profile = repository.getUserProfile();
+
+  // Check RevenueCat subscription first
+  if (status.hasAccess) return true;
+
+  // Fall back to local trial check
+  return profile?.hasPremiumAccess ?? false;
+});
+
+/// Offerings provider for paywall UI
+final offeringsProvider = FutureProvider<Offerings?>((ref) async {
+  final service = ref.watch(subscriptionServiceProvider);
+  await service.initialize();
+  return service.getOfferings();
 });
 
 class SubscriptionNotifier extends StateNotifier<SubscriptionStatus> {
   final SubscriptionService _service;
+  final ISobrietyRepository _repository;
 
-  SubscriptionNotifier(this._service) : super(SubscriptionStatus.free()) {
+  SubscriptionNotifier(this._service, this._repository)
+      : super(SubscriptionStatus.free()) {
     _init();
   }
 
@@ -24,19 +51,48 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionStatus> {
   }
 
   Future<void> refreshStatus() async {
-    state = await _service.getSubscriptionStatus();
+    final remoteStatus = await _service.getSubscriptionStatus();
+
+    // If no remote subscription, check local trial
+    if (!remoteStatus.isPro) {
+      final profile = _repository.getUserProfile();
+      if (profile != null && profile.isInTrial) {
+        final trialEnd =
+            profile.trialStartDate!.add(const Duration(days: 7));
+        state = SubscriptionStatus.trial(trialEndDate: trialEnd);
+        return;
+      }
+    }
+
+    state = remoteStatus;
   }
 
-  Future<bool> purchasePro() async {
-    final success = await _service.purchasePro();
-    if (success) {
-      await refreshStatus();
-    }
+  Future<bool> purchaseMonthly() async {
+    final success = await _service.purchaseMonthly();
+    if (success) await refreshStatus();
+    return success;
+  }
+
+  Future<bool> purchaseQuarterly() async {
+    final success = await _service.purchaseQuarterly();
+    if (success) await refreshStatus();
+    return success;
+  }
+
+  Future<bool> purchaseAnnual() async {
+    final success = await _service.purchaseAnnual();
+    if (success) await refreshStatus();
+    return success;
+  }
+
+  Future<bool> purchaseLifetime() async {
+    final success = await _service.purchaseLifetime();
+    if (success) await refreshStatus();
     return success;
   }
 
   Future<void> restorePurchases() async {
-    await _service.restorePurchases();
-    await refreshStatus();
+    final status = await _service.restorePurchases();
+    state = status;
   }
 }

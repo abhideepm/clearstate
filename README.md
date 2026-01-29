@@ -1,4 +1,4 @@
-# clearstate
+# TrueState
 
 A new Flutter project.
 

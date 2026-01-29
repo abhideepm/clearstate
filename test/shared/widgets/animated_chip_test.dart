@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clearstate/shared/widgets/animated_chip.dart';
-import 'package:clearstate/core/theme/colors.dart';
+import 'package:truestate/shared/widgets/animated_chip.dart';
+import 'package:truestate/core/theme/colors.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -202,7 +202,7 @@ void main() {
             )
             .first,
       );
-      expect(defaultTextStyle.style.color, ClearStateColors.void_);
+      expect(defaultTextStyle.style.color, ClearStateColors.deepCharcoal);
     });
 
     testWidgets('correct text color when unselected', (tester) async {
@@ -224,7 +224,7 @@ void main() {
             )
             .first,
       );
-      expect(defaultTextStyle.style.color, ClearStateColors.bone);
+      expect(defaultTextStyle.style.color, ClearStateColors.warmIvory);
     });
 
     testWidgets('padding is applied correctly', (tester) async {

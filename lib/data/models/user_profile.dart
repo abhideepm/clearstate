@@ -27,12 +27,12 @@ class UserProfile extends HiveObject {
     this.isPremium = false,
   });
 
-  /// Check if user is in trial period (14 days)
+  /// Check if user is in trial period (7 days)
   bool get isInTrial {
     if (isPremium) return false;
     if (trialStartDate == null) return false;
     
-    final trialEnd = trialStartDate!.add(const Duration(days: 14));
+    final trialEnd = trialStartDate!.add(const Duration(days: 7));
     return DateTime.now().isBefore(trialEnd);
   }
 
@@ -41,7 +41,7 @@ class UserProfile extends HiveObject {
     if (isPremium) return false;
     if (trialStartDate == null) return false;
     
-    final trialEnd = trialStartDate!.add(const Duration(days: 14));
+    final trialEnd = trialStartDate!.add(const Duration(days: 7));
     return DateTime.now().isAfter(trialEnd);
   }
 
@@ -49,9 +49,9 @@ class UserProfile extends HiveObject {
   int get trialDaysRemaining {
     if (isPremium || trialStartDate == null) return 0;
     
-    final trialEnd = trialStartDate!.add(const Duration(days: 14));
+    final trialEnd = trialStartDate!.add(const Duration(days: 7));
     final remaining = trialEnd.difference(DateTime.now()).inDays;
-    return remaining.clamp(0, 14);
+    return remaining.clamp(0, 7);
   }
 
   /// Whether user has premium access (either paid or trial)

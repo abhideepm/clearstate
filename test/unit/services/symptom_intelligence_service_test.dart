@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:clearstate/core/services/symptom_intelligence_service.dart';
+import 'package:truestate/core/services/symptom_intelligence_service.dart';
 
 void main() {
   final service = SymptomIntelligenceService();

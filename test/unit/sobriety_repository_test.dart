@@ -2,12 +2,12 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:clearstate/data/repositories/sobriety_repository.dart';
-import 'package:clearstate/data/models/user_profile.dart';
-import 'package:clearstate/data/models/habit.dart';
-import 'package:clearstate/data/models/sobriety_session.dart';
-import 'package:clearstate/data/models/relapse_event.dart';
-import 'package:clearstate/data/models/daily_log.dart';
+import 'package:truestate/data/repositories/sobriety_repository.dart';
+import 'package:truestate/data/models/user_profile.dart';
+import 'package:truestate/data/models/habit.dart';
+import 'package:truestate/data/models/sobriety_session.dart';
+import 'package:truestate/data/models/relapse_event.dart';
+import 'package:truestate/data/models/daily_log.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -118,13 +118,7 @@ void main() {
 
       await repository.startNewSession(habitId, startDate: startDate);
 
-      await repository.logRelapse(
-        habitId,
-        drinksConsumed: 5,
-        costIncurred: 50.0,
-        caloriesConsumed: 1000,
-        drinkType: 'Beer',
-      );
+      await repository.logRelapse(habitId);
 
       // After relapse, habit startDate is reset
       final habit = repository.getHabit(habitId);

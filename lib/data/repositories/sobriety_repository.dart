@@ -117,6 +117,7 @@ class SobrietyRepository implements ISobrietyRepository {
     final profile = UserProfile(
       selectedHabitIds: selectedHabitIds,
       onboardingComplete: onboardingComplete,
+      trialStartDate: DateTime.now(), // Start 7-day trial on first profile creation
     );
     await updateUserProfile(profile);
   }

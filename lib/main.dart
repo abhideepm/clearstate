@@ -9,6 +9,7 @@ import 'core/constants/hive_boxes.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/widget_update_service.dart';
 import 'core/services/hive_adapter_registry.dart';
+import 'core/services/subscription_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,10 @@ void main() async {
 
   final repository = SobrietyRepository();
   await repository.init();
+
+  // Initialize RevenueCat SDK
+  final subscriptionService = SubscriptionService();
+  await subscriptionService.initialize();
 
   final widgetService = WidgetUpdateService();
   await widgetService.initializeWidgets();

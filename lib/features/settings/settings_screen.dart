@@ -7,9 +7,12 @@ import '../../core/services/haptic_service.dart';
 import '../../core/services/backup_service.dart';
 import '../../shared/widgets/noise_background.dart';
 import '../../shared/widgets/glass_card.dart';
+import '../../data/models/subscription_status.dart';
 import '../security/security_provider.dart';
 import '../home_widgets/widget_settings_screen.dart';
 import '../../core/utils/pro_feature_gate.dart';
+import '../subscription/paywall_screen.dart';
+import 'subscription_provider.dart';
 import 'widgets/settings_toggle.dart';
 import 'widgets/wipe_confirmation_dialog.dart';
 import 'widgets/restore_confirmation_dialog.dart';
@@ -29,6 +32,7 @@ class SettingsScreen extends ConsumerWidget {
     final notificationSettings = ref.watch(notificationSettingsProvider);
     final backupService = ref.watch(backupServiceProvider);
     final themeState = ref.watch(themeProvider);
+    final subscriptionStatus = ref.watch(subscriptionStatusProvider);
 
     return Scaffold(
       backgroundColor: themeState.background,
@@ -58,6 +62,39 @@ class SettingsScreen extends ConsumerWidget {
                 child: ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   children: [
+                    // Subscription Section
+                    _SectionHeader(title: 'Subscription'),
+                    const SizedBox(height: 12),
+                    _SubscriptionCard(
+                      status: subscriptionStatus,
+                      onUpgrade: () {
+                        HapticService.light();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (_) => const PaywallScreen(),
+                          ),
+                        );
+                      },
+                      onRestore: () async {
+                        HapticService.light();
+                        await ref.read(subscriptionStatusProvider.notifier).restorePurchases();
+                        if (context.mounted) {
+                          final newStatus = ref.read(subscriptionStatusProvider);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                newStatus.isPro
+                                    ? 'Pro subscription restored!'
+                                    : 'No active subscription found',
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 32),
+
                     _SectionHeader(title: 'Appearance'),
                     const SizedBox(height: 12),
                     ProFeatureGate(
@@ -442,6 +479,113 @@ class _SettingsFooter extends StatelessWidget {
             'Made with care ✨',
             style: ClearStateTypography.caption.copyWith(
               color: ClearStateColors.lavender.withValues(alpha: 0.6),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SubscriptionCard extends StatelessWidget {
+  final SubscriptionStatus status;
+  final VoidCallback onUpgrade;
+  final VoidCallback onRestore;
+
+  const _SubscriptionCard({
+    required this.status,
+    required this.onUpgrade,
+    required this.onRestore,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isPro = status.isPro;
+    final isTrialing = status.isTrialing;
+
+    return GlassContainer(
+      padding: const EdgeInsets.all(16),
+      borderRadius: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isPro
+                      ? ClearStateColors.accent.withOpacity(0.2)
+                      : ClearStateColors.textTertiaryDark.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  isPro ? Icons.star : Icons.star_border,
+                  color: isPro
+                      ? ClearStateColors.accent
+                      : ClearStateColors.textTertiaryDark,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isPro
+                          ? (isTrialing ? 'Pro Trial' : 'Pro')
+                          : 'Free',
+                      style: ClearStateTypography.bodySemiBold.copyWith(
+                        color: isPro
+                            ? ClearStateColors.accent
+                            : ClearStateColors.textPrimaryDark,
+                      ),
+                    ),
+                    Text(
+                      isPro
+                          ? (isTrialing
+                              ? 'Full features during trial'
+                              : 'All features unlocked')
+                          : 'Limited to 2 habits',
+                      style: ClearStateTypography.caption,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (!isPro || isTrialing) ...[
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: onUpgrade,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ClearStateColors.accent,
+                  foregroundColor: ClearStateColors.darkBackground,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  isTrialing ? 'Upgrade Now' : 'Upgrade to Pro',
+                  style: ClearStateTypography.button,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          Center(
+            child: TextButton(
+              onPressed: onRestore,
+              child: Text(
+                'Restore Purchases',
+                style: ClearStateTypography.caption.copyWith(
+                  color: ClearStateColors.textTertiaryDark,
+                ),
+              ),
             ),
           ),
         ],

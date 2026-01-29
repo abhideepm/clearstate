@@ -2,7 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/theme_provider.dart';
 import '../../data/models/habit.dart';
 import '../../data/repositories/sobriety_repository.dart';
+import '../settings/subscription_provider.dart';
 import 'timer_provider.dart';
+
+/// Maximum habits allowed for free tier
+const int _freeHabitLimit = 2;
 
 /// ID of the currently selected habit for display
 final selectedHabitIdProvider = StateProvider<String?>((ref) => null);
@@ -13,6 +17,24 @@ final activeHabitsProvider = Provider<List<Habit>>((ref) {
   ref.keepAlive();
   final repository = ref.watch(sobrietyRepositoryProvider);
   return repository.getAllHabits().where((h) => h.isActive).toList();
+});
+
+/// Whether user can add another habit (free tier: max 2, pro: unlimited)
+final canAddHabitProvider = Provider<bool>((ref) {
+  final hasPremium = ref.watch(hasPremiumAccessProvider);
+  if (hasPremium) return true;
+
+  final habits = ref.watch(activeHabitsProvider);
+  return habits.length < _freeHabitLimit;
+});
+
+/// Number of habits remaining for free users (0 if at limit)
+final remainingFreeHabitsProvider = Provider<int>((ref) {
+  final hasPremium = ref.watch(hasPremiumAccessProvider);
+  if (hasPremium) return 999; // Unlimited
+
+  final habits = ref.watch(activeHabitsProvider);
+  return (_freeHabitLimit - habits.length).clamp(0, _freeHabitLimit);
 });
 
 

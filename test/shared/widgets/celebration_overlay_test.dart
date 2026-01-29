@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:clearstate/shared/widgets/celebration_overlay.dart';
-import 'package:clearstate/core/theme/colors.dart';
-import 'package:clearstate/core/theme/typography.dart';
+import 'package:truestate/shared/widgets/celebration_overlay.dart';
+import 'package:truestate/core/theme/colors.dart';
+import 'package:truestate/core/theme/typography.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -237,7 +237,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 4500));
 
       final textWidget = tester.widget<Text>(find.text('STYLED'));
-      expect(textWidget.style?.color, ClearStateColors.bone);
+      expect(textWidget.style?.color, ClearStateColors.warmIvory);
       expect(textWidget.style?.fontSize, ClearStateTypography.h2.fontSize);
     });
 

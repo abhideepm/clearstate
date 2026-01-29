@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:clearstate/shared/widgets/brutalist_button.dart';
+import 'package:truestate/shared/widgets/brutalist_button.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('BrutalistButton', () {
+  group('ModernButton', () {
     testWidgets('primary variant renders correctly with label', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButton(
+              body: ModernButton(
                 label: 'TEST BUTTON',
                 onPressed: () {},
-                type: BrutalistButtonType.primary,
+                type: ModernButtonType.primary,
               ),
             ),
           ),
@@ -33,10 +33,10 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButton(
+              body: ModernButton(
                 label: 'SECONDARY',
                 onPressed: () {},
-                type: BrutalistButtonType.secondary,
+                type: ModernButtonType.secondary,
               ),
             ),
           ),
@@ -51,7 +51,7 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButton(label: 'PRESS ME', onPressed: () {}),
+              body: ModernButton(label: 'PRESS ME', onPressed: () {}),
             ),
           ),
         ),
@@ -68,7 +68,7 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButton(label: 'HAPTIC TEST', onPressed: () {}),
+              body: ModernButton(label: 'HAPTIC TEST', onPressed: () {}),
             ),
           ),
         ),
@@ -87,7 +87,7 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButton(
+              body: ModernButton(
                 label: 'CALLBACK TEST',
                 onPressed: () => pressed = true,
               ),
@@ -113,7 +113,7 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButton(
+              body: ModernButton(
                 label: 'DISABLED',
                 onPressed: () => tapped = true,
                 enabled: false,
@@ -134,7 +134,7 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButton(
+              body: ModernButton(
                 label: 'LOADING',
                 onPressed: () {},
                 isLoading: true,
@@ -154,7 +154,7 @@ void main() {
           child: MaterialApp(
             home: Scaffold(
               body: Center(
-                child: BrutalistButton(
+                child: ModernButton(
                   label: 'SIZED',
                   onPressed: () {},
                   width: 200,
@@ -170,7 +170,7 @@ void main() {
     });
   });
 
-  group('BrutalistButtonIcon', () {
+  group('ModernIconButton', () {
     testWidgets('primary icon button renders correctly', (tester) async {
       bool pressed = false;
 
@@ -178,10 +178,10 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButtonIcon(
+              body: ModernIconButton(
                 icon: Icons.add,
                 onPressed: () => pressed = true,
-                type: BrutalistButtonType.primary,
+                type: ModernButtonType.primary,
               ),
             ),
           ),
@@ -197,10 +197,10 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButtonIcon(
+              body: ModernIconButton(
                 icon: Icons.remove,
                 onPressed: () {},
-                type: BrutalistButtonType.secondary,
+                type: ModernButtonType.secondary,
               ),
             ),
           ),
@@ -215,13 +215,13 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButtonIcon(icon: Icons.star, onPressed: () {}),
+              body: ModernIconButton(icon: Icons.star, onPressed: () {}),
             ),
           ),
         ),
       );
 
-      await tester.tap(find.byType(BrutalistButtonIcon));
+      await tester.tap(find.byType(ModernIconButton));
       await tester.pump();
 
       expect(find.byIcon(Icons.star), findsOneWidget);
@@ -232,7 +232,7 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: BrutalistButtonIcon(
+              body: ModernIconButton(
                 icon: Icons.settings,
                 onPressed: () {},
                 size: 64,

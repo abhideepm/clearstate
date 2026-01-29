@@ -2,12 +2,12 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
-import 'package:clearstate/data/repositories/sobriety_repository.dart';
-import 'package:clearstate/data/models/user_profile.dart';
-import 'package:clearstate/data/models/habit.dart';
-import 'package:clearstate/data/models/sobriety_session.dart';
-import 'package:clearstate/data/models/relapse_event.dart';
-import 'package:clearstate/data/models/daily_log.dart';
+import 'package:truestate/data/repositories/sobriety_repository.dart';
+import 'package:truestate/data/models/user_profile.dart';
+import 'package:truestate/data/models/habit.dart';
+import 'package:truestate/data/models/sobriety_session.dart';
+import 'package:truestate/data/models/relapse_event.dart';
+import 'package:truestate/data/models/daily_log.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -135,9 +135,6 @@ void main() {
           'onboardingComplete': true,
           'selectedHabitIds': ['default'],
           'lastDrinkDate': exportDate.toIso8601String(),
-          'avgDrinksPerWeek': 14,
-          'avgDailySpend': 5.5,
-          'avgDailyCalories': 200,
         },
         'sessions': [
           {
@@ -164,7 +161,7 @@ void main() {
 
       final profile = repository.getUserProfile();
       expect(profile, isNotNull);
-      expect(profile!.avgDrinksPerWeek, 14);
+      expect(profile!.onboardingComplete, true);
 
       final activeSession = repository.getActiveSession('default');
       expect(activeSession, isNotNull);

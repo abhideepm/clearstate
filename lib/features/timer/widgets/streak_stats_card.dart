@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:clearstate/core/theme/theme_provider.dart';
-import 'package:clearstate/features/timer/habit_provider.dart';
+import 'package:truestate/core/theme/theme_provider.dart';
+import 'package:truestate/features/timer/habit_provider.dart';
 
 /// Card displaying streak statistics for the currently selected habit
 class StreakStatsCard extends ConsumerWidget {

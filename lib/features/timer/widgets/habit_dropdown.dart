@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:clearstate/core/theme/colors.dart';
-import 'package:clearstate/core/theme/theme_provider.dart';
-import 'package:clearstate/data/models/habit.dart';
-import 'package:clearstate/data/models/habit_template.dart';
-import 'package:clearstate/data/repositories/sobriety_repository.dart';
-import 'package:clearstate/data/repositories/i_sobriety_repository.dart';
-import 'package:clearstate/core/services/sobriety_orchestrator.dart';
-import 'package:clearstate/features/timer/habit_provider.dart';
+import 'package:truestate/core/theme/colors.dart';
+import 'package:truestate/core/theme/theme_provider.dart';
+import 'package:truestate/data/models/habit.dart';
+import 'package:truestate/data/models/habit_template.dart';
+import 'package:truestate/data/repositories/sobriety_repository.dart';
+import 'package:truestate/data/repositories/i_sobriety_repository.dart';
+import 'package:truestate/core/services/sobriety_orchestrator.dart';
+import 'package:truestate/features/timer/habit_provider.dart';
 
 /// Modern dropdown widget for selecting active habit
 class HabitDropdown extends ConsumerWidget {

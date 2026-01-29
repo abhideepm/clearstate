@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:clearstate/shared/widgets/haptic_calendar.dart';
+import 'package:truestate/shared/widgets/haptic_calendar.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +23,7 @@ void main() {
       );
 
       expect(find.byType(HapticCalendar), findsOneWidget);
-      expect(find.byType(Wrap), findsOneWidget);
+      expect(find.byType(GridView), findsOneWidget);
     });
 
     testWidgets('selected date highlighted', (tester) async {
@@ -181,7 +181,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(Wrap), findsOneWidget);
+      expect(find.byType(GridView), findsOneWidget);
     });
 
     testWidgets('shouldDisableDate callback prevents selection', (
@@ -259,7 +259,7 @@ void main() {
       expect(todayText, findsWidgets);
 
       // Verify the highlighted today cell has a border (accent color border for today)
-      final containers = find.byType(AnimatedContainer);
+      final containers = find.byType(DecoratedBox);
       expect(containers, findsWidgets);
     });
 
