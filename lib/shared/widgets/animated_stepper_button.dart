@@ -43,7 +43,7 @@ class _AnimatedStepperButtonState extends ConsumerState<AnimatedStepperButton>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _colorAnimation = ColorTween(
-      begin: ClearStateColors.charcoal,
+      begin: ClearStateColors.darkSurface,
       end: ClearStateColors.graphite,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
   }
@@ -81,23 +81,23 @@ class _AnimatedStepperButtonState extends ConsumerState<AnimatedStepperButton>
               color: _colorAnimation.value,
               border: Border.all(
                 color: widget.enabled
-                    ? ClearStateColors.ash
-                    : ClearStateColors.ash.withValues(alpha: 0.3),
+                    ? ClearStateColors.borderDark
+                    : ClearStateColors.borderDark.withValues(alpha: 0.3),
                 width: 1,
               ),
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: widget.enabled ? _handleTap : null,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(12),
                 child: Center(
                   child: Icon(
                     widget.icon,
                     color: widget.enabled
-                        ? ClearStateColors.bone
-                        : ClearStateColors.smoke.withValues(alpha: 0.5),
+                        ? ClearStateColors.textPrimaryDark
+                        : ClearStateColors.textSecondaryDark.withValues(alpha: 0.5),
                     size: 20,
                   ),
                 ),

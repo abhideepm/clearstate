@@ -72,7 +72,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     if (_showCelebration) {
       return Scaffold(
         backgroundColor: themeState.background,
-        body: NoiseBackground(
+        body: DawnBackground(
           opacity: 0.025,
           child: CelebrationStep(onComplete: widget.onComplete),
         ),
@@ -81,7 +81,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
     return Scaffold(
       backgroundColor: themeState.background,
-      body: NoiseBackground(
+      body: DawnBackground(
         opacity: 0.025,
         child: SafeArea(
           child: Column(
@@ -136,7 +136,7 @@ class _OnboardingProgress extends ConsumerWidget {
                     height: 4,
                     decoration: BoxDecoration(
                       color: isActive ? accentColor : themeState.border,
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),

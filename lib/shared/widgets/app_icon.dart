@@ -16,9 +16,9 @@ class AppIconWidget extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: ClearStateColors.void_,
+        color: ClearStateColors.darkBackground,
         border: showBorder
-            ? Border.all(color: ClearStateColors.ash, width: 1)
+            ? Border.all(color: ClearStateColors.borderDark, width: 1)
             : null,
       ),
       child: Stack(
@@ -29,7 +29,7 @@ class AppIconWidget extends StatelessWidget {
             left: 0,
             right: 0,
             height: size * 0.15,
-            child: Container(color: ClearStateColors.signal),
+            child: Container(color: ClearStateColors.dawnCoral),
           ),
           // Typography
           Center(
@@ -50,7 +50,7 @@ class AppIconWidget extends StatelessWidget {
                   style: ClearStateTypography.timerLabel.copyWith(
                     fontSize: size * 0.08,
                     letterSpacing: size * 0.02,
-                    color: ClearStateColors.smoke,
+                    color: ClearStateColors.textSecondaryDark,
                   ),
                 ),
               ],
@@ -73,7 +73,7 @@ class AppIconMinimal extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(color: ClearStateColors.void_),
+      decoration: const BoxDecoration(color: ClearStateColors.darkBackground),
       child: Stack(
         children: [
           // Signal accent bar at bottom
@@ -82,7 +82,7 @@ class AppIconMinimal extends StatelessWidget {
             left: 0,
             right: 0,
             height: size * 0.12,
-            child: Container(color: ClearStateColors.signal),
+            child: Container(color: ClearStateColors.dawnCoral),
           ),
           // Just "CS" letters
           Center(

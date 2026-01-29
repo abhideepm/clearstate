@@ -18,10 +18,10 @@ class SlipPatternDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: ClearStateColors.charcoal,
+      backgroundColor: ClearStateColors.darkSurface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(2),
-        side: const BorderSide(color: ClearStateColors.ash),
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: ClearStateColors.borderDark),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -34,12 +34,12 @@ class SlipPatternDialog extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: ClearStateColors.signal.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(2),
+                color: ClearStateColors.dawnCoral.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.insights,
-                color: ClearStateColors.signal,
+                color: ClearStateColors.dawnCoral,
                 size: 28,
               ),
             ),
@@ -48,7 +48,7 @@ class SlipPatternDialog extends StatelessWidget {
             Text(
               'A GENTLE OBSERVATION',
               style: ClearStateTypography.h3.copyWith(
-                color: ClearStateColors.signal,
+                color: ClearStateColors.dawnCoral,
               ),
             ),
             const SizedBox(height: 12),
@@ -56,7 +56,7 @@ class SlipPatternDialog extends StatelessWidget {
             Text(
               "You've had a few slips recently. This isn't judgment—just a moment to reflect.",
               style: ClearStateTypography.body.copyWith(
-                color: ClearStateColors.bone,
+                color: ClearStateColors.textPrimaryDark,
                 height: 1.5,
               ),
             ),
@@ -74,16 +74,16 @@ class SlipPatternDialog extends StatelessWidget {
                 onKeepAsSlips();
               },
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: ClearStateColors.ash),
+                side: const BorderSide(color: ClearStateColors.borderDark),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: Text(
                 'KEEP AS SLIPS',
                 style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.bone,
+                  color: ClearStateColors.textPrimaryDark,
                 ),
               ),
             ),
@@ -96,7 +96,7 @@ class SlipPatternDialog extends StatelessWidget {
                 await onConvertToRelapse();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ClearStateColors.signal,
+                backgroundColor: ClearStateColors.dawnCoral,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Text('RESET AND START FRESH'),

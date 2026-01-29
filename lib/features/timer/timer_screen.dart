@@ -73,7 +73,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen>
 
     return Scaffold(
       backgroundColor: themeState.background,
-      body: NoiseBackground(
+      body: DawnBackground(
         opacity: 0.02,
         child: SafeArea(
           child: SingleChildScrollView(

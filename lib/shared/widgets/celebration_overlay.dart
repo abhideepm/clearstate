@@ -74,9 +74,9 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
 
   Color _getRandomColor() {
     final colors = [
-      ClearStateColors.signal,
-      ClearStateColors.sober,
-      ClearStateColors.bone,
+      ClearStateColors.dawnCoral,
+      ClearStateColors.success,
+      ClearStateColors.textPrimaryDark,
       Colors.white,
       const Color(0xFFFF6B35),
       const Color(0xFF00D26A),
@@ -136,9 +136,9 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
             margin: const EdgeInsets.only(top: 60),
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
-              color: ClearStateColors.charcoal,
-              border: Border.all(color: ClearStateColors.ash, width: 1),
-              borderRadius: BorderRadius.circular(4),
+              color: ClearStateColors.darkSurface,
+              border: Border.all(color: ClearStateColors.borderDark, width: 1),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -146,7 +146,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
                 Text(
                   'MILESTONE REACHED',
                   style: ClearStateTypography.caption.copyWith(
-                    color: ClearStateColors.sober,
+                    color: ClearStateColors.success,
                     letterSpacing: 2,
                   ),
                 ),
@@ -154,7 +154,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
                 Text(
                   widget.milestoneTitle,
                   style: ClearStateTypography.h2.copyWith(
-                    color: ClearStateColors.bone,
+                    color: ClearStateColors.textPrimaryDark,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -162,7 +162,7 @@ class _CelebrationOverlayState extends State<CelebrationOverlay>
                 Text(
                   'Tap anywhere to continue',
                   style: ClearStateTypography.caption.copyWith(
-                    color: ClearStateColors.smoke,
+                    color: ClearStateColors.textSecondaryDark,
                   ),
                 ),
               ],

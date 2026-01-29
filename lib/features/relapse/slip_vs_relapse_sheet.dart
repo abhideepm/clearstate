@@ -17,7 +17,7 @@ class SlipVsRelapseSheet extends ConsumerWidget {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: ClearStateColors.charcoal,
+      backgroundColor: ClearStateColors.darkSurface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
@@ -43,8 +43,8 @@ class SlipVsRelapseSheet extends ConsumerWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: ClearStateColors.ash,
-                borderRadius: BorderRadius.circular(2),
+                color: ClearStateColors.borderDark,
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
@@ -77,7 +77,7 @@ class SlipVsRelapseSheet extends ConsumerWidget {
             title: 'A FULL RELAPSE',
             subtitle: 'Back to old patterns. Timer resets.',
             icon: Icons.restart_alt,
-            color: ClearStateColors.relapse,
+            color: ClearStateColors.error,
             onTap: () => _showDrinkInput(context, isSlip: false),
           ),
           const SizedBox(height: 24),
@@ -91,7 +91,7 @@ class SlipVsRelapseSheet extends ConsumerWidget {
             child: Text(
               'CANCEL',
               style: ClearStateTypography.button.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
               ),
             ),
           ),
@@ -125,8 +125,8 @@ class _ChoiceCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: ClearStateColors.void_,
-          borderRadius: BorderRadius.circular(2),
+          color: ClearStateColors.darkBackground,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
         ),
         child: Row(
@@ -136,7 +136,7 @@ class _ChoiceCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 24),
             ),
@@ -153,13 +153,13 @@ class _ChoiceCard extends StatelessWidget {
                   Text(
                     subtitle,
                     style: ClearStateTypography.caption.copyWith(
-                      color: ClearStateColors.smoke,
+                      color: ClearStateColors.textSecondaryDark,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: ClearStateColors.ash),
+            Icon(Icons.chevron_right, color: ClearStateColors.borderDark),
           ],
         ),
       ),

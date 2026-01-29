@@ -11,8 +11,8 @@ class RestoreConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: ClearStateColors.void_,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      backgroundColor: ClearStateColors.darkBackground,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -22,7 +22,7 @@ class RestoreConfirmationDialog extends StatelessWidget {
             Text(
               'RESTORE DATA?',
               style: ClearStateTypography.timerLabel.copyWith(
-                color: ClearStateColors.signal,
+                color: ClearStateColors.dawnCoral,
                 letterSpacing: 4,
               ),
             ),
@@ -30,7 +30,7 @@ class RestoreConfirmationDialog extends StatelessWidget {
             Text(
               'This will permanently overwrite all your current data with the contents of the backup file. This cannot be undone.',
               style: ClearStateTypography.body.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
               ),
             ),
             const SizedBox(height: 32),
@@ -42,7 +42,7 @@ class RestoreConfirmationDialog extends StatelessWidget {
                   child: Text(
                     'CANCEL',
                     style: ClearStateTypography.caption.copyWith(
-                      color: ClearStateColors.ash,
+                      color: ClearStateColors.borderDark,
                       letterSpacing: 2,
                     ),
                   ),
@@ -55,11 +55,11 @@ class RestoreConfirmationDialog extends StatelessWidget {
                     onConfirm();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ClearStateColors.signal,
-                    foregroundColor: ClearStateColors.void_,
+                    backgroundColor: ClearStateColors.dawnCoral,
+                    foregroundColor: ClearStateColors.darkBackground,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                   child: const Text('RESTORE'),

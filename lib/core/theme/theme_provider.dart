@@ -13,7 +13,7 @@ enum AppThemeMode {
 
 /// Accent color options
 enum AccentColor {
-  sunYellow(ClearStateColors.sunYellow, 'Sun Yellow'),
+  teal(ClearStateColors.accent, 'Teal'),
   electricBlue(Color(0xFF3B82F6), 'Electric Blue'),
   emerald(Color(0xFF22C55E), 'Emerald'),
   rose(Color(0xFFF43F5E), 'Rose'),
@@ -81,7 +81,7 @@ class ThemeNotifier extends StateNotifier<ThemeState> {
   ThemeNotifier()
       : super(
           ThemeState(
-            accent: AccentColor.sunYellow,
+            accent: AccentColor.teal,
             themeMode: AppThemeMode.dark,
             isDarkMode: true,
           ),

@@ -131,9 +131,9 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
 
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.charcoal,
-        border: Border.all(color: ClearStateColors.ash, width: 1),
-        borderRadius: BorderRadius.circular(4),
+        color: ClearStateColors.darkSurface,
+        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -159,7 +159,7 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
             padding: const EdgeInsets.all(8),
             child: const Icon(
               Icons.chevron_left,
-              color: ClearStateColors.bone,
+              color: ClearStateColors.textPrimaryDark,
               size: 24,
             ),
           ),
@@ -171,7 +171,7 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
             padding: const EdgeInsets.all(8),
             child: const Icon(
               Icons.chevron_right,
-              color: ClearStateColors.bone,
+              color: ClearStateColors.textPrimaryDark,
               size: 24,
             ),
           ),
@@ -190,7 +190,7 @@ class _HapticCalendarState extends ConsumerState<HapticCalendar> {
               child: Text(
                 day,
                 style: ClearStateTypography.caption.copyWith(
-                  color: ClearStateColors.smoke,
+                  color: ClearStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -297,12 +297,12 @@ class _CalendarCell extends StatelessWidget {
             ? accentColor
             : isToday
             ? Colors.transparent
-            : ClearStateColors.charcoal,
-        borderRadius: BorderRadius.circular(2),
+            : ClearStateColors.darkSurface,
+        borderRadius: BorderRadius.circular(12),
         border: isToday && !isSelected
             ? Border.all(color: accentColor, width: 1.5)
             : Border.all(
-                color: ClearStateColors.ash.withValues(alpha: 0.3),
+                color: ClearStateColors.borderDark.withValues(alpha: 0.3),
                 width: 1,
               ),
       ),
@@ -310,23 +310,23 @@ class _CalendarCell extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: isDisabled ? null : onTap,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(12),
           child: Center(
             child: Text(
               date.day.toString(),
               style: isSelected
                   ? ClearStateTypography.body.copyWith(
-                      color: ClearStateColors.void_,
+                      color: ClearStateColors.darkBackground,
                       fontWeight: FontWeight.w600,
                     )
                   : isCurrentMonth
                   ? ClearStateTypography.body.copyWith(
                       color: isDisabled
-                          ? ClearStateColors.smoke.withValues(alpha: 0.5)
-                          : ClearStateColors.bone,
+                          ? ClearStateColors.textSecondaryDark.withValues(alpha: 0.5)
+                          : ClearStateColors.textPrimaryDark,
                     )
                   : ClearStateTypography.body.copyWith(
-                      color: ClearStateColors.smoke.withValues(alpha: 0.5),
+                      color: ClearStateColors.textSecondaryDark.withValues(alpha: 0.5),
                     ),
             ),
           ),

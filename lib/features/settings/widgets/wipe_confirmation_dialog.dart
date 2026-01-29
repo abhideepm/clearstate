@@ -66,7 +66,7 @@ class _WipeConfirmationDialogState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to delete data: $e'),
-            backgroundColor: ClearStateColors.relapse,
+            backgroundColor: ClearStateColors.error,
           ),
         );
       }
@@ -76,10 +76,10 @@ class _WipeConfirmationDialogState
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: ClearStateColors.charcoal,
+      backgroundColor: ClearStateColors.darkSurface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(2),
-        side: const BorderSide(color: ClearStateColors.ash, width: 1),
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: ClearStateColors.borderDark, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -92,12 +92,12 @@ class _WipeConfirmationDialogState
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: ClearStateColors.relapse.withAlpha((0.15 * 255).round()),
-                borderRadius: BorderRadius.circular(2),
+                color: ClearStateColors.error.withAlpha((0.15 * 255).round()),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
                 Icons.warning_rounded,
-                color: ClearStateColors.relapse,
+                color: ClearStateColors.error,
                 size: 32,
               ),
             ),
@@ -107,7 +107,7 @@ class _WipeConfirmationDialogState
             Text(
               'DELETE ALL DATA?',
               style: ClearStateTypography.h2.copyWith(
-                color: ClearStateColors.relapse,
+                color: ClearStateColors.error,
                 letterSpacing: 1,
               ),
               textAlign: TextAlign.center,
@@ -126,14 +126,14 @@ class _WipeConfirmationDialogState
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: ClearStateColors.relapse.withAlpha((0.08 * 255).round()),
+                color: ClearStateColors.error.withAlpha((0.08 * 255).round()),
                 border: Border.all(
-                  color: ClearStateColors.relapse.withAlpha(
+                  color: ClearStateColors.error.withAlpha(
                     (0.3 * 255).round(),
                   ),
                   width: 1,
                 ),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +152,7 @@ class _WipeConfirmationDialogState
             Text(
               'Type DELETE to confirm',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
               ),
             ),
             const SizedBox(height: 8),
@@ -160,38 +160,38 @@ class _WipeConfirmationDialogState
               controller: _textController,
               enabled: !_isDeleting,
               style: ClearStateTypography.body.copyWith(
-                color: ClearStateColors.bone,
+                color: ClearStateColors.textPrimaryDark,
               ),
               textCapitalization: TextCapitalization.characters,
               decoration: InputDecoration(
                 hintText: 'DELETE',
                 hintStyle: ClearStateTypography.body.copyWith(
-                  color: ClearStateColors.ash,
+                  color: ClearStateColors.borderDark,
                 ),
                 filled: true,
-                fillColor: ClearStateColors.void_,
+                fillColor: ClearStateColors.darkBackground,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 14,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: ClearStateColors.ash,
+                    color: ClearStateColors.borderDark,
                     width: 1,
                   ),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: ClearStateColors.ash,
+                    color: ClearStateColors.borderDark,
                     width: 1,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: ClearStateColors.relapse,
+                    color: ClearStateColors.error,
                     width: 1,
                   ),
                 ),
@@ -245,7 +245,7 @@ class _WipeItem extends StatelessWidget {
           width: 6,
           height: 6,
           decoration: BoxDecoration(
-            color: ClearStateColors.relapse,
+            color: ClearStateColors.error,
             borderRadius: BorderRadius.circular(1),
           ),
         ),
@@ -254,7 +254,7 @@ class _WipeItem extends StatelessWidget {
           child: Text(
             text,
             style: ClearStateTypography.body.copyWith(
-              color: ClearStateColors.bone,
+              color: ClearStateColors.textPrimaryDark,
             ),
           ),
         ),
@@ -286,23 +286,23 @@ class _DialogButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDestructive
               ? (enabled
-                    ? ClearStateColors.relapse
-                    : ClearStateColors.relapse.withAlpha((0.3 * 255).round()))
+                    ? ClearStateColors.error
+                    : ClearStateColors.error.withAlpha((0.3 * 255).round()))
               : ClearStateColors.darkSurface,
           border: Border.all(
             color: isDestructive
                 ? (enabled
-                      ? ClearStateColors.relapse
-                      : ClearStateColors.relapse.withAlpha((0.3 * 255).round()))
-                : ClearStateColors.ash,
+                      ? ClearStateColors.error
+                      : ClearStateColors.error.withAlpha((0.3 * 255).round()))
+                : ClearStateColors.borderDark,
             width: 1,
           ),
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           label,
           style: ClearStateTypography.button.copyWith(
-            color: enabled ? ClearStateColors.bone : ClearStateColors.smoke,
+            color: enabled ? ClearStateColors.textPrimaryDark : ClearStateColors.textSecondaryDark,
             letterSpacing: 1,
           ),
           textAlign: TextAlign.center,

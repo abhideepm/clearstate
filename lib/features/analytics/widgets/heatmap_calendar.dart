@@ -25,8 +25,8 @@ class HeatmapCalendar extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: ClearStateColors.charcoal,
-        border: Border.all(color: ClearStateColors.ash),
+        color: ClearStateColors.darkSurface,
+        border: Border.all(color: ClearStateColors.borderDark),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,7 @@ class HeatmapCalendar extends ConsumerWidget {
                 day,
                 style: ClearStateTypography.caption.copyWith(
                   fontSize: 9,
-                  color: ClearStateColors.smoke,
+                  color: ClearStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -150,7 +150,7 @@ class HeatmapCalendar extends ConsumerWidget {
                   monthLabel,
                   style: ClearStateTypography.caption.copyWith(
                     fontSize: 9,
-                    color: ClearStateColors.smoke,
+                    color: ClearStateColors.textSecondaryDark,
                   ),
                 )
               : null,
@@ -175,7 +175,7 @@ class HeatmapCalendar extends ConsumerWidget {
           margin: EdgeInsets.all(_cellSpacing / 2),
           decoration: BoxDecoration(
             color: _getCellColor(date, startDate, now, theme),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(12),
             border: _isToday(date, now)
                 ? Border.all(color: theme.accent.value, width: 1.5)
                 : null,
@@ -204,11 +204,11 @@ class HeatmapCalendar extends ConsumerWidget {
 
     if (isSober) {
       // Use the semantic sober color (green)
-      return ClearStateColors.sober.withValues(alpha: 0.8);
+      return ClearStateColors.success.withValues(alpha: 0.8);
     }
 
     // Use the semantic relapse color (red) for non-sober days
-    return ClearStateColors.relapse.withValues(alpha: 0.6);
+    return ClearStateColors.error.withValues(alpha: 0.6);
   }
 
   bool _isToday(DateTime? date, DateTime now) {

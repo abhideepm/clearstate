@@ -51,8 +51,8 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: ClearStateColors.ash,
-                  borderRadius: BorderRadius.circular(2),
+                  color: ClearStateColors.borderDark,
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),
@@ -60,7 +60,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
             Text(
               widget.isSlip ? 'LOG SLIP' : 'LOG RELAPSE',
               style: ClearStateTypography.h2.copyWith(
-                color: widget.isSlip ? accentColor : ClearStateColors.relapse,
+                color: widget.isSlip ? accentColor : ClearStateColors.error,
               ),
               textAlign: TextAlign.center,
             ),
@@ -70,7 +70,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
             Text(
               'DRINK TYPE',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
               ),
             ),
             const SizedBox(height: 12),
@@ -88,7 +88,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
             Text(
               'HOW MANY?',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
               ),
             ),
             const SizedBox(height: 12),
@@ -105,9 +105,9 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: ClearStateColors.void_,
-                borderRadius: BorderRadius.circular(2),
-                border: Border.all(color: ClearStateColors.ash),
+                color: ClearStateColors.darkBackground,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: ClearStateColors.borderDark),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -116,7 +116,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
                     label: 'COST',
                     value: '\$${_totalCost.toStringAsFixed(0)}',
                   ),
-                  Container(width: 1, height: 32, color: ClearStateColors.ash),
+                  Container(width: 1, height: 32, color: ClearStateColors.borderDark),
                   _SummaryItem(label: 'CALORIES', value: '$_totalCalories'),
                 ],
               ),
@@ -129,7 +129,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: widget.isSlip
                     ? accentColor
-                    : ClearStateColors.relapse,
+                    : ClearStateColors.error,
               ),
               child: _isLogging
                   ? const SizedBox(
@@ -137,7 +137,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: ClearStateColors.void_,
+                        color: ClearStateColors.darkBackground,
                       ),
                     )
                   : Text(widget.isSlip ? 'LOG SLIP' : 'LOG RELAPSE'),
@@ -153,7 +153,7 @@ class _DrinkInputSheetState extends ConsumerState<DrinkInputSheet> {
               child: Text(
                 'CANCEL',
                 style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.smoke,
+                  color: ClearStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -287,10 +287,10 @@ class _DrinkTypeSelector extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected
                     ? accentColor.withValues(alpha: 0.15)
-                    : ClearStateColors.void_,
-                borderRadius: BorderRadius.circular(2),
+                    : ClearStateColors.darkBackground,
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: isSelected ? accentColor : ClearStateColors.ash,
+                  color: isSelected ? accentColor : ClearStateColors.borderDark,
                   width: isSelected ? 2 : 1,
                 ),
               ),
@@ -305,8 +305,8 @@ class _DrinkTypeSelector extends StatelessWidget {
                     style: ClearStateTypography.caption.copyWith(
                       fontSize: 8,
                       color: isSelected
-                          ? ClearStateColors.bone
-                          : ClearStateColors.smoke,
+                          ? ClearStateColors.textPrimaryDark
+                          : ClearStateColors.textSecondaryDark,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -333,9 +333,9 @@ class _QuantitySelector extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: ClearStateColors.void_,
-        borderRadius: BorderRadius.circular(2),
-        border: Border.all(color: ClearStateColors.ash),
+        color: ClearStateColors.darkBackground,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: ClearStateColors.borderDark),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -350,7 +350,7 @@ class _QuantitySelector extends StatelessWidget {
               Text(
                 value == 1 ? 'DRINK' : 'DRINKS',
                 style: ClearStateTypography.caption.copyWith(
-                  color: ClearStateColors.smoke,
+                  color: ClearStateColors.textSecondaryDark,
                 ),
               ),
             ],
@@ -381,13 +381,13 @@ class _StepperButton extends StatelessWidget {
         height: 48,
         decoration: BoxDecoration(
           color: isEnabled
-              ? ClearStateColors.charcoal
-              : ClearStateColors.charcoal.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(2),
+              ? ClearStateColors.darkSurface
+              : ClearStateColors.darkSurface.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(
           icon,
-          color: isEnabled ? ClearStateColors.bone : ClearStateColors.ash,
+          color: isEnabled ? ClearStateColors.textPrimaryDark : ClearStateColors.borderDark,
         ),
       ),
     );
@@ -407,7 +407,7 @@ class _SummaryItem extends StatelessWidget {
         Text(
           label,
           style: ClearStateTypography.caption.copyWith(
-            color: ClearStateColors.smoke,
+            color: ClearStateColors.textSecondaryDark,
           ),
         ),
         const SizedBox(height: 4),

@@ -24,9 +24,9 @@ class SettingsToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.charcoal,
-        border: Border.all(color: ClearStateColors.ash, width: 1),
-        borderRadius: BorderRadius.circular(2),
+        color: ClearStateColors.darkSurface,
+        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
         color: Colors.transparent,
@@ -37,7 +37,7 @@ class SettingsToggle extends StatelessWidget {
                   onChanged(!value);
                 }
               : null,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
@@ -50,8 +50,8 @@ class SettingsToggle extends StatelessWidget {
                         label,
                         style: ClearStateTypography.body.copyWith(
                           color: enabled
-                              ? ClearStateColors.bone
-                              : ClearStateColors.smoke,
+                              ? ClearStateColors.textPrimaryDark
+                              : ClearStateColors.textSecondaryDark,
                         ),
                       ),
                       if (subtitle != null) ...[
@@ -59,7 +59,7 @@ class SettingsToggle extends StatelessWidget {
                         Text(
                           subtitle!,
                           style: ClearStateTypography.caption.copyWith(
-                            color: ClearStateColors.smoke,
+                            color: ClearStateColors.textSecondaryDark,
                           ),
                         ),
                       ],
@@ -105,9 +105,9 @@ class _CustomSwitch extends StatelessWidget {
         height: 28,
         decoration: BoxDecoration(
           color: value ? primaryColor : ClearStateColors.darkSurface,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: value ? primaryColor : ClearStateColors.ash,
+            color: value ? primaryColor : ClearStateColors.borderDark,
             width: 1,
           ),
         ),
@@ -120,8 +120,8 @@ class _CustomSwitch extends StatelessWidget {
             height: 22,
             margin: const EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: enabled ? ClearStateColors.bone : ClearStateColors.smoke,
-              borderRadius: BorderRadius.circular(2),
+              color: enabled ? ClearStateColors.textPrimaryDark : ClearStateColors.textSecondaryDark,
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         ),

@@ -84,7 +84,7 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
     final accentColor = themeState.accent.value;
 
     return Scaffold(
-      body: NoiseBackground(
+      body: DawnBackground(
         child: SafeArea(
           child: Center(
             child: Column(
@@ -145,9 +145,9 @@ class _BiometricLockScreenState extends ConsumerState<BiometricLockScreen>
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: ClearStateColors.charcoal,
+            color: ClearStateColors.darkSurface,
             border: Border.all(color: accentColor, width: 2),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
             child: _isAuthenticating

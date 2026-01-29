@@ -234,7 +234,7 @@ class ClearStateTheme {
   }
 
   // Legacy getter for backward compatibility
-  static ThemeData get darkTheme => _buildDarkTheme(ClearStateColors.sunYellow);
+  static ThemeData get darkTheme => _buildDarkTheme(ClearStateColors.accent);
 
   // Legacy method for backward compatibility
   static ThemeData getTheme(AccentColor accent, BackgroundTheme background) {

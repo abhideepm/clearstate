@@ -36,15 +36,15 @@ class WidgetPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.charcoal,
-        border: Border.all(color: ClearStateColors.ash, width: 1),
-        borderRadius: BorderRadius.circular(2),
+        color: ClearStateColors.darkSurface,
+        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -74,16 +74,16 @@ class WidgetPreviewCard extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: ClearStateColors.sober.withAlpha(
+                                color: ClearStateColors.success.withAlpha(
                                   (0.15 * 255).round(),
                                 ),
-                                borderRadius: BorderRadius.circular(2),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
                                 'CONFIGURED',
                                 style: ClearStateTypography.caption.copyWith(
                                   fontSize: 9,
-                                  color: ClearStateColors.sober,
+                                  color: ClearStateColors.success,
                                   letterSpacing: 1,
                                 ),
                               ),
@@ -94,7 +94,7 @@ class WidgetPreviewCard extends StatelessWidget {
                       Text(
                         description,
                         style: ClearStateTypography.caption.copyWith(
-                          color: ClearStateColors.smoke,
+                          color: ClearStateColors.textSecondaryDark,
                         ),
                       ),
                     ],
@@ -104,7 +104,7 @@ class WidgetPreviewCard extends StatelessWidget {
                 // Chevron
                 const Icon(
                   Icons.chevron_right,
-                  color: ClearStateColors.ash,
+                  color: ClearStateColors.borderDark,
                   size: 24,
                 ),
               ],
@@ -128,9 +128,9 @@ class _WidgetPreviewThumbnail extends StatelessWidget {
       width: 72,
       height: 72,
       decoration: BoxDecoration(
-        color: ClearStateColors.void_,
-        border: Border.all(color: ClearStateColors.ash, width: 1),
-        borderRadius: BorderRadius.circular(2),
+        color: ClearStateColors.darkBackground,
+        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: _buildPreview(),
     );
@@ -165,7 +165,7 @@ class _BatteryPreview extends StatelessWidget {
               height: 44,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: ClearStateColors.ash, width: 3),
+                border: Border.all(color: ClearStateColors.borderDark, width: 3),
               ),
             ),
             // Progress arc
@@ -178,7 +178,7 @@ class _BatteryPreview extends StatelessWidget {
               '72',
               style: ClearStateTypography.statNumber.copyWith(
                 fontSize: 14,
-                color: ClearStateColors.bone,
+                color: ClearStateColors.textPrimaryDark,
               ),
             ),
           ],
@@ -200,7 +200,7 @@ class _ProgressArcPainter extends CustomPainter {
     final radius = size.width / 2 - 1.5;
 
     final paint = Paint()
-      ..color = ClearStateColors.signal
+      ..color = ClearStateColors.dawnCoral
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
       ..strokeCap = StrokeCap.round;
@@ -237,14 +237,14 @@ class _StoicPreview extends StatelessWidget {
             '"',
             style: ClearStateTypography.h1.copyWith(
               fontSize: 24,
-              color: ClearStateColors.signal,
+              color: ClearStateColors.dawnCoral,
               height: 0.6,
             ),
           ),
           const SizedBox(height: 2),
-          Container(height: 4, width: 32, color: ClearStateColors.ash),
+          Container(height: 4, width: 32, color: ClearStateColors.borderDark),
           const SizedBox(height: 4),
-          Container(height: 4, width: 24, color: ClearStateColors.ash),
+          Container(height: 4, width: 24, color: ClearStateColors.borderDark),
         ],
       ),
     );
@@ -270,7 +270,7 @@ class _MiniGraphPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = ClearStateColors.signal
+      ..color = ClearStateColors.dawnCoral
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
@@ -295,7 +295,7 @@ class _MiniGraphPainter extends CustomPainter {
 
     // Draw baseline
     final baselinePaint = Paint()
-      ..color = ClearStateColors.ash
+      ..color = ClearStateColors.borderDark
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 

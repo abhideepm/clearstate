@@ -77,16 +77,16 @@ class _AnimatedChipState extends ConsumerState<AnimatedChip>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           decoration: BoxDecoration(
-            color: widget.isSelected ? accentColor : ClearStateColors.charcoal,
+            color: widget.isSelected ? accentColor : ClearStateColors.darkSurface,
             border: Border.all(
-              color: widget.isSelected ? accentColor : ClearStateColors.ash,
+              color: widget.isSelected ? accentColor : ClearStateColors.borderDark,
             ),
           ),
           child: DefaultTextStyle.merge(
             style: ClearStateTypography.button.copyWith(
               color: widget.isSelected
-                  ? ClearStateColors.void_
-                  : ClearStateColors.bone,
+                  ? ClearStateColors.darkBackground
+                  : ClearStateColors.textPrimaryDark,
             ),
             child: widget.child,
           ),

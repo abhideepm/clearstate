@@ -6,6 +6,7 @@ import '../../core/theme/theme_provider.dart';
 import '../../core/services/haptic_service.dart';
 import '../../core/services/backup_service.dart';
 import '../../shared/widgets/noise_background.dart';
+import '../../shared/widgets/glass_card.dart';
 import '../security/security_provider.dart';
 import '../home_widgets/widget_settings_screen.dart';
 import '../../core/utils/pro_feature_gate.dart';
@@ -31,7 +32,7 @@ class SettingsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: themeState.background,
-      body: NoiseBackground(
+      body: DawnBackground(
         opacity: 0.025,
         child: SafeArea(
           child: Column(
@@ -66,7 +67,7 @@ class SettingsScreen extends ConsumerWidget {
                           HapticService.light();
                           final accentColor = AccentColor.values.firstWhere(
                             (e) => e.value == accent,
-                            orElse: () => AccentColor.sunYellow,
+                            orElse: () => AccentColor.teal,
                           );
                           ref
                               .read(themeProvider.notifier)
@@ -242,10 +243,11 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      title,
-      style: ClearStateTypography.timerLabel.copyWith(
-        color: ClearStateColors.smoke,
-        letterSpacing: 3,
+      title.toUpperCase(),
+      style: ClearStateTypography.caption.copyWith(
+        color: ClearStateColors.lavender,
+        letterSpacing: 2,
+        fontWeight: FontWeight.w600,
       ),
     );
   }
@@ -266,32 +268,26 @@ class _SettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: ClearStateColors.ash.withAlpha((0.05 * 255).round()),
-        border: Border.all(
-          color: ClearStateColors.ash.withAlpha((0.2 * 255).round()),
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(2),
-      ),
+    return GlassContainer(
+      padding: EdgeInsets.zero,
+      borderRadius: 16,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
-                    color: ClearStateColors.ash.withAlpha((0.1 * 255).round()),
-                    borderRadius: BorderRadius.circular(2),
+                    color: ClearStateColors.lavender.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(icon, color: ClearStateColors.bone, size: 22),
+                  child: Icon(icon, color: ClearStateColors.lavender, size: 22),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -301,7 +297,7 @@ class _SettingsItem extends StatelessWidget {
                       Text(
                         label,
                         style: ClearStateTypography.body.copyWith(
-                          color: ClearStateColors.bone,
+                          color: ClearStateColors.textPrimaryDark,
                         ),
                       ),
                       if (subtitle != null) ...[
@@ -309,16 +305,16 @@ class _SettingsItem extends StatelessWidget {
                         Text(
                           subtitle!,
                           style: ClearStateTypography.caption.copyWith(
-                            color: ClearStateColors.smoke,
+                            color: ClearStateColors.textSecondaryDark,
                           ),
                         ),
                       ],
                     ],
                   ),
                 ),
-                const Icon(
-                  Icons.chevron_right,
-                  color: ClearStateColors.ash,
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: ClearStateColors.textSecondaryDark,
                   size: 24,
                 ),
               ],
@@ -345,34 +341,32 @@ class _DestructiveSettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.relapse.withAlpha((0.08 * 255).round()),
+        color: ClearStateColors.error.withValues(alpha: 0.1),
         border: Border.all(
-          color: ClearStateColors.relapse.withAlpha((0.3 * 255).round()),
+          color: ClearStateColors.error.withValues(alpha: 0.3),
           width: 1,
         ),
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
-                    color: ClearStateColors.relapse.withAlpha(
-                      (0.15 * 255).round(),
-                    ),
-                    borderRadius: BorderRadius.circular(2),
+                    color: ClearStateColors.error.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.delete_forever_outlined,
-                    color: ClearStateColors.relapse,
+                    color: ClearStateColors.error,
                     size: 22,
                   ),
                 ),
@@ -384,7 +378,7 @@ class _DestructiveSettingsItem extends StatelessWidget {
                       Text(
                         label,
                         style: ClearStateTypography.body.copyWith(
-                          color: ClearStateColors.relapse,
+                          color: ClearStateColors.error,
                         ),
                       ),
                       if (subtitle != null) ...[
@@ -392,7 +386,7 @@ class _DestructiveSettingsItem extends StatelessWidget {
                         Text(
                           subtitle!,
                           style: ClearStateTypography.caption.copyWith(
-                            color: ClearStateColors.smoke,
+                            color: ClearStateColors.textSecondaryDark,
                           ),
                         ),
                       ],
@@ -400,8 +394,8 @@ class _DestructiveSettingsItem extends StatelessWidget {
                   ),
                 ),
                 const Icon(
-                  Icons.chevron_right,
-                  color: ClearStateColors.relapse,
+                  Icons.chevron_right_rounded,
+                  color: ClearStateColors.error,
                   size: 24,
                 ),
               ],
@@ -420,23 +414,34 @@ class _SettingsFooter extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
       child: Column(
         children: [
-          // Divider
-          Container(height: 1, color: ClearStateColors.ash),
+          // Soft divider
+          Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  ClearStateColors.borderDark,
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 24),
           // Version
           Text(
             'CLEARSTATE v1.0.0',
             style: ClearStateTypography.caption.copyWith(
-              color: ClearStateColors.smoke,
+              color: ClearStateColors.textSecondaryDark,
               letterSpacing: 2,
             ),
           ),
           const SizedBox(height: 8),
           // Made with care
           Text(
-            'Made with care',
+            'Made with care ✨',
             style: ClearStateTypography.caption.copyWith(
-              color: ClearStateColors.ash,
+              color: ClearStateColors.lavender.withValues(alpha: 0.6),
             ),
           ),
         ],

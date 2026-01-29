@@ -72,9 +72,9 @@ class _ModernButtonState extends ConsumerState<ModernButton> {
         foregroundColor = ClearStateColors.textPrimaryLight;
         shadows = _isPressed ? null : [
           BoxShadow(
-            color: accentColor.withValues(alpha: 0.3),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
+            color: ClearStateColors.dawnCoral.withValues(alpha: 0.35),
+            offset: const Offset(0, 6),
+            blurRadius: 16,
           ),
         ];
         break;
@@ -284,8 +284,3 @@ class _ModernIconButtonState extends ConsumerState<ModernIconButton> {
     );
   }
 }
-
-// Backwards compatibility aliases
-typedef BrutalistButton = ModernButton;
-typedef BrutalistButtonType = ModernButtonType;
-typedef BrutalistButtonIcon = ModernIconButton;

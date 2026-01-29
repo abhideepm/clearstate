@@ -33,7 +33,7 @@ class AnimatedTabSwitcher extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: ClearStateColors.ash, width: 1)),
+        border: Border(top: BorderSide(color: ClearStateColors.borderDark, width: 1)),
       ),
       child: BottomNavigationBar(
         currentIndex: currentIndex,
@@ -43,8 +43,8 @@ class AnimatedTabSwitcher extends ConsumerWidget {
         },
         items: items,
         selectedItemColor: selectedItemColor ?? accentColor,
-        unselectedItemColor: unselectedItemColor ?? ClearStateColors.smoke,
-        backgroundColor: backgroundColor ?? ClearStateColors.void_,
+        unselectedItemColor: unselectedItemColor ?? ClearStateColors.textSecondaryDark,
+        backgroundColor: backgroundColor ?? ClearStateColors.darkBackground,
         elevation: elevation,
         type: BottomNavigationBarType.fixed,
       ),
@@ -143,14 +143,14 @@ class _AnimatedNavIconState extends ConsumerState<AnimatedNavIcon>
                   ? (widget.activeIcon ?? widget.icon)
                   : widget.icon,
               size: widget.size,
-              color: widget.isActive ? accentColor : ClearStateColors.smoke,
+              color: widget.isActive ? accentColor : ClearStateColors.textSecondaryDark,
             ),
             const SizedBox(height: 4),
             Text(
               widget.label,
               style: ClearStateTypography.caption.copyWith(
                 fontSize: 10,
-                color: widget.isActive ? accentColor : ClearStateColors.smoke,
+                color: widget.isActive ? accentColor : ClearStateColors.textSecondaryDark,
                 letterSpacing: 1,
               ),
             ),

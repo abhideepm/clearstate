@@ -21,8 +21,8 @@ class StatusIndicator extends ConsumerWidget {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: ClearStateColors.charcoal,
-            border: Border.all(color: ClearStateColors.ash, width: 1),
+            color: ClearStateColors.darkSurface,
+            border: Border.all(color: ClearStateColors.borderDark, width: 1),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -31,7 +31,7 @@ class StatusIndicator extends ConsumerWidget {
                 width: 8,
                 height: 8,
                 decoration: const BoxDecoration(
-                  color: ClearStateColors.sober,
+                  color: ClearStateColors.success,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -40,7 +40,7 @@ class StatusIndicator extends ConsumerWidget {
                 child: Text(
                   currentMilestone.status,
                   style: ClearStateTypography.caption.copyWith(
-                    color: ClearStateColors.bone,
+                    color: ClearStateColors.textPrimaryDark,
                   ),
                   textAlign: TextAlign.center,
                 ),

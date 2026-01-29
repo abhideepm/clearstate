@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/typography.dart';
+import '../../../core/theme/motion.dart';
 import '../../../core/services/haptic_service.dart';
 import '../../../shared/widgets/brutalist_button.dart';
+import '../../../shared/widgets/glass_card.dart';
+import '../../../shared/widgets/breathing_wrapper.dart';
 import '../onboarding_provider.dart';
 
 class CelebrationStep extends ConsumerStatefulWidget {
@@ -18,34 +21,41 @@ class CelebrationStep extends ConsumerStatefulWidget {
 
 class _CelebrationStepState extends ConsumerState<CelebrationStep>
     with TickerProviderStateMixin {
-  late AnimationController _confettiController;
+  late AnimationController _particleController;
   late AnimationController _contentController;
+  late AnimationController _glowController;
   late DateTime _earliestStartDate;
   Duration _elapsedDuration = Duration.zero;
 
-  late List<_ConfettiParticle> _particles;
+  late List<_OrganicParticle> _particles;
 
   @override
   void initState() {
     super.initState();
 
-    _confettiController = AnimationController(
-      duration: const Duration(seconds: 4),
+    _particleController = AnimationController(
+      duration: const Duration(seconds: 6),
       vsync: this,
     );
 
     _contentController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: ClearStateMotion.dramatic,
       vsync: this,
     );
 
-    _particles = List.generate(60, (index) {
-      return _ConfettiParticle(
-        color: _getRandomColor(),
+    _glowController = AnimationController(
+      duration: ClearStateMotion.breathCycle,
+      vsync: this,
+    );
+
+    _particles = List.generate(40, (index) {
+      return _OrganicParticle(
+        color: _getOrganicColor(),
         startX: math.Random().nextDouble(),
-        startDelay: math.Random().nextInt(800),
-        size: 6 + math.Random().nextDouble() * 10,
-        rotationSpeed: (math.Random().nextDouble() - 0.5) * 4,
+        startY: 0.3 + math.Random().nextDouble() * 0.4,
+        size: 4 + math.Random().nextDouble() * 8,
+        delay: math.Random().nextDouble() * 0.5,
+        type: index % 3 == 0 ? ParticleType.leaf : ParticleType.glow,
       );
     });
 
@@ -55,7 +65,6 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
   void _startCelebration() async {
     HapticService.milestone();
 
-    // Calculate elapsed time from earliest start date
     final state = ref.read(onboardingProvider);
     final dates = state.habitStartDates.values.toList();
     if (dates.isNotEmpty) {
@@ -68,12 +77,14 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
     _updateElapsedTime();
 
     await Future.delayed(const Duration(milliseconds: 200));
-    _confettiController.forward();
+    if (!ClearStateMotion.reduceMotion) {
+      _particleController.repeat();
+      _glowController.repeat(reverse: true);
+    }
 
     await Future.delayed(const Duration(milliseconds: 400));
     _contentController.forward();
 
-    // Start periodic timer to update elapsed time
     _startPeriodicUpdate();
   }
 
@@ -93,16 +104,12 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
     });
   }
 
-  Color _getRandomColor() {
+  Color _getOrganicColor() {
     final colors = [
-      ClearStateColors.signal,
-      ClearStateColors.sober,
-      ClearStateColors.bone,
-      Colors.white,
-      const Color(0xFFFF6B35),
-      const Color(0xFF00D26A),
-      const Color(0xFF6C63FF),
-      const Color(0xFFFFD93D),
+      ClearStateColors.dawnCoral.withValues(alpha: 0.6),
+      ClearStateColors.sunriseGold.withValues(alpha: 0.5),
+      ClearStateColors.moss.withValues(alpha: 0.4),
+      ClearStateColors.morningMist.withValues(alpha: 0.3),
     ];
     return colors[math.Random().nextInt(colors.length)];
   }
@@ -125,8 +132,9 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
 
   @override
   void dispose() {
-    _confettiController.dispose();
+    _particleController.dispose();
     _contentController.dispose();
+    _glowController.dispose();
     super.dispose();
   }
 
@@ -136,181 +144,213 @@ class _CelebrationStepState extends ConsumerState<CelebrationStep>
     final habitCount = state.selectedHabits.length;
     final habitNames = state.habitNamesDisplay;
 
-    return Stack(
-      children: [
-        // Confetti layer
-        AnimatedBuilder(
-          animation: _confettiController,
-          builder: (context, child) {
-            return CustomPaint(
-              size: MediaQuery.of(context).size,
-              painter: _ConfettiPainter(
-                animation: _confettiController.value,
-                particles: _particles,
-              ),
-            );
-          },
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            ClearStateColors.deepForest,
+            ClearStateColors.darkSurface,
+          ],
         ),
-        // Content
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: FadeTransition(
-              opacity: _contentController,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0, 0.1),
-                  end: Offset.zero,
-                ).animate(CurvedAnimation(
-                  parent: _contentController,
-                  curve: Curves.easeOut,
-                )),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Spacer(flex: 2),
-                    Text(
-                      'YOUR JOURNEY\nBEGINS NOW',
-                      style: ClearStateTypography.h1.copyWith(
-                        fontSize: 36,
-                        height: 1.1,
-                        color: ClearStateColors.bone,
+      ),
+      child: Stack(
+        children: [
+          // Organic particles layer
+          RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _particleController,
+              builder: (context, child) {
+                return CustomPaint(
+                  size: MediaQuery.of(context).size,
+                  painter: _OrganicParticlePainter(
+                    animation: _particleController.value,
+                    particles: _particles,
+                  ),
+                );
+              },
+            ),
+          ),
+          // Content
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: FadeTransition(
+                opacity: _contentController,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.08),
+                    end: Offset.zero,
+                  ).animate(CurvedAnimation(
+                    parent: _contentController,
+                    curve: ClearStateMotion.organic,
+                  )),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Spacer(flex: 2),
+                      // Warm, hopeful messaging
+                      Text(
+                        'Your healing\nhas begun',
+                        style: ClearStateTypography.h1.copyWith(
+                          fontSize: 38,
+                          height: 1.15,
+                          color: ClearStateColors.warmIvory,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    // Live timer
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 24,
-                      ),
-                      decoration: BoxDecoration(
-                        color: ClearStateColors.charcoal,
-                        border: Border.all(color: ClearStateColors.sober, width: 2),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            'SOBER FOR',
-                            style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.sober,
-                              letterSpacing: 2,
-                            ),
+                      const SizedBox(height: 32),
+                      // Glass card timer display with breathing animation
+                      BreathingWrapper(
+                        child: GlassCard(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 28,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            _formatTime(_elapsedDuration),
-                            style: ClearStateTypography.timerDisplay.copyWith(
-                              fontSize: 56,
-                              color: ClearStateColors.bone,
-                            ),
+                          borderRadius: 24,
+                          showGlow: true,
+                          child: Column(
+                            children: [
+                              Text(
+                                'Already sober for',
+                                style: ClearStateTypography.bodySmall.copyWith(
+                                  color: ClearStateColors.dawnCoral,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                _formatTime(_elapsedDuration),
+                                style: ClearStateTypography.timerDisplay.copyWith(
+                                  fontSize: 52,
+                                  color: ClearStateColors.warmIvory,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'and counting...',
+                                style: ClearStateTypography.caption.copyWith(
+                                  color: ClearStateColors.morningMist,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'AND COUNTING...',
-                            style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.smoke,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 32),
-                    Text(
-                      habitCount == 1
-                          ? 'Tracking: $habitNames'
-                          : 'Tracking $habitCount habits',
-                      style: ClearStateTypography.bodySecondary,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Every second counts. You\'ve got this.',
-                      style: ClearStateTypography.caption.copyWith(
-                        color: ClearStateColors.smoke,
-                        fontStyle: FontStyle.italic,
+                      const SizedBox(height: 32),
+                      // Habit info
+                      Text(
+                        habitCount == 1
+                            ? 'Tracking: $habitNames'
+                            : 'Tracking $habitCount habits',
+                        style: ClearStateTypography.body.copyWith(
+                          color: ClearStateColors.morningMist,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const Spacer(flex: 3),
-                    BrutalistButton(
-                      label: 'LET\'S GO',
-                      onPressed: () {
-                        HapticService.success();
-                        widget.onComplete();
-                      },
-                      type: BrutalistButtonType.primary,
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+                      const SizedBox(height: 8),
+                      // Consistency rate teaser
+                      Text(
+                        "You're already at 100% today ✨",
+                        style: ClearStateTypography.quote.copyWith(
+                          color: ClearStateColors.sunriseGold,
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const Spacer(flex: 3),
+                      ModernButton(
+                        label: "Let's begin",
+                        onPressed: () {
+                          HapticService.success();
+                          widget.onComplete();
+                        },
+                        type: ModernButtonType.primary,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-class _ConfettiParticle {
+enum ParticleType { leaf, glow }
+
+class _OrganicParticle {
   final Color color;
   final double startX;
-  final int startDelay;
+  final double startY;
   final double size;
-  final double rotationSpeed;
+  final double delay;
+  final ParticleType type;
 
-  _ConfettiParticle({
+  _OrganicParticle({
     required this.color,
     required this.startX,
-    required this.startDelay,
+    required this.startY,
     required this.size,
-    required this.rotationSpeed,
+    required this.delay,
+    required this.type,
   });
 }
 
-class _ConfettiPainter extends CustomPainter {
+class _OrganicParticlePainter extends CustomPainter {
   final double animation;
-  final List<_ConfettiParticle> particles;
+  final List<_OrganicParticle> particles;
 
-  _ConfettiPainter({required this.animation, required this.particles});
+  _OrganicParticlePainter({required this.animation, required this.particles});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..style = PaintingStyle.fill;
 
     for (final particle in particles) {
-      final progress = (animation * 4000 - particle.startDelay) / 3000;
-      if (progress <= 0 || progress >= 1) continue;
-
-      final easedProgress = Curves.easeOutCubic.transform(progress);
-      final x = size.width * (0.1 + particle.startX * 0.8) +
-          math.sin(progress * math.pi * 3) * 40;
-      final y = -50 + size.height * easedProgress * 1.2;
-      final rotation = progress * math.pi * particle.rotationSpeed;
-      final opacity = progress < 0.8 ? 1.0 : (1 - progress) * 5;
-
-      canvas.save();
-      canvas.translate(x, y);
-      canvas.rotate(rotation);
-
-      paint.color = particle.color.withValues(alpha: opacity.clamp(0.0, 1.0));
-      canvas.drawRect(
-        Rect.fromCenter(
-          center: Offset.zero,
-          width: particle.size,
-          height: particle.size * 0.6,
-        ),
-        paint,
-      );
-
-      canvas.restore();
+      final adjustedAnim = (animation + particle.delay) % 1.0;
+      
+      // Gentle floating motion
+      final floatY = math.sin(adjustedAnim * math.pi * 2) * 30;
+      final floatX = math.cos(adjustedAnim * math.pi * 3) * 15;
+      
+      final x = size.width * particle.startX + floatX;
+      final y = size.height * particle.startY + floatY;
+      
+      // Pulsing opacity
+      final opacity = 0.3 + math.sin(adjustedAnim * math.pi * 2) * 0.3;
+      
+      paint.color = particle.color.withValues(alpha: opacity.clamp(0.1, 0.6));
+      
+      if (particle.type == ParticleType.glow) {
+        // Soft glow circles
+        paint.maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+        canvas.drawCircle(Offset(x, y), particle.size, paint);
+        paint.maskFilter = null;
+      } else {
+        // Leaf-like shapes
+        canvas.save();
+        canvas.translate(x, y);
+        canvas.rotate(adjustedAnim * math.pi);
+        
+        final path = Path()
+          ..moveTo(0, -particle.size)
+          ..quadraticBezierTo(particle.size * 0.6, 0, 0, particle.size)
+          ..quadraticBezierTo(-particle.size * 0.6, 0, 0, -particle.size);
+        
+        canvas.drawPath(path, paint);
+        canvas.restore();
+      }
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _OrganicParticlePainter oldDelegate) {
+    return oldDelegate.animation != animation;
+  }
 }

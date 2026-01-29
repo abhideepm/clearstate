@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/theme_provider.dart';
+import 'aurora_background.dart';
 
-/// Modern gradient background that replaces the brutalist noise texture
-class NoiseBackground extends ConsumerWidget {
+/// DAWN background with optional animated aurora overlay
+class DawnBackground extends ConsumerWidget {
   final Widget child;
-  final double opacity;
+  final bool showAurora;
+  final double auroraIntensity;
+  final double opacity; // Legacy parameter, now controls aurora intensity
 
-  const NoiseBackground({
+  const DawnBackground({
     super.key,
     required this.child,
+    this.showAurora = true,
+    this.auroraIntensity = 1.0,
     this.opacity = 0.02,
   });
 
@@ -21,11 +26,20 @@ class NoiseBackground extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: isDark 
+        gradient: isDark
             ? ClearStateColors.darkBackgroundGradient
             : ClearStateColors.lightBackgroundGradient,
       ),
-      child: child,
+      child: showAurora
+          ? Stack(
+              children: [
+                Positioned.fill(
+                  child: AuroraBackground(intensity: auroraIntensity),
+                ),
+                child,
+              ],
+            )
+          : child,
     );
   }
 }

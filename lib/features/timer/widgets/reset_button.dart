@@ -19,14 +19,14 @@ class ResetButton extends StatelessWidget {
         width: 200,
         height: 56,
         decoration: BoxDecoration(
-          color: ClearStateColors.charcoal,
-          border: Border.all(color: ClearStateColors.ash, width: 1),
+          color: ClearStateColors.darkSurface,
+          border: Border.all(color: ClearStateColors.borderDark, width: 1),
         ),
         child: Center(
           child: Text(
             'I SLIPPED UP',
             style: ClearStateTypography.button.copyWith(
-              color: ClearStateColors.smoke,
+              color: ClearStateColors.textSecondaryDark,
               letterSpacing: 2,
             ),
           ),

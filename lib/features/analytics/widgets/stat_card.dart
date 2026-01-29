@@ -19,15 +19,15 @@ class StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: ClearStateColors.charcoal,
-        border: Border.all(color: ClearStateColors.ash),
+        color: ClearStateColors.darkSurface,
+        border: Border.all(color: ClearStateColors.borderDark),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: ClearStateColors.smoke),
+              Icon(icon, size: 16, color: ClearStateColors.textSecondaryDark),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(

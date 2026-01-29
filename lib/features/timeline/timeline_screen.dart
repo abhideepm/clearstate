@@ -19,7 +19,7 @@ class TimelineScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: themeState.background,
-      body: NoiseBackground(
+      body: DawnBackground(
         opacity: 0.025,
         child: SafeArea(
           child: durationAsync.when(

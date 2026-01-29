@@ -19,7 +19,7 @@ class AnalyticsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: themeState.background,
-      body: NoiseBackground(
+      body: DawnBackground(
         opacity: 0.02,
         child: SafeArea(
           child: SingleChildScrollView(
@@ -370,7 +370,7 @@ class _LegendItem extends StatelessWidget {
           height: 12,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
         const SizedBox(width: 6),

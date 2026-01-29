@@ -115,8 +115,8 @@ class _WidgetSettingsScreenState extends ConsumerState<WidgetSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ClearStateColors.void_,
-      body: NoiseBackground(
+      backgroundColor: ClearStateColors.darkBackground,
+      body: DawnBackground(
         opacity: 0.025,
         child: SafeArea(
           child: Column(
@@ -137,7 +137,7 @@ class _WidgetSettingsScreenState extends ConsumerState<WidgetSettingsScreen> {
                           },
                           icon: const Icon(
                             Icons.arrow_back,
-                            color: ClearStateColors.bone,
+                            color: ClearStateColors.textPrimaryDark,
                           ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
@@ -160,12 +160,12 @@ class _WidgetSettingsScreenState extends ConsumerState<WidgetSettingsScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: ClearStateColors.signal.withAlpha(
+                        color: ClearStateColors.dawnCoral.withAlpha(
                           (0.15 * 255).round(),
                         ),
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: ClearStateColors.signal.withAlpha(
+                          color: ClearStateColors.dawnCoral.withAlpha(
                             (0.3 * 255).round(),
                           ),
                         ),
@@ -175,14 +175,14 @@ class _WidgetSettingsScreenState extends ConsumerState<WidgetSettingsScreen> {
                         children: [
                           const Icon(
                             Icons.star,
-                            color: ClearStateColors.signal,
+                            color: ClearStateColors.dawnCoral,
                             size: 14,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             'PREMIUM FEATURE',
                             style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.signal,
+                              color: ClearStateColors.dawnCoral,
                               fontSize: 10,
                               letterSpacing: 2,
                             ),
@@ -205,7 +205,7 @@ class _WidgetSettingsScreenState extends ConsumerState<WidgetSettingsScreen> {
                       'Add widgets to your home screen that blend in seamlessly. '
                       'Only you will know what they really track.',
                       style: ClearStateTypography.body.copyWith(
-                        color: ClearStateColors.smoke,
+                        color: ClearStateColors.textSecondaryDark,
                         fontSize: 14,
                       ),
                       textAlign: TextAlign.center,
@@ -269,7 +269,7 @@ class _WidgetSettingsScreenState extends ConsumerState<WidgetSettingsScreen> {
     HapticService.medium();
     showModalBottomSheet(
       context: context,
-      backgroundColor: ClearStateColors.charcoal,
+      backgroundColor: ClearStateColors.darkSurface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
@@ -293,7 +293,7 @@ class _WidgetSettingsScreenState extends ConsumerState<WidgetSettingsScreen> {
     HapticService.medium();
     showModalBottomSheet(
       context: context,
-      backgroundColor: ClearStateColors.charcoal,
+      backgroundColor: ClearStateColors.darkSurface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
@@ -314,7 +314,7 @@ class _WidgetSettingsScreenState extends ConsumerState<WidgetSettingsScreen> {
     HapticService.medium();
     showModalBottomSheet(
       context: context,
-      backgroundColor: ClearStateColors.charcoal,
+      backgroundColor: ClearStateColors.darkSurface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
@@ -345,7 +345,7 @@ class _SectionHeader extends StatelessWidget {
     return Text(
       title,
       style: ClearStateTypography.timerLabel.copyWith(
-        color: ClearStateColors.smoke,
+        color: ClearStateColors.textSecondaryDark,
         letterSpacing: 3,
       ),
     );
@@ -394,8 +394,8 @@ class _BatteryConfigSheetState extends State<_BatteryConfigSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: ClearStateColors.ash,
-                  borderRadius: BorderRadius.circular(2),
+                  color: ClearStateColors.borderDark,
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),
@@ -405,7 +405,7 @@ class _BatteryConfigSheetState extends State<_BatteryConfigSheet> {
             Text(
               'BATTERY WIDGET',
               style: ClearStateTypography.h2.copyWith(
-                color: ClearStateColors.signal,
+                color: ClearStateColors.dawnCoral,
               ),
               textAlign: TextAlign.center,
             ),
@@ -413,7 +413,7 @@ class _BatteryConfigSheetState extends State<_BatteryConfigSheet> {
             Text(
               'Choose what the progress ring displays',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
               ),
               textAlign: TextAlign.center,
             ),
@@ -423,7 +423,7 @@ class _BatteryConfigSheetState extends State<_BatteryConfigSheet> {
             Text(
               'DISPLAY MODE',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
                 letterSpacing: 2,
               ),
             ),
@@ -467,10 +467,10 @@ class _BatteryConfigSheetState extends State<_BatteryConfigSheet> {
             ElevatedButton(
               onPressed: _isSaving ? null : _handleSave,
               style: ElevatedButton.styleFrom(
-                backgroundColor: ClearStateColors.signal,
+                backgroundColor: ClearStateColors.dawnCoral,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: _isSaving
@@ -479,13 +479,13 @@ class _BatteryConfigSheetState extends State<_BatteryConfigSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: ClearStateColors.void_,
+                        color: ClearStateColors.darkBackground,
                       ),
                     )
                   : Text(
                       'SAVE CONFIGURATION',
                       style: ClearStateTypography.button.copyWith(
-                        color: ClearStateColors.void_,
+                        color: ClearStateColors.darkBackground,
                       ),
                     ),
             ),
@@ -500,7 +500,7 @@ class _BatteryConfigSheetState extends State<_BatteryConfigSheet> {
               child: Text(
                 'CANCEL',
                 style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.smoke,
+                  color: ClearStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -547,19 +547,19 @@ class _ModeOption extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isSelected
-            ? ClearStateColors.signal.withAlpha((0.1 * 255).round())
-            : ClearStateColors.void_,
+            ? ClearStateColors.dawnCoral.withAlpha((0.1 * 255).round())
+            : ClearStateColors.darkBackground,
         border: Border.all(
-          color: isSelected ? ClearStateColors.signal : ClearStateColors.ash,
+          color: isSelected ? ClearStateColors.dawnCoral : ClearStateColors.borderDark,
           width: isSelected ? 2 : 1,
         ),
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -572,8 +572,8 @@ class _ModeOption extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isSelected
-                          ? ClearStateColors.signal
-                          : ClearStateColors.ash,
+                          ? ClearStateColors.dawnCoral
+                          : ClearStateColors.borderDark,
                       width: 2,
                     ),
                   ),
@@ -584,7 +584,7 @@ class _ModeOption extends StatelessWidget {
                             height: 10,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: ClearStateColors.signal,
+                              color: ClearStateColors.dawnCoral,
                             ),
                           ),
                         )
@@ -600,8 +600,8 @@ class _ModeOption extends StatelessWidget {
                         title,
                         style: ClearStateTypography.body.copyWith(
                           color: isSelected
-                              ? ClearStateColors.bone
-                              : ClearStateColors.smoke,
+                              ? ClearStateColors.textPrimaryDark
+                              : ClearStateColors.textSecondaryDark,
                           fontWeight: isSelected
                               ? FontWeight.w600
                               : FontWeight.w400,
@@ -611,7 +611,7 @@ class _ModeOption extends StatelessWidget {
                       Text(
                         description,
                         style: ClearStateTypography.caption.copyWith(
-                          color: ClearStateColors.smoke,
+                          color: ClearStateColors.textSecondaryDark,
                         ),
                       ),
                     ],
@@ -644,21 +644,21 @@ class _GoalDaysSlider extends StatelessWidget {
             Text(
               'GOAL DAYS',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
                 letterSpacing: 2,
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: ClearStateColors.signal.withAlpha((0.15 * 255).round()),
-                borderRadius: BorderRadius.circular(2),
+                color: ClearStateColors.dawnCoral.withAlpha((0.15 * 255).round()),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 '$value DAYS',
                 style: ClearStateTypography.statNumber.copyWith(
                   fontSize: 16,
-                  color: ClearStateColors.signal,
+                  color: ClearStateColors.dawnCoral,
                 ),
               ),
             ),
@@ -667,10 +667,10 @@ class _GoalDaysSlider extends StatelessWidget {
         const SizedBox(height: 12),
         SliderTheme(
           data: SliderThemeData(
-            activeTrackColor: ClearStateColors.signal,
-            inactiveTrackColor: ClearStateColors.ash,
-            thumbColor: ClearStateColors.signal,
-            overlayColor: ClearStateColors.signal.withAlpha(
+            activeTrackColor: ClearStateColors.dawnCoral,
+            inactiveTrackColor: ClearStateColors.borderDark,
+            thumbColor: ClearStateColors.dawnCoral,
+            overlayColor: ClearStateColors.dawnCoral.withAlpha(
               (0.2 * 255).round(),
             ),
             trackHeight: 4,
@@ -690,14 +690,14 @@ class _GoalDaysSlider extends StatelessWidget {
             Text(
               '7 days',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.ash,
+                color: ClearStateColors.borderDark,
                 fontSize: 10,
               ),
             ),
             Text(
               '365 days',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.ash,
+                color: ClearStateColors.borderDark,
                 fontSize: 10,
               ),
             ),
@@ -739,8 +739,8 @@ class _StoicConfigSheetState extends State<_StoicConfigSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: ClearStateColors.ash,
-                  borderRadius: BorderRadius.circular(2),
+                  color: ClearStateColors.borderDark,
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),
@@ -750,7 +750,7 @@ class _StoicConfigSheetState extends State<_StoicConfigSheet> {
             Text(
               'STOIC WIDGET',
               style: ClearStateTypography.h2.copyWith(
-                color: ClearStateColors.signal,
+                color: ClearStateColors.dawnCoral,
               ),
               textAlign: TextAlign.center,
             ),
@@ -760,15 +760,15 @@ class _StoicConfigSheetState extends State<_StoicConfigSheet> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: ClearStateColors.void_,
-                borderRadius: BorderRadius.circular(2),
-                border: Border.all(color: ClearStateColors.ash),
+                color: ClearStateColors.darkBackground,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: ClearStateColors.borderDark),
               ),
               child: Column(
                 children: [
                   const Icon(
                     Icons.format_quote,
-                    color: ClearStateColors.signal,
+                    color: ClearStateColors.dawnCoral,
                     size: 32,
                   ),
                   const SizedBox(height: 12),
@@ -783,7 +783,7 @@ class _StoicConfigSheetState extends State<_StoicConfigSheet> {
                     'and motivate your recovery journey. The quotes appear as '
                     'simple wisdom - no one will know what you\'re tracking.',
                     style: ClearStateTypography.body.copyWith(
-                      color: ClearStateColors.smoke,
+                      color: ClearStateColors.textSecondaryDark,
                       fontSize: 14,
                     ),
                     textAlign: TextAlign.center,
@@ -798,10 +798,10 @@ class _StoicConfigSheetState extends State<_StoicConfigSheet> {
             ElevatedButton(
               onPressed: _isSaving ? null : _handleSave,
               style: ElevatedButton.styleFrom(
-                backgroundColor: ClearStateColors.signal,
+                backgroundColor: ClearStateColors.dawnCoral,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: _isSaving
@@ -810,13 +810,13 @@ class _StoicConfigSheetState extends State<_StoicConfigSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: ClearStateColors.void_,
+                        color: ClearStateColors.darkBackground,
                       ),
                     )
                   : Text(
                       'ENABLE WIDGET',
                       style: ClearStateTypography.button.copyWith(
-                        color: ClearStateColors.void_,
+                        color: ClearStateColors.darkBackground,
                       ),
                     ),
             ),
@@ -831,7 +831,7 @@ class _StoicConfigSheetState extends State<_StoicConfigSheet> {
               child: Text(
                 'CANCEL',
                 style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.smoke,
+                  color: ClearStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -898,8 +898,8 @@ class _BioStateConfigSheetState extends State<_BioStateConfigSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: ClearStateColors.ash,
-                  borderRadius: BorderRadius.circular(2),
+                  color: ClearStateColors.borderDark,
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),
@@ -909,7 +909,7 @@ class _BioStateConfigSheetState extends State<_BioStateConfigSheet> {
             Text(
               'BIO-STATE WIDGET',
               style: ClearStateTypography.h2.copyWith(
-                color: ClearStateColors.signal,
+                color: ClearStateColors.dawnCoral,
               ),
               textAlign: TextAlign.center,
             ),
@@ -917,7 +917,7 @@ class _BioStateConfigSheetState extends State<_BioStateConfigSheet> {
             Text(
               'Select the recovery metric to display',
               style: ClearStateTypography.caption.copyWith(
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
               ),
               textAlign: TextAlign.center,
             ),
@@ -953,13 +953,13 @@ class _BioStateConfigSheetState extends State<_BioStateConfigSheet> {
                   ? null
                   : _handleSave,
               style: ElevatedButton.styleFrom(
-                backgroundColor: ClearStateColors.signal,
-                disabledBackgroundColor: ClearStateColors.signal.withAlpha(
+                backgroundColor: ClearStateColors.dawnCoral,
+                disabledBackgroundColor: ClearStateColors.dawnCoral.withAlpha(
                   (0.3 * 255).round(),
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: _isSaving
@@ -968,13 +968,13 @@ class _BioStateConfigSheetState extends State<_BioStateConfigSheet> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: ClearStateColors.void_,
+                        color: ClearStateColors.darkBackground,
                       ),
                     )
                   : Text(
                       'SAVE CONFIGURATION',
                       style: ClearStateTypography.button.copyWith(
-                        color: ClearStateColors.void_,
+                        color: ClearStateColors.darkBackground,
                       ),
                     ),
             ),
@@ -989,7 +989,7 @@ class _BioStateConfigSheetState extends State<_BioStateConfigSheet> {
               child: Text(
                 'CANCEL',
                 style: ClearStateTypography.button.copyWith(
-                  color: ClearStateColors.smoke,
+                  color: ClearStateColors.textSecondaryDark,
                 ),
               ),
             ),
@@ -1031,19 +1031,19 @@ class _MetricOption extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: isSelected
-            ? ClearStateColors.signal.withAlpha((0.1 * 255).round())
-            : ClearStateColors.void_,
+            ? ClearStateColors.dawnCoral.withAlpha((0.1 * 255).round())
+            : ClearStateColors.darkBackground,
         border: Border.all(
-          color: isSelected ? ClearStateColors.signal : ClearStateColors.ash,
+          color: isSelected ? ClearStateColors.dawnCoral : ClearStateColors.borderDark,
           width: isSelected ? 2 : 1,
         ),
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(12),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -1056,8 +1056,8 @@ class _MetricOption extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isSelected
-                          ? ClearStateColors.signal
-                          : ClearStateColors.ash,
+                          ? ClearStateColors.dawnCoral
+                          : ClearStateColors.borderDark,
                       width: 2,
                     ),
                   ),
@@ -1068,7 +1068,7 @@ class _MetricOption extends StatelessWidget {
                             height: 10,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: ClearStateColors.signal,
+                              color: ClearStateColors.dawnCoral,
                             ),
                           ),
                         )
@@ -1086,8 +1086,8 @@ class _MetricOption extends StatelessWidget {
                             metric.stealthLabel.toUpperCase(),
                             style: ClearStateTypography.caption.copyWith(
                               color: isSelected
-                                  ? ClearStateColors.signal
-                                  : ClearStateColors.smoke,
+                                  ? ClearStateColors.dawnCoral
+                                  : ClearStateColors.textSecondaryDark,
                               letterSpacing: 2,
                               fontSize: 10,
                             ),
@@ -1096,7 +1096,7 @@ class _MetricOption extends StatelessWidget {
                           Text(
                             metric.displayName,
                             style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.ash,
+                              color: ClearStateColors.borderDark,
                               fontSize: 10,
                             ),
                           ),
@@ -1106,7 +1106,7 @@ class _MetricOption extends StatelessWidget {
                       Text(
                         metric.description,
                         style: ClearStateTypography.caption.copyWith(
-                          color: ClearStateColors.smoke,
+                          color: ClearStateColors.textSecondaryDark,
                         ),
                       ),
                     ],

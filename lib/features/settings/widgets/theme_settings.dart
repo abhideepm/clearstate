@@ -61,7 +61,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
       }).toList();
 
   Color _selectedAccent = const Color(0xFFFF6B35);
-  Color _selectedBackground = ClearStateColors.void_;
+  Color _selectedBackground = ClearStateColors.darkBackground;
 
   @override
   void initState() {
@@ -92,11 +92,11 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     final snackBar = SnackBar(
       content: Text('Theme updated', style: ClearStateTypography.body),
-      backgroundColor: ClearStateColors.charcoal,
+      backgroundColor: ClearStateColors.darkSurface,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
-        side: const BorderSide(color: ClearStateColors.ash, width: 1),
-        borderRadius: BorderRadius.circular(4),
+        side: const BorderSide(color: ClearStateColors.borderDark, width: 1),
+        borderRadius: BorderRadius.circular(12),
       ),
       margin: const EdgeInsets.all(16),
       duration: const Duration(seconds: 5),
@@ -112,7 +112,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
         Text(
           'Accent Color',
           style: ClearStateTypography.caption.copyWith(
-            color: ClearStateColors.smoke,
+            color: ClearStateColors.textSecondaryDark,
             letterSpacing: 1,
           ),
         ),
@@ -140,7 +140,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                     color: color,
                     borderRadius: BorderRadius.circular(24),
                     border: isSelected
-                        ? Border.all(color: ClearStateColors.bone, width: 2)
+                        ? Border.all(color: ClearStateColors.textPrimaryDark, width: 2)
                         : null,
                     boxShadow: isSelected
                         ? [
@@ -173,7 +173,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
         Text(
           'Background',
           style: ClearStateTypography.caption.copyWith(
-            color: ClearStateColors.smoke,
+            color: ClearStateColors.textSecondaryDark,
             letterSpacing: 1,
           ),
         ),
@@ -199,10 +199,10 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                   height: 56,
                   decoration: BoxDecoration(
                     color: option.color,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(12),
                     border: isSelected
                         ? Border.all(color: _selectedAccent, width: 1.5)
-                        : Border.all(color: ClearStateColors.ash, width: 1),
+                        : Border.all(color: ClearStateColors.borderDark, width: 1),
                   ),
                   child: Center(
                     child: Text(
@@ -210,7 +210,7 @@ class _ThemeSettingsState extends ConsumerState<ThemeSettings> {
                       style: ClearStateTypography.caption.copyWith(
                         color: isSelected
                             ? _selectedAccent
-                            : ClearStateColors.smoke,
+                            : ClearStateColors.textSecondaryDark,
                       ),
                     ),
                   ),
@@ -248,17 +248,17 @@ class _VibeOption extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected ? color.withValues(alpha: 0.1) : Colors.transparent,
             border: Border.all(
-              color: isSelected ? color : ClearStateColors.ash,
+              color: isSelected ? color : ClearStateColors.borderDark,
               width: 1,
             ),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
             child: Text(
               label,
               style: ClearStateTypography.timerLabel.copyWith(
                 fontSize: 12,
-                color: isSelected ? color : ClearStateColors.smoke,
+                color: isSelected ? color : ClearStateColors.textSecondaryDark,
                 letterSpacing: 2,
               ),
             ),
@@ -323,7 +323,7 @@ class AccentColorPicker extends StatelessWidget {
                 color: color,
                 borderRadius: BorderRadius.circular(24),
                 border: isSelected
-                    ? Border.all(color: ClearStateColors.bone, width: 2)
+                    ? Border.all(color: ClearStateColors.textPrimaryDark, width: 2)
                     : null,
               ),
               child: isSelected

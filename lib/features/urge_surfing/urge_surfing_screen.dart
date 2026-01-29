@@ -49,8 +49,8 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
     }
 
     return Scaffold(
-      backgroundColor: ClearStateColors.void_,
-      body: NoiseBackground(
+      backgroundColor: ClearStateColors.darkBackground,
+      body: DawnBackground(
         opacity: 0.02,
         child: SafeArea(
           child: SizedBox(
@@ -66,7 +66,7 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                   style: ClearStateTypography.timerDisplay.copyWith(
                     fontSize: 48,
                     letterSpacing: 8,
-                    color: ClearStateColors.bone,
+                    color: ClearStateColors.textPrimaryDark,
                   ),
                 ),
                 const Spacer(flex: 2),
@@ -83,7 +83,7 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                     style: ClearStateTypography.h1.copyWith(
                       fontSize: 24,
                       letterSpacing: 6,
-                      color: ClearStateColors.smoke,
+                      color: ClearStateColors.textSecondaryDark,
                     ),
                   ),
                 ),
@@ -94,7 +94,7 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                   textAlign: TextAlign.center,
                   style: ClearStateTypography.statNumber.copyWith(
                     fontSize: 20,
-                    color: ClearStateColors.smoke,
+                    color: ClearStateColors.textSecondaryDark,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -103,7 +103,7 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                   textAlign: TextAlign.center,
                   style: ClearStateTypography.timerLabel.copyWith(
                     fontSize: 10,
-                    color: ClearStateColors.ash,
+                    color: ClearStateColors.borderDark,
                   ),
                 ),
                 const SizedBox(height: 40),
@@ -123,7 +123,7 @@ class _UrgeSurfingScreenState extends ConsumerState<UrgeSurfingScreen> {
                   child: Text(
                     "I'M OKAY NOW",
                     style: ClearStateTypography.button.copyWith(
-                      color: ClearStateColors.bone,
+                      color: ClearStateColors.textPrimaryDark,
                       letterSpacing: 2,
                     ),
                   ),

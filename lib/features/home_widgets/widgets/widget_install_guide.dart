@@ -21,9 +21,9 @@ class _WidgetInstallGuideState extends State<WidgetInstallGuide> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: ClearStateColors.charcoal,
-        border: Border.all(color: ClearStateColors.ash, width: 1),
-        borderRadius: BorderRadius.circular(2),
+        color: ClearStateColors.darkSurface,
+        border: Border.all(color: ClearStateColors.borderDark, width: 1),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
@@ -35,7 +35,7 @@ class _WidgetInstallGuideState extends State<WidgetInstallGuide> {
                 HapticService.light();
                 setState(() => _isExpanded = !_isExpanded);
               },
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(12),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -44,14 +44,14 @@ class _WidgetInstallGuideState extends State<WidgetInstallGuide> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: ClearStateColors.signal.withAlpha(
+                        color: ClearStateColors.dawnCoral.withAlpha(
                           (0.15 * 255).round(),
                         ),
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
                         Icons.help_outline,
-                        color: ClearStateColors.signal,
+                        color: ClearStateColors.dawnCoral,
                         size: 22,
                       ),
                     ),
@@ -63,14 +63,14 @@ class _WidgetInstallGuideState extends State<WidgetInstallGuide> {
                           Text(
                             'How to Add Widgets',
                             style: ClearStateTypography.body.copyWith(
-                              color: ClearStateColors.bone,
+                              color: ClearStateColors.textPrimaryDark,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Step-by-step instructions',
                             style: ClearStateTypography.caption.copyWith(
-                              color: ClearStateColors.smoke,
+                              color: ClearStateColors.textSecondaryDark,
                             ),
                           ),
                         ],
@@ -81,7 +81,7 @@ class _WidgetInstallGuideState extends State<WidgetInstallGuide> {
                       duration: const Duration(milliseconds: 200),
                       child: const Icon(
                         Icons.expand_more,
-                        color: ClearStateColors.ash,
+                        color: ClearStateColors.borderDark,
                         size: 24,
                       ),
                     ),
@@ -111,7 +111,7 @@ class _WidgetInstallGuideState extends State<WidgetInstallGuide> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(height: 1, color: ClearStateColors.ash),
+          Container(height: 1, color: ClearStateColors.borderDark),
           const SizedBox(height: 16),
 
           // Platform tabs
@@ -196,17 +196,17 @@ class _AndroidInstructions extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: ClearStateColors.signal.withAlpha((0.1 * 255).round()),
-            borderRadius: BorderRadius.circular(2),
+            color: ClearStateColors.dawnCoral.withAlpha((0.1 * 255).round()),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: ClearStateColors.signal.withAlpha((0.3 * 255).round()),
+              color: ClearStateColors.dawnCoral.withAlpha((0.3 * 255).round()),
             ),
           ),
           child: Row(
             children: [
               const Icon(
                 Icons.lightbulb_outline,
-                color: ClearStateColors.signal,
+                color: ClearStateColors.dawnCoral,
                 size: 18,
               ),
               const SizedBox(width: 12),
@@ -214,7 +214,7 @@ class _AndroidInstructions extends StatelessWidget {
                 child: Text(
                   'On Android 8.0+, you can also use the "Add to Home Screen" button in the widget settings above.',
                   style: ClearStateTypography.caption.copyWith(
-                    color: ClearStateColors.bone,
+                    color: ClearStateColors.textPrimaryDark,
                   ),
                 ),
               ),
@@ -235,7 +235,7 @@ class _BothPlatformInstructions extends StatelessWidget {
       children: [
         _IOSInstructions(),
         const SizedBox(height: 24),
-        Container(height: 1, color: ClearStateColors.ash),
+        Container(height: 1, color: ClearStateColors.borderDark),
         const SizedBox(height: 24),
         _AndroidInstructions(),
       ],
@@ -254,12 +254,12 @@ class _PlatformHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: ClearStateColors.smoke, size: 18),
+        Icon(icon, color: ClearStateColors.textSecondaryDark, size: 18),
         const SizedBox(width: 8),
         Text(
           platform.toUpperCase(),
           style: ClearStateTypography.caption.copyWith(
-            color: ClearStateColors.smoke,
+            color: ClearStateColors.textSecondaryDark,
             letterSpacing: 2,
           ),
         ),
@@ -286,14 +286,14 @@ class _InstructionStep extends StatelessWidget {
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: ClearStateColors.ash,
-              borderRadius: BorderRadius.circular(2),
+              color: ClearStateColors.borderDark,
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
               child: Text(
                 '$number',
                 style: ClearStateTypography.caption.copyWith(
-                  color: ClearStateColors.bone,
+                  color: ClearStateColors.textPrimaryDark,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -306,7 +306,7 @@ class _InstructionStep extends StatelessWidget {
               child: Text(
                 text,
                 style: ClearStateTypography.body.copyWith(
-                  color: ClearStateColors.bone,
+                  color: ClearStateColors.textPrimaryDark,
                   fontSize: 14,
                 ),
               ),

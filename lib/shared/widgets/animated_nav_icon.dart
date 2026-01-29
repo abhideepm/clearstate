@@ -83,7 +83,7 @@ class _AnimatedNavIconState extends State<AnimatedNavIcon>
         theme.colorScheme.primary;
     final inactiveColor =
         theme.bottomNavigationBarTheme.unselectedItemColor ??
-        ClearStateColors.smoke;
+        ClearStateColors.textSecondaryDark;
 
     final effectiveIcon = (widget.isActive && widget.activeIcon != null)
         ? widget.activeIcon!
@@ -255,8 +255,8 @@ class NavBarItem extends StatelessWidget {
               label,
               style: ClearStateTypography.caption.copyWith(
                 color: isSelected
-                    ? ClearStateColors.signal
-                    : ClearStateColors.smoke,
+                    ? ClearStateColors.dawnCoral
+                    : ClearStateColors.textSecondaryDark,
                 fontSize: 10,
               ),
             ),

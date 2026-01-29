@@ -209,13 +209,13 @@ class HabitDropdown extends ConsumerWidget {
 
   Color _parseColor(String? hexColor) {
     if (hexColor == null || hexColor.isEmpty) {
-      return ClearStateColors.sunYellow;
+      return ClearStateColors.sunriseGold;
     }
     try {
       final hex = hexColor.replaceFirst('#', '');
       return Color(int.parse('FF$hex', radix: 16));
     } catch (_) {
-      return ClearStateColors.sunYellow;
+      return ClearStateColors.sunriseGold;
     }
   }
 }

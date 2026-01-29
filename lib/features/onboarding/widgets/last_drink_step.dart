@@ -39,9 +39,9 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
         backgroundColor: Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
-            color: ClearStateColors.charcoal,
-            border: Border.all(color: ClearStateColors.ash, width: 1),
-            borderRadius: BorderRadius.circular(4),
+            color: ClearStateColors.darkSurface,
+            border: Border.all(color: ClearStateColors.borderDark, width: 1),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -50,12 +50,12 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    Icon(habit.icon, size: 20, color: ClearStateColors.bone),
+                    Icon(habit.icon, size: 20, color: ClearStateColors.textPrimaryDark),
                     const SizedBox(width: 12),
                     Text(
                       habit.name.toUpperCase(),
                       style: ClearStateTypography.button.copyWith(
-                        color: ClearStateColors.bone,
+                        color: ClearStateColors.textPrimaryDark,
                       ),
                     ),
                   ],
@@ -81,10 +81,10 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ClearStateColors.signal,
-                      foregroundColor: ClearStateColors.void_,
+                      backgroundColor: ClearStateColors.dawnCoral,
+                      foregroundColor: ClearStateColors.darkBackground,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: const Text('CONFIRM DATE'),
@@ -140,8 +140,8 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  border: Border.all(color: ClearStateColors.ash),
-                  borderRadius: BorderRadius.circular(2),
+                  border: Border.all(color: ClearStateColors.borderDark),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -150,13 +150,13 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                     Icon(
                       Icons.today,
                       size: 16,
-                      color: ClearStateColors.smoke,
+                      color: ClearStateColors.textSecondaryDark,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'USE TODAY FOR ALL',
                       style: ClearStateTypography.caption.copyWith(
-                        color: ClearStateColors.smoke,
+                        color: ClearStateColors.textSecondaryDark,
                         letterSpacing: 1,
                       ),
                     ),
@@ -179,15 +179,15 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: ClearStateColors.charcoal,
-                      border: Border.all(color: ClearStateColors.ash),
+                      color: ClearStateColors.darkSurface,
+                      border: Border.all(color: ClearStateColors.borderDark),
                     ),
                     child: Row(
                       children: [
                         Icon(
                           habit.icon,
                           size: 24,
-                          color: ClearStateColors.bone,
+                          color: ClearStateColors.textPrimaryDark,
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -197,14 +197,14 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                               Text(
                                 habit.name.toUpperCase(),
                                 style: ClearStateTypography.button.copyWith(
-                                  color: ClearStateColors.bone,
+                                  color: ClearStateColors.textPrimaryDark,
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 _formatDate(startDate),
                                 style: ClearStateTypography.caption.copyWith(
-                                  color: ClearStateColors.smoke,
+                                  color: ClearStateColors.textSecondaryDark,
                                 ),
                               ),
                             ],
@@ -214,7 +214,7 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
                           'TAP TO CHANGE',
                           style: ClearStateTypography.caption.copyWith(
                             fontSize: 10,
-                            color: ClearStateColors.smoke,
+                            color: ClearStateColors.textSecondaryDark,
                           ),
                         ),
                       ],
@@ -225,16 +225,16 @@ class _StartDateStepState extends ConsumerState<StartDateStep> {
             ),
           ),
           const SizedBox(height: 16),
-          BrutalistButton(
+          ModernButton(
             label: 'CONTINUE',
             onPressed: widget.onNext,
-            type: BrutalistButtonType.primary,
+            type: ModernButtonType.primary,
           ),
           const SizedBox(height: 12),
-          BrutalistButton(
+          ModernButton(
             label: 'BACK',
             onPressed: widget.onBack,
-            type: BrutalistButtonType.secondary,
+            type: ModernButtonType.secondary,
           ),
           const SizedBox(height: 24),
         ],

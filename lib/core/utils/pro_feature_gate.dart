@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/settings/subscription_provider.dart';
 import '../theme/colors.dart';
+import '../theme/typography.dart';
 
 class ProFeatureGate extends ConsumerWidget {
   final Widget child;
@@ -39,46 +40,74 @@ class LockedPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: ClearStateColors.charcoal,
-        border: Border.all(color: ClearStateColors.acidGreen, width: 2),
+        color: ClearStateColors.darkSurface,
+        border: Border.all(
+          color: ClearStateColors.lavender.withValues(alpha: 0.4),
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.lock_outline, size: 32, color: ClearStateColors.acidGreen),
-          const SizedBox(height: 12),
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: ClearStateColors.lavender.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              Icons.lock_outline_rounded,
+              size: 28,
+              color: ClearStateColors.lavender,
+            ),
+          ),
+          const SizedBox(height: 16),
           Text(
             'PRO FEATURE',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                ),
+            style: ClearStateTypography.caption.copyWith(
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.5,
+              color: ClearStateColors.lavender,
+            ),
           ),
           if (featureName != null) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Text(
               featureName!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
+              style: ClearStateTypography.bodySecondary,
             ),
           ],
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              // TODO: Navigate to paywall or show purchase sheet
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Purchase Pro to unlock this feature')),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ClearStateColors.acidGreen,
-              foregroundColor: Colors.black,
-              shape: const RoundedRectangleBorder(),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Purchase Pro to unlock this feature')),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ClearStateColors.lavender,
+                foregroundColor: ClearStateColors.darkBackground,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                elevation: 0,
+              ),
+              child: Text(
+                'UNLOCK PRO',
+                style: ClearStateTypography.button.copyWith(
+                  color: ClearStateColors.darkBackground,
+                  letterSpacing: 1,
+                ),
+              ),
             ),
-            child: const Text('UNLOCK NOW'),
           ),
         ],
       ),

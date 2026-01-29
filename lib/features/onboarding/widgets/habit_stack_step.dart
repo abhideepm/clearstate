@@ -26,7 +26,7 @@ class HabitStackStep extends ConsumerWidget {
         children: [
           const SizedBox(height: 24),
           Text(
-            'What are you\nquitting?',
+            'What would you\nlike to leave behind?',
             style: ClearStateTypography.h1.copyWith(
               fontSize: 32,
               height: 1.2,
@@ -110,6 +110,7 @@ class _HabitChip extends StatelessWidget {
     final accentColor = themeState.accent.value;
     
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),

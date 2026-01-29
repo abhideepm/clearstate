@@ -39,7 +39,7 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
 
     return BentoCard(
       backgroundColor: ClearStateColors.oledBlack,
-      borderColor: ClearStateColors.ash,
+      borderColor: ClearStateColors.borderDark,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -49,7 +49,7 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
               fontFamily: 'JetBrains Mono',
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: ClearStateColors.smoke,
+              color: ClearStateColors.textSecondaryDark,
               letterSpacing: 1.2,
             ),
           ),
@@ -71,8 +71,8 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  border: Border.all(color: ClearStateColors.ash),
-                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: ClearStateColors.borderDark),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   milestone.status.toUpperCase(),
@@ -80,7 +80,7 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
                     fontFamily: 'JetBrains Mono',
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: ClearStateColors.smoke,
+                    color: ClearStateColors.textSecondaryDark,
                   ),
                 ),
               ),
@@ -132,7 +132,7 @@ class _SymptomPredictionCardState extends ConsumerState<SymptomPredictionCard> {
               style: const TextStyle(
                 fontFamily: 'JetBrains Mono',
                 fontSize: 13,
-                color: ClearStateColors.smoke,
+                color: ClearStateColors.textSecondaryDark,
                 height: 1.4,
               ),
             ),
